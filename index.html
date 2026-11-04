@@ -1,0 +1,1959 @@
+<meta charset="utf-8" />
+<title>Meshy Studio Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+<style>
+/* Layout: light guide rail on the left, a faithful dark Meshy workspace on the right; only new or next-step UI is bright. */
+:root{
+  color-scheme:light;
+  --g-bg:#f4f4f1; --g-card:#ffffff; --g-ink:#1b1c1a; --g-mute:#686a64; --g-line:#e1e1db; --g-soft:#f0f0eb;
+  --g-accent:#2b5cf0; --g-accent-bg:#e7edfe;
+  --p-bg:#0d0e0f; --p-panel:#18191b; --p-raise:#222326; --p-raise2:#2b2c30; --p-line:#2c2d31;
+  --p-ink:#eeeeef; --p-mute:#9a9ba0; --p-faint:#5e6065;
+  --lime:#d2f65a; --lime-ink:#14170a; --lime-deep:#3c4a12;
+  --hot:#5b93ff;
+  --f-guide:"IBM Plex Sans",system-ui,sans-serif;
+  --f-app:"Barlow","Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--g-bg);color:var(--g-ink);font-family:var(--f-guide);font-size:14px;line-height:1.55}
+button{font:inherit;cursor:pointer;color:inherit}
+button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--g-accent);outline-offset:2px}
+svg.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+.app{display:grid;grid-template-columns:300px minmax(0,1fr);min-height:100%}
+
+/* guide */
+.guide{border-right:1px solid var(--g-line);padding:22px 18px;display:flex;flex-direction:column;gap:16px;height:100vh;overflow:auto;position:sticky;top:0}
+.brand{font-weight:600;font-size:15px;margin-bottom:-10px}
+.brand small{display:block;font-weight:400;color:var(--g-mute);font-size:12px}
+.scene{background:var(--g-card);border:1px solid var(--g-line);border-radius:12px;padding:10px 12px}
+.scene-head{display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:pointer;user-select:none}
+.scene-head b{font-weight:600;font-size:13px}
+.chev{border:1px solid var(--g-line);background:var(--g-card);border-radius:8px;padding:3px 10px;font-size:12px;color:var(--g-mute)}
+.scene-body{margin-top:10px}
+.scene.closed .scene-body{display:none}
+.scene .goal{margin:0 0 12px;font-size:12.5px;color:#3d3e3a}
+.cast{display:flex;flex-direction:column;gap:10px}
+.person{display:flex;gap:10px;align-items:flex-start}
+.person b{display:block;font-weight:600;font-size:13px}
+.person b em,.pcard b em{font-style:normal;font-weight:400;color:var(--g-mute)}
+.person p{margin:0;color:#4a4b46;font-size:12px;line-height:1.5}
+.av{width:36px;height:36px;border-radius:50%;overflow:hidden;flex:none}
+.av svg{width:100%;height:100%;display:block}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.steps li{display:flex;gap:10px;align-items:center;padding:6px 10px;border-radius:8px;color:var(--g-mute);cursor:pointer}
+.steps li .n{min-width:20px;height:20px;padding:0 5px;border-radius:10px;border:1px solid var(--g-line);display:flex;align-items:center;justify-content:center;font-size:11px;flex:none;background:var(--g-card);white-space:nowrap}
+.steps li .lab{display:none}
+.steps li.on .num{display:none}
+.steps li.on .lab{display:inline}
+.steps li:hover:not(.on){background:var(--g-soft)}
+/* timeline: one line threads the step markers together */
+.steps{gap:0}
+.steps li{position:relative;padding-left:4px}
+.steps li .trk{width:56px;flex:none;display:flex;justify-content:center;position:relative;z-index:1}
+.steps li::before,.steps li::after{content:"";position:absolute;left:31px;width:1.5px;background:var(--g-line)}
+.steps li::before{top:0;height:50%}
+.steps li::after{top:50%;bottom:0}
+.steps li:first-child::before,.steps li:last-child::after{display:none}
+.steps li.done::after,.steps li.done + li::before{background:var(--g-ink)}
+.steps li.on{background:var(--g-accent-bg);color:var(--g-ink);font-weight:500}
+.steps li.on .n{background:var(--g-accent);border-color:var(--g-accent);color:#fff}
+.steps li.done .n{background:var(--g-ink);border-color:var(--g-ink);color:#fff}
+.card{background:var(--g-card);border:1px solid var(--g-line);border-radius:12px;padding:14px}
+.who{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+.who b{display:block;font-weight:600}
+.who span{color:var(--g-mute);font-size:12px}
+.goal-l{margin:0 0 10px;font-weight:400;font-size:14px;line-height:1.5;color:var(--g-ink)}
+.beats{list-style:none;margin:0;padding:0;display:flex;flex-direction:row;gap:12px}
+.beats li{flex:1 1 0;min-width:0}
+.bwin.many .beats li{flex-grow:0;flex-shrink:0}
+.beats li{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--g-mute);line-height:1.45;cursor:default}
+.beats li em{font-style:normal;font-weight:inherit;color:inherit}
+.beats .bn{width:18px;flex:none;font-size:12px;margin-top:0;text-align:right}
+.beats li.on{color:var(--g-ink);font-weight:600}
+.beats li.on .bn{border-color:var(--g-ink);color:var(--g-ink);font-weight:600}
+.beats li.done{color:#8a8b85}
+.beats li.done .bn{color:var(--g-mute)}
+.beats .scr{display:block;font-size:11px;font-weight:400;color:var(--g-mute);letter-spacing:.2px}
+.beats li.solo{color:var(--g-ink);font-weight:400;font-size:14px}
+.why{margin:0;font-size:12.5px;color:#4a4b46;line-height:1.5;border-top:1px solid var(--g-line);padding-top:10px}
+.why:empty{display:none}
+.why b{font-weight:400;color:var(--g-ink)}
+.tag{display:inline-block;margin-top:10px;font-size:12px;background:var(--g-accent-bg);color:var(--g-accent);padding:3px 8px;border-radius:6px}
+.nav{display:flex;gap:8px}
+.nav button{flex:1;padding:9px;border-radius:8px;border:1px solid var(--g-line);background:var(--g-card)}
+.nav button.primary{background:var(--g-ink);border-color:var(--g-ink);color:#fff}
+.nav button:disabled{opacity:.4;cursor:default}
+.stepbar{display:flex;align-items:center;gap:16px;background:var(--g-card);border:1px solid var(--g-line);border-radius:12px;padding:14px 18px 10px}
+.stepbar[hidden]{display:none}
+.stepbar button{padding:9px 16px;border-radius:8px;border:1px solid var(--g-line);background:var(--g-card);white-space:nowrap}
+.stepbar button.primary{background:var(--g-ink);border-color:var(--g-ink);color:#fff}
+.stepbar button:disabled{opacity:.4;cursor:default}
+.sb-mid{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px}
+.sb-top{display:flex;gap:12px;align-items:flex-start}
+.sb-top .av{width:32px;height:32px}
+.sb-txt{flex:1;min-width:0}
+.sb-name{display:flex;align-items:baseline;gap:8px;margin:1px 0 3px}
+.sb-name b{font-size:14px;font-weight:600}
+.sb-name span{font-size:12px;color:var(--g-mute)}
+.sb-name span::before{content:"·";margin-right:8px;color:#b9bab4}
+.sb-top .who{margin:0;flex:none;width:190px}
+.sb-top .goal-l{margin:0;font-size:13.5px;line-height:1.55;color:#4a4b46;text-wrap:pretty}
+#cardCta:empty,#tag:empty,.why:empty{display:none}
+.sb-dots{display:flex;gap:5px}
+.sb-dots i{width:18px;height:4px;border-radius:2px;background:var(--g-line)}
+.sb-dots i.done{background:#b9bab3}
+.sb-dots i.on{background:var(--g-accent)}
+.sb-text{font-size:13px;color:var(--g-mute);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.sb-text b{color:var(--g-ink);font-weight:600}
+
+/* main */
+.main{display:flex;flex-direction:column;padding:18px 22px;gap:12px;min-width:0;height:100vh;position:sticky;top:0}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.viewing{font-size:13px;color:var(--g-mute)}
+.viewing b{color:var(--g-ink);font-weight:500}
+.toggle{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--g-mute);cursor:pointer;user-select:none}
+.sw{width:32px;height:18px;border-radius:9px;background:#cdcdc6;position:relative;transition:background .2s}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:left .2s}
+.toggle.on .sw{background:var(--g-accent)}
+.toggle.on .sw::after{left:16px}
+
+/* product frame */
+.frame{flex:1;min-height:0;background:var(--p-bg);border-radius:14px;overflow:hidden;position:relative;color:var(--p-ink);font-family:var(--f-app);border:1px solid #000;display:flex}
+.frame.intro{background:var(--g-card);color:var(--g-ink);font-family:var(--f-guide);border-color:var(--g-line)}
+.dim{opacity:.38;pointer-events:none;filter:saturate(.6)}
+
+.rail{width:64px;flex:none;display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:4px;font-size:10px;color:var(--p-mute)}
+.rail .logo{width:30px;height:30px;border-radius:50%;background:var(--lime);margin-bottom:22px;display:flex;align-items:center;justify-content:center;color:var(--lime-ink);font-weight:600;font-size:13px}
+.rail .it{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 0;width:100%}
+.rail .it.on{color:var(--lime)}
+.rail .it svg{width:20px;height:20px}
+.rail .bottom{margin-top:auto;display:flex;flex-direction:column;align-items:center;gap:8px}
+.rail .coins{color:var(--p-ink);font-size:11px}
+.rail .topup{background:var(--lime);color:var(--lime-ink);border-radius:6px;padding:2px 7px;font-weight:600;font-size:10px}
+.rail .me{width:30px;height:30px;border-radius:50%;overflow:hidden}
+
+.lpanel{width:270px;flex:none;background:var(--p-panel);border-radius:12px;margin:8px 0;padding:12px;display:flex;flex-direction:column;gap:12px;font-size:12px;color:var(--p-mute)}
+.seg{display:flex;gap:14px;padding:8px 10px;background:var(--p-raise);border-radius:8px}
+.seg .on{color:var(--p-ink)}
+.selbox{background:var(--p-raise);border-radius:8px;padding:9px 10px}
+.selbox b{display:block;color:var(--lime);font-weight:500;font-size:12.5px}
+.upload{height:130px;border:1px dashed var(--p-line);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:var(--p-raise)}
+.row{display:flex;justify-content:space-between;align-items:center}
+.pill{width:26px;height:14px;border-radius:7px;background:var(--p-raise2);position:relative}
+.pill::after{content:"";position:absolute;top:2px;left:2px;width:10px;height:10px;border-radius:50%;background:var(--p-mute)}
+.pill.on{background:var(--lime)}
+.pill.on::after{left:14px;background:#fff}
+.gen{margin-top:auto;background:var(--lime);color:var(--lime-ink);border-radius:8px;padding:10px;text-align:center;font-weight:600;font-size:14px}
+
+.center{flex:1;min-width:0;position:relative;display:flex;flex-direction:column;margin:8px;border-radius:12px;background:radial-gradient(ellipse at 50% 45%,#2a2b2e 0%,#141516 70%)}
+.ctop{display:flex;gap:14px;align-items:center;padding:12px 14px;color:var(--p-mute);font-size:13px}
+.stats{position:absolute;top:48px;left:14px;width:220px;display:flex;flex-direction:column;gap:6px;font-size:12px;z-index:2}
+.stats .box{background:rgba(24,25,27,.9);border-radius:10px;padding:10px 12px;display:grid;grid-template-columns:1fr auto;row-gap:6px;color:var(--p-mute)}
+.stats .box span:nth-child(even){color:var(--p-ink);text-align:right;font-variant-numeric:tabular-nums}
+.ok{color:#4ad07a}
+model-viewer{flex:1;width:100%;min-height:0;background:transparent;--poster-color:transparent}
+.btool{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:6px;align-items:center;background:rgba(24,25,27,.95);border:1px solid var(--p-line);border-radius:12px;padding:6px;z-index:3}
+.tb{width:34px;height:34px;border-radius:8px;border:0;background:transparent;color:var(--p-mute);display:flex;align-items:center;justify-content:center;position:relative}
+.tb.texture{width:auto;padding:0 10px;gap:6px;background:var(--lime);color:var(--lime-ink);font-weight:600;font-size:13px}
+.tb.dl{background:var(--lime);color:var(--lime-ink)}
+.tb .badge{position:absolute;top:-6px;right:-2px;font-size:9px;color:var(--lime)}
+.sep{width:1px;height:20px;background:var(--p-line);margin:0 2px}
+.reuse{position:absolute;left:16px;bottom:22px;font-size:12px;color:var(--p-mute)}
+
+.rpanel{width:290px;flex:none;background:var(--p-panel);border-radius:12px;margin:8px 8px 8px 0;padding:12px;display:flex;flex-direction:column;gap:12px}
+.search{display:flex;gap:8px;align-items:center}
+.search .q{flex:1;background:var(--p-raise);border-radius:8px;padding:7px 10px;font-size:12px;color:var(--p-faint);display:flex;gap:6px;align-items:center}
+.uploadbtn{background:var(--lime);color:var(--lime-ink);border-radius:7px;padding:6px 10px;font-weight:600;font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.tile{aspect-ratio:1/1.15;border-radius:8px;background:var(--p-raise);max-width:100%}
+.tile.sel{border:1.5px solid var(--lime);display:flex;align-items:center;justify-content:center;color:var(--p-mute)}
+
+/* hot spot */
+.hot{position:relative;outline:2px solid var(--hc)!important;outline-offset:3px;animation:pulse 1.6s ease-in-out infinite;opacity:1!important;filter:none!important}
+.hot::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);background:var(--hot);color:#fff;font:500 11px/1.4 var(--f-guide);padding:3px 8px;border-radius:6px;white-space:nowrap;pointer-events:none}
+.hot.tip-below::after{bottom:auto;top:calc(100% + 10px)}
+@property --hc{syntax:'<color>';inherits:false;initial-value:#5b93ff}
+@keyframes pulse{0%,100%{--hc:#5b93ff;outline-offset:3px;box-shadow:0 0 14px 2px rgba(91,147,255,.35)}50%{--hc:rgba(91,147,255,0);outline-offset:6px;box-shadow:0 0 14px 2px rgba(91,147,255,0)}}
+@keyframes tipBob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-4px)}}
+.hot{animation:pulse 1.4s cubic-bezier(.45,0,.55,1) infinite!important}
+.hot::after{animation:none}
+@keyframes tipBobDown{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(4px)}}
+.hot.tip-right::after{animation:none}
+@media (prefers-reduced-motion:reduce){.hot{animation:none}}
+
+/* share dialog, modeled on Meshy's */
+.scrim{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:10;padding:16px}
+.dlg{width:100%;max-width:440px;background:#1f2022;border:1px solid var(--p-line);border-radius:16px;overflow:hidden}
+.dlg-h{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid var(--p-line)}
+.dlg-h b{font-size:17px;font-weight:600}
+.xbtn{width:30px;height:30px;border-radius:8px;border:1px solid var(--p-line);background:transparent;color:var(--p-mute);display:flex;align-items:center;justify-content:center}
+.sec{padding:14px 18px;border-bottom:1px solid var(--p-line)}
+.sec h5{margin:0 0 10px;font-size:14px;font-weight:500;display:flex;justify-content:space-between;align-items:center}
+.sec h5 small{font-size:12px;color:var(--p-mute);font-weight:400;display:flex;gap:6px;align-items:center}
+.line{display:flex;gap:8px}
+.inp{flex:1;min-width:0;background:var(--p-raise);border:1px solid var(--p-line);border-radius:9px;padding:8px 10px;font-size:13px;color:var(--p-mute);display:flex;align-items:center;gap:8px;overflow:hidden}
+.inp.hot{overflow:visible}
+.chip{background:var(--p-raise2);color:var(--p-ink);border-radius:6px;padding:2px 8px;font-size:12px;white-space:nowrap}
+.inp .add{margin-left:auto;display:flex;gap:4px;align-items:center;white-space:nowrap}
+.lbtn{background:var(--lime);color:var(--lime-ink);border:0;border-radius:9px;padding:0 14px;font-weight:600;font-size:13px;display:flex;gap:6px;align-items:center;white-space:nowrap}
+.lbtn.muted{background:var(--lime-deep);color:#b8c48a}
+.socials{display:flex;gap:8px}
+.socials span{width:34px;height:34px;border-radius:8px;background:var(--p-raise);border:1px solid var(--p-line);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--p-mute)}
+.promo{margin:14px 18px 18px;border:1px solid #6d8a1c;border-radius:12px;padding:12px 14px;background:#1d2410;font-size:12px;color:var(--p-mute)}
+.promo b{color:var(--lime);font-size:14px;font-weight:500;display:block}
+
+.toast{position:absolute;top:16px;left:50%;transform:translateX(-50%);background:var(--p-raise2);border:1px solid var(--p-line);padding:8px 14px;border-radius:8px;font-size:13px;z-index:12;display:flex;gap:8px;align-items:center;animation:toastAway .4s ease 3.2s forwards}
+@keyframes toastAway{to{opacity:0;visibility:hidden}}
+.bwin{margin:0;display:flex;align-items:center;gap:12px;border-top:1px solid var(--g-line);padding-top:10px}
+.bwin .beat1{padding-left:44px}
+.bwin{gap:4px}
+.bwin #next{padding-right:0}
+.bwin button,.bwin button.primary{padding:4px 6px;font-size:12px;flex:none;background:none;border:0;color:var(--g-mute);font-weight:400}
+.bwin button:hover:not(:disabled){color:var(--g-ink);text-decoration:underline}
+.beat1 .hint{flex:none;font-size:12px;font-weight:400;color:var(--hot);margin-left:2px}
+.beat1{flex:1;min-width:0;display:flex;align-items:baseline;gap:10px;font-size:13.5px;color:var(--g-ink);font-weight:600;line-height:1.45}
+.beat1.plain{font-weight:400}
+.beat1 .scr{flex:none;font-size:10.5px;font-weight:600;color:var(--g-mute);text-transform:uppercase;letter-spacing:.6px;padding-right:10px;border-right:1px solid var(--g-line)}
+.bscroll{overflow:hidden;position:relative;flex:1;min-width:0}
+.barrow{display:none;align-self:center;width:22px;height:28px;flex:none;border:1px solid var(--g-line);background:var(--g-card);border-radius:6px;font-size:9px;line-height:1;color:var(--g-mute);padding:0}
+.bwin.many .barrow{display:block}
+.barrow:disabled{opacity:.3;cursor:default}
+.toast svg{color:#4ad07a}
+.trans{background:var(--g-card);color:var(--g-ink);font-family:var(--f-guide);border-radius:14px;padding:24px;max-width:340px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
+.trans .av{width:52px;height:52px;margin-bottom:6px}
+.trans p{margin:0 0 16px;color:var(--g-mute)}
+.trans button{background:var(--g-ink);color:#fff;border:0;border-radius:8px;padding:9px 16px;font-weight:500}
+
+/* public share page */
+.frame.page{flex-direction:column}
+.snav{height:52px;flex:none;display:flex;align-items:center;gap:22px;padding:0 18px;font-size:13.5px;color:var(--p-ink);border-bottom:1px solid var(--p-line)}
+.snav .wm{font-weight:600;font-size:18px;color:var(--lime);margin-right:auto}
+.snav .ml{margin-left:auto}
+.snav .su{background:var(--lime);color:var(--lime-ink);border-radius:8px;padding:5px 12px;font-weight:600}
+.sbody{flex:1;display:flex;min-height:0}
+.spanel{width:340px;flex:none;margin:8px 8px 8px 0;display:flex;flex-direction:column;gap:8px}
+.blk{background:var(--p-panel);border-radius:12px;padding:12px 14px}
+.author{display:flex;align-items:center;gap:10px}
+.author b{display:block;font-weight:500;font-size:13px}
+.author small{color:var(--p-faint);font-size:11.5px}
+.follow{margin-left:auto;background:var(--lime);color:var(--lime-ink);border-radius:7px;padding:4px 10px;font-weight:600;font-size:12px}
+.meta{font-size:12px;color:var(--p-mute);display:flex;gap:14px}
+.cbox{flex:1;display:flex;flex-direction:column;gap:12px}
+.cbox h4{margin:0;font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.newtag{font-size:10px;font-weight:600;background:#ff5b8a;color:#fff;border-radius:5px;padding:1px 6px;letter-spacing:.3px}
+.empty{font-size:12.5px;color:var(--p-mute)}
+.cbtn{align-self:flex-start;background:var(--lime);color:var(--lime-ink);border:0;border-radius:8px;padding:8px 14px;font-weight:600;font-size:13px;display:flex;gap:6px;align-items:center}
+.composer{border:1px solid var(--p-line);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:10px;background:var(--p-raise)}
+.composer .top{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--p-mute)}
+.composer .av,.citem .av{width:26px;height:26px}
+.composer .text{font-size:13.5px;color:var(--p-ink);min-height:40px}
+.composer .row2{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--p-mute)}
+.pinlabel{display:flex;gap:6px;align-items:center}
+.pinlabel i{width:16px;height:16px;border-radius:50% 50% 50% 2px;background:var(--lime);color:var(--lime-ink);font-style:normal;font-size:10px;display:flex;align-items:center;justify-content:center;font-weight:600}
+.citem{display:flex;gap:10px;font-size:13px}
+.citem b{font-weight:500}
+.citem small{color:var(--p-faint);margin-left:6px}
+.citem p{margin:3px 0 0;color:var(--p-ink)}
+.cpin{position:relative;width:18px;height:18px}
+.cpin .num{width:18px;height:18px;border-radius:50% 50% 50% 3px;border:2px solid #fff;background:var(--lime);color:var(--lime-ink);font:600 14px var(--f-app);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.45)}
+.cpill{position:absolute;left:40px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:10px;background:#232427;border:1px solid #34353a;border-radius:24px;padding:8px 10px 8px 16px;white-space:nowrap;box-shadow:0 6px 20px rgba(0,0,0,.45);font:400 14px var(--f-app);color:var(--p-ink)}
+.ptext{border-left:2px solid var(--p-ink);padding-left:6px}
+.pbtn{width:26px;height:26px;border:0;border-radius:6px;background:transparent;color:var(--p-mute);display:flex;align-items:center;justify-content:center;padding:0}
+button.pbtn{color:var(--p-ink)}
+.pbtn svg{width:16px;height:16px}
+.pdiv{width:1px;height:16px;background:#3a3b40}
+.pin{width:26px;height:26px;border-radius:50% 50% 50% 4px;background:var(--hot);color:#fff;border:2px solid #fff;font:600 12px var(--f-guide);display:flex;align-items:center;justify-content:center;padding:0;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.unused-cursor{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M3 3h20a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H11l-6 6v-6H3z' fill='%235b93ff' stroke='white' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M14 8v8M10 12h8' stroke='white' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E") 4 28, crosshair}
+.chint{position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:4;display:flex;gap:10px;align-items:center;background:rgba(24,25,27,.95);border:1px solid var(--p-line);border-radius:10px;padding:7px 12px;font-size:13px;color:var(--p-ink);white-space:nowrap}
+.chint.hot::after{display:none}
+.target{width:34px;height:34px;border-radius:50%;border:2px solid var(--lime);background:rgba(210,246,90,.2);display:flex;align-items:center;justify-content:center;animation:ring 1.4s ease-out infinite;pointer-events:none}
+.target{position:relative}
+.target b{position:absolute;left:calc(100% + 10px);top:50%;transform:translateY(-50%);background:var(--hot);color:#fff;font:500 11px/1.4 var(--f-guide);padding:3px 8px;border-radius:6px;white-space:nowrap}
+.target i{width:10px;height:10px;border-radius:50%;background:var(--lime);border:2px solid #fff}
+@keyframes ring{0%{box-shadow:0 0 0 0 rgba(210,246,90,.6)}100%{box-shadow:0 0 0 16px rgba(210,246,90,0)}}
+@media (prefers-reduced-motion:reduce){.target{animation:none}}
+.cmode{display:flex;gap:6px;align-items:center;color:var(--lime);font-weight:600}
+.bulb{position:absolute;left:14px;bottom:14px;width:32px;height:32px;border-radius:8px;background:var(--p-raise);display:flex;align-items:center;justify-content:center;color:var(--lime)}
+
+/* generic mail client showing Meshy's real share email */
+.mail{flex:1;display:flex;flex-direction:column;background:#f6f7f9;color:#1f2328;font-family:var(--f-guide);min-height:0}
+.mtop{height:52px;flex:none;display:flex;align-items:center;gap:16px;padding:0 16px;border-bottom:1px solid #e3e5e8}
+.mlogo{font-weight:600;font-size:16px;width:150px}
+.msearch{flex:1;max-width:520px;background:#e9ecf0;border-radius:20px;padding:7px 14px;font-size:13px;color:#6b7280;display:flex;gap:8px;align-items:center}
+.mbody{flex:1;display:flex;min-height:0}
+.mnav{width:170px;flex:none;padding:12px;display:flex;flex-direction:column;gap:4px;font-size:13px}
+.mnav span{padding:6px 12px;border-radius:16px}
+.mnav .compose{background:#dbe5f7;border-radius:12px;padding:10px 14px;margin-bottom:8px;font-weight:500}
+.mnav .on{background:#d3e0f8;font-weight:600}
+.mmsg{flex:1;min-width:0;background:#fff;margin:8px 8px 8px 0;border-radius:12px;display:flex;flex-direction:column;overflow:auto}
+.mhead{padding:16px 20px;border-bottom:1px solid #eef0f2;display:flex;flex-direction:column;gap:12px}
+.mhead>b{font-size:18px;font-weight:500}
+.from{display:flex;gap:10px;align-items:center;font-size:13px}
+.from span{color:#6b7280}
+.from small{display:block;color:#6b7280}
+.from .when{margin-left:auto}
+.mav{width:32px;height:32px;border-radius:50%;background:#2a2340;color:var(--lime)!important;display:flex;align-items:center;justify-content:center;font-weight:600}
+.mcanvas{background:#f1f3ee;margin:16px 20px;border-radius:8px;padding:22px 16px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.mbrand{font-family:var(--f-app);font-weight:600;font-size:20px;letter-spacing:-.2px}
+.mcard{width:100%;max-width:400px;background:#fff;border:1px solid #e4e6e1;border-radius:8px;padding:18px;display:flex;flex-direction:column;font-size:13px;color:#2b2f33}
+.mcard h3{margin:0 0 12px;padding-bottom:14px;border-bottom:1px solid #e9ebe6;text-align:center;font-size:15px}
+.mcard p{margin:0 0 10px}
+.openbtn{align-self:center;margin:8px 0 4px;background:#8db83f;color:#fff;border:0;border-radius:20px;padding:9px 18px;font-weight:600}
+.mcard model-viewer{width:100%;flex:none;height:240px;margin-top:6px}
+@media (max-width:860px){.mnav{display:none}.mmsg{margin-left:8px}}
+
+/* paywall, modeled on Meshy's Studio plan card */
+.pw{width:100%;max-width:470px;background:#141416;border:1px solid var(--p-line);border-radius:18px;overflow:hidden;max-height:100%;overflow-y:auto}
+.pw-h{display:flex;justify-content:space-between;gap:12px;padding:18px 20px 14px}
+.pw-h b{display:block;font-size:19px;font-weight:600}
+.pw-h span{font-size:13px;color:var(--p-mute)}
+.plan{margin:0 16px 16px;border:1px solid #5b4fd6;border-radius:14px;background:#1c1c1f;padding:16px;display:flex;flex-direction:column;gap:10px}
+.plan-top{display:flex;justify-content:space-between;align-items:center}
+.pname{color:#8f84ff;font-size:20px;font-weight:600}
+.off{background:#f5d76e;color:#3d2f00;font-size:11.5px;font-weight:600;border-radius:6px;padding:2px 7px}
+.plan small{color:var(--p-mute);font-size:11.5px}
+.price{font-size:14px;color:var(--p-mute)}
+.price b{font-size:30px;color:var(--p-ink);font-weight:600;margin-right:4px}
+.price s{margin-right:4px}
+.kv{display:grid;grid-template-columns:1fr auto;row-gap:6px;font-size:12.5px;color:var(--p-mute);border-top:1px solid var(--p-line);padding-top:10px}
+.kv span:nth-child(even){color:var(--p-ink);text-align:right}
+.kv .y{color:#f5c84b}
+.newsec{border:1px solid #3a4a14;background:#171d0a;border-radius:10px;padding:10px 12px}
+.newsec h6{margin:0 0 6px;font-size:13px;font-weight:600;display:flex;gap:8px;align-items:center;color:var(--p-ink)}
+.newsec ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:var(--p-ink)}
+.newsec li{display:flex;gap:6px;align-items:center}
+.newsec li svg{width:14px;height:14px;color:var(--lime)}
+.free{margin-top:8px;background:#1f3a24;color:#7be39a;border-radius:6px;padding:4px 8px;font-size:12px;display:inline-block}
+.subscribe{background:var(--lime);color:var(--lime-ink);border:0;border-radius:9px;padding:11px;font-weight:600;font-size:14px}
+.subnote{text-align:center;margin-top:18px}
+
+/* Step 3: team card + invite dialog */
+.team{display:flex;flex-direction:column;gap:10px}
+.team-top{display:flex;justify-content:space-between;align-items:center}
+.team-top b{font-size:14px;font-weight:600;display:flex;gap:8px;align-items:center}
+.team-top small{display:block;color:var(--p-mute);font-size:12px;font-weight:400}
+.avs{display:flex}
+.avs .av{width:28px;height:28px;border:2px solid var(--p-panel);margin-left:-6px}
+.avs .av:first-child{margin-left:0}
+.invbtn{background:var(--lime);color:var(--lime-ink);border:0;border-radius:8px;padding:7px 14px;font-weight:600;font-size:13px;display:flex;gap:6px;align-items:center;font-family:var(--f-app)}
+.invbtn svg{width:15px;height:15px}
+.inv{width:100%;max-width:520px;background:#1f2022;border:1px solid var(--p-line);border-radius:16px;overflow:hidden;max-height:100%;overflow-y:auto}
+.inv-sub{margin:4px 0 0;font-size:13px;color:var(--p-mute);font-weight:400}
+.inv .sec{padding:12px 18px}
+.addrow{display:flex;gap:8px}
+.addrow .inp{color:var(--p-faint)}
+.rolesel{background:var(--p-raise);border:1px solid var(--p-line);border-radius:9px;padding:8px 10px;font-size:13px;color:var(--p-ink);white-space:nowrap}
+.mem{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:9px 0;border-top:1px solid #2a2b2f}
+.mem:first-child{border-top:0}
+.mem .av{width:32px;height:32px}
+.mem b{display:block;font-weight:500;font-size:13.5px}
+.mem small{display:block;color:var(--p-mute);font-size:12px;overflow:hidden;text-overflow:ellipsis}
+.mem .keep{color:#7be39a}
+.role{background:var(--p-raise);border:1px solid var(--p-line);border-radius:7px;padding:4px 8px;font-size:12.5px;white-space:nowrap}
+.role.ed{border-color:#5b4fd6;color:#b3abff}
+.cost{font-size:12.5px;text-align:right;min-width:92px;white-space:nowrap}
+.cost.c-free{color:#7be39a}
+.cost.c-paid{color:var(--p-ink)}
+.cost.c-inc{color:var(--p-mute)}
+.inv-info{display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--p-mute)}
+.inv-info span{display:flex;gap:8px;align-items:center}
+.inv-info svg{width:15px;height:15px}
+.inv-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;background:#18191b}
+.inv-foot b{display:block;font-size:15px;font-weight:600}
+.inv-foot small{color:var(--p-mute);font-size:12px}
+.sendinv{background:var(--lime);color:var(--lime-ink);border:0;border-radius:9px;padding:10px 16px;font-weight:600;font-size:14px;font-family:var(--f-app);white-space:nowrap}
+@media (max-width:560px){.mem{grid-template-columns:auto minmax(0,1fr) auto}.mem .cost{grid-column:2 / 4;text-align:left}}
+
+/* Step 3: checkout, laid out like Meshy's hosted checkout (no third-party branding) */
+.frame.payf{background:#ffffff;color:#1a1a1a;border-color:var(--g-line)}
+.pay{flex:1;display:grid;grid-template-columns:1fr 1fr;min-height:0;overflow:auto;font-family:var(--f-guide)}
+.pay-sum{padding:34px 40px;display:flex;flex-direction:column;gap:6px}
+.pay-brand{display:flex;align-items:center;gap:10px;font-size:15px;margin-bottom:22px}
+.pay-back{color:#888}
+.pay-logo{width:30px;height:30px;border-radius:50%;background:#1d2a0c;color:var(--lime);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px}
+.pay-what{margin:0;color:#6b6b6b;font-size:15px}
+.pay-big{font-size:38px;font-weight:600;letter-spacing:-.5px}
+.pay-then{margin:0 0 18px;color:#6b6b6b;font-size:14px}
+.pay-then b{color:#1a1a1a}
+.pay-items{display:flex;flex-direction:column;gap:14px;font-size:14px}
+.pay-item{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start}
+.pay-item b{font-weight:500;display:block}
+.pay-item small{display:block;color:#7a7a7a;font-size:12.5px}
+.pay-disc::before{content:"◆ ";font-size:9px;color:#9a9a9a}
+.pay-tag{background:#16161a;color:#8f84ff;font-size:10px;border-radius:7px;padding:6px 7px;font-weight:600}
+.pay-row{display:flex;justify-content:space-between;border-top:1px solid #ececec;padding-top:12px;margin-left:46px}
+.pay-coupon{background:#efefef;border-radius:6px;padding:4px 8px;font-size:13px}
+.pay-total{font-weight:600}
+.pay-form{background:#ffffff;border-left:1px solid #efefef;padding:34px 40px;display:flex;flex-direction:column;gap:14px}
+.pay-card{border:1px solid #e6e6e6;border-radius:14px;overflow:hidden}
+.pay-line{display:flex;gap:16px;align-items:center;padding:14px 18px;border-bottom:1px solid #eeeeee;font-size:14px}
+.pay-line span{color:#6b6b6b;width:70px;flex:none}
+.pay-line b{font-weight:500;display:flex;gap:8px;align-items:center}
+.pay-visa{font-style:normal;font-weight:800;color:#1a1f71;border:1px solid #ddd;border-radius:4px;padding:1px 5px;font-size:11px}
+.pay-bill{padding:14px 18px;display:flex;flex-direction:column;gap:6px}
+.pay-bill h4{margin:0 0 4px;font-size:15px;font-weight:600}
+.pay-bill label{font-size:13px;margin-top:6px}
+.pay-in{border:1px solid #dcdcdc;border-radius:8px;padding:10px 12px;font-size:14px}
+.pay-btn{background:#1f8f4e;color:#fff;border:0;border-radius:10px;padding:13px;font-size:16px;font-weight:600;font-family:var(--f-guide)}
+.pay-fine{margin:14px 0 0;color:#7a7a7a;font-size:12px;text-align:center}
+.pay-demo{margin:0;color:#b0b0b0;font-size:11.5px;text-align:center}
+@media (max-width:900px){.pay{grid-template-columns:1fr}.pay-form{border-left:0;border-top:1px solid #efefef}}
+
+/* Step 7: summary */
+.cv-title{margin:0;font-size:28px;font-weight:600;line-height:1.25;text-wrap:balance}
+.cv{width:100%;max-width:1040px;border-collapse:separate;border-spacing:0;border:1px solid var(--g-line);border-radius:12px;overflow:hidden}
+.cv th{text-align:left;font-size:11.5px;letter-spacing:.4px;text-transform:uppercase;font-weight:600;color:var(--g-mute);padding:10px 18px;background:var(--g-soft)}
+.cv th:last-child{background:#eef5dc;color:#3c4a12}
+.cv td{vertical-align:top;padding:14px 18px;border-top:1px solid var(--g-line);width:45%}
+.cv td.cv-st{width:10%;font-weight:600;font-size:13px;color:var(--g-ink);white-space:nowrap}
+.cv th:first-child{width:10%}
+.cv td:last-child{background:#f6faea}
+.cv td b{display:block;font-size:15px;font-weight:600;margin-bottom:4px}
+.cv td:not(.cv-st){font-size:15px;line-height:1.5;color:var(--g-ink)}
+.cv-pts{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.cv td small{display:block;font-size:13.5px;color:#4f504a;line-height:1.6;max-width:62ch}
+@media (max-width:700px){.cv,.cv tbody,.cv tr,.cv td{display:block;width:auto}.cv thead{display:none}}
+.stages{display:flex;gap:10px;align-items:stretch}
+.stg{flex:1;min-width:0;border:1px solid var(--g-line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:8px;background:var(--g-card)}
+.stg>b{font-size:16px;font-weight:600;text-wrap:balance}
+.stg>p{margin:0;font-size:13.5px;color:#4a4b46;line-height:1.5}
+.stg-n{width:24px;height:24px;border-radius:50%;background:var(--g-soft);color:var(--g-mute);font-size:12px;display:flex;align-items:center;justify-content:center}
+.stg-arrow{align-self:center;color:var(--g-mute);font-size:18px}
+.stg-ppl{margin-top:auto;display:flex;align-items:center;gap:10px;padding-top:8px}
+.stg-ppl .ba-avs{margin:0}
+.stg-ppl .av{width:32px;height:32px}
+.stg-to{color:var(--g-mute)}
+.lane{display:flex;gap:10px;align-items:flex-start;background:var(--g-soft);border-radius:10px;padding:10px 12px}
+.lane b{display:block;font-size:13.5px;font-weight:600}
+.lane small{font-size:12.5px;color:var(--g-mute);line-height:1.4}
+.lane-ic{width:28px;height:28px;border-radius:8px;background:#1d2a0c;color:var(--lime);display:flex;align-items:center;justify-content:center;flex:none}
+.lane-ic svg{width:15px;height:15px}
+.stg.star{background:#1d2a0c;border-color:#1d2a0c}
+.stg.star>b{color:#eef7d8}
+.stg.star>p{color:#c8d6a6}
+.stg.star .stg-n{background:var(--lime);color:var(--lime-ink)}
+.chips{margin-top:auto;display:flex;flex-wrap:wrap;gap:6px;padding-top:8px}
+.chips span{background:#2c3a12;color:var(--lime);border-radius:7px;padding:5px 10px;font-size:12.5px;font-weight:500}
+@media (max-width:900px){.stages{flex-direction:column}.stg-arrow{transform:rotate(90deg)}}
+.ba{border:1px solid var(--g-line);border-radius:12px;overflow:hidden}
+.ba-row{display:grid;grid-template-columns:180px minmax(0,1fr) minmax(0,1.3fr);border-top:1px solid var(--g-line)}
+.ba-row:first-child{border-top:0}
+.ba-row>div{padding:12px 16px;display:flex;flex-direction:column;justify-content:center;gap:2px;font-size:14px}
+.ba-l{color:var(--g-mute);font-size:13px!important}
+.ba-b{color:#6f706a}
+.ba-a{background:#f4f9e6;color:var(--g-ink)}
+.ba-a b{font-weight:600}
+.ba-a small,.ba-b small{color:var(--g-mute);font-size:12px}
+.ba-head>div{font-size:11.5px!important;letter-spacing:.4px;text-transform:uppercase;font-weight:600;padding:8px 16px}
+.ba-head .ba-a{color:#3c4a12}
+.ba-avs{display:inline-flex;margin-bottom:4px}
+.ba-avs .av{width:26px;height:26px;border:2px solid #fff}
+.ba-avs .av+.av{margin-left:-7px}
+.ba-row:not(.ba-head)>div.ba-b,.ba-row:not(.ba-head)>div.ba-a{flex-direction:column;align-items:flex-start}
+.loop2{display:flex;align-items:stretch;gap:8px}
+.loop2 .lp-arrow{align-self:center}
+.lp2{flex:1;min-width:0;border:1px solid var(--g-line);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.lp2 b{font-size:14px;font-weight:600}
+.lp2 small{font-size:12px;color:var(--g-mute)}
+.lp2.star{background:#1d2a0c;border-color:#1d2a0c}
+.lp2.star b{color:#eef7d8}
+.lp2.star small{color:var(--lime)}
+@media (max-width:1000px){.ba-row{grid-template-columns:130px minmax(0,1fr) minmax(0,1.2fr)}.loop2{flex-wrap:wrap}.loop2 .lp-arrow{display:none}.lp2{flex:1 1 30%}}
+@media (max-width:640px){.ba-row{grid-template-columns:1fr}.ba-head{display:none}.ba-l{padding-bottom:0!important}}
+.sum{padding:26px 34px;display:flex;flex-direction:column;gap:22px;overflow:auto;width:100%}
+.sum h2{margin:0;font-size:22px;font-weight:600;text-wrap:balance}
+.sum .lede{margin:6px 0 0;color:#4a4b46;font-size:15px;max-width:62ch}
+.loop{display:flex;align-items:stretch;gap:8px}
+.lp-node{flex:1;min-width:0;border:1px solid var(--g-line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:4px;background:var(--g-card)}
+.lp-node b{font-size:15px;font-weight:600}
+.lp-node small{color:var(--g-mute);font-size:12px}
+.lp-n{width:22px;height:22px;border-radius:50%;background:var(--g-soft);color:var(--g-mute);font-size:11px;display:flex;align-items:center;justify-content:center;margin-bottom:4px}
+.lp-m{margin-top:auto;padding-top:10px;border-top:1px solid var(--g-line);font-size:13px;color:var(--g-ink);display:flex;flex-direction:column;gap:2px}
+.lp-m em{font-style:normal;font-size:11.5px;color:var(--g-mute)}
+.lp-node.star{background:#1d2a0c;border-color:#1d2a0c;color:#eef7d8}
+.lp-node.star small,.lp-node.star .lp-m em{color:#b7c98c}
+.lp-node.star .lp-m{color:var(--lime);border-color:#3c4a12}
+.lp-node.star .lp-n{background:var(--lime);color:var(--lime-ink)}
+.lp-arrow{align-self:center;color:var(--g-mute);font-size:16px}
+.lp-back{display:flex;gap:8px;align-items:center;justify-content:center;font-size:13px;color:var(--g-mute);border:1px dashed var(--g-line);border-radius:10px;padding:8px 12px;margin-top:-10px}
+.lp-back span{font-size:16px}
+.sum-lbl{display:block;font-size:11.5px;letter-spacing:.4px;text-transform:uppercase;color:var(--g-mute);margin-bottom:8px}
+.tally{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.tally div{background:var(--g-soft);border-radius:10px;padding:12px}
+.tally b{display:block;font-size:24px;font-weight:600;font-variant-numeric:tabular-nums}
+.tally small{font-size:12px;color:var(--g-mute);line-height:1.35;display:block}
+.guard{display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:13px;color:#4a4b46;border-top:1px solid var(--g-line);padding-top:14px}
+@media (max-width:1100px){.tally{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:860px){.loop{flex-direction:column}.lp-arrow{transform:rotate(90deg)}.sum{padding:22px 18px}}
+
+/* Step 6: Meshy Edit Mode */
+.frame.emf{background:#141516}
+.em{flex:1;position:relative;display:flex;flex-direction:column;min-height:0;background:radial-gradient(ellipse at 50% 42%,#2a2b2e 0%,#141516 68%)}
+.em model-viewer{flex:1;min-height:0;width:100%;margin-top:58px}
+.em-top{position:absolute;top:14px;left:14px;display:flex;gap:8px;z-index:3}
+.em-back,.em-mode{display:flex;gap:6px;align-items:center;background:#1f2022;border:1px solid var(--p-line);border-radius:9px;padding:7px 12px;font-size:13.5px}
+.em-mode svg{color:var(--lime)}
+.em-hint{position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:3;display:flex;gap:10px;align-items:center;background:#1f2022;border:1px solid var(--p-line);border-radius:10px;padding:7px 8px 7px 12px;font-size:13px;white-space:nowrap;max-width:calc(100% - 260px);overflow:hidden;text-overflow:ellipsis}
+.em-hint svg{color:var(--lime)}
+.em-got{background:#2a2b2e;border-radius:7px;padding:4px 10px}
+.sel{border-radius:46% 54% 50% 50%;background:rgba(170,215,90,.6);border:1.5px solid #f4ffd8;pointer-events:none}
+.em-tools{align-self:center;display:flex;gap:18px;align-items:center;background:#1c1d1f;border:1px solid var(--p-line);border-radius:12px;padding:8px 14px;font-size:13px;color:var(--p-mute);margin-bottom:10px;flex-wrap:wrap;justify-content:center}
+.em-tools .on{background:#2c3512;color:var(--lime);border-radius:7px;padding:4px 10px}
+.em-slider{display:inline-block;width:70px;height:3px;background:#3a3b40;border-radius:2px;vertical-align:middle;margin:0 6px}
+.em-prompt{align-self:center;width:min(820px,calc(100% - 28px));display:flex;gap:10px;background:#1c1d1f;border:1px solid var(--p-line);border-radius:14px;padding:10px;margin-bottom:14px}
+.em-thumb{width:100px;flex:none;border-radius:10px;background:#252629;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--p-mute);padding:8px}
+.em-thumb.on{color:var(--lime)}
+.em-ico svg{width:30px;height:30px}
+.em-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.em-chips{display:flex;gap:8px;flex-wrap:wrap}
+.em-sel,.em-from{display:flex;gap:6px;align-items:center;background:#252629;border:1px solid var(--p-line);border-radius:8px;padding:4px 8px;font-size:12px}
+.em-sel svg{width:14px;height:14px;color:var(--lime)}
+.em-from{border-color:#3a4a14;background:#171d0a}
+.em-from .av{width:18px;height:18px}
+.em-text{font-size:14.5px;color:var(--p-ink);line-height:1.45}
+.em-foot{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#f5c84b}
+.em-send{width:36px;height:36px;border-radius:9px;border:0;background:var(--lime);color:var(--lime-ink);display:flex;align-items:center;justify-content:center}
+.em-send.hot::after{bottom:auto;top:calc(100% + 10px)}
+.em-cube{position:absolute;right:16px;bottom:150px;width:60px;height:60px;border:1px solid #4a4b50;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--p-mute);transform:perspective(200px) rotateX(18deg) rotateY(-24deg)}
+@media (max-width:900px){.em-hint{display:none}.em-cube{display:none}.em-thumb{width:76px}}
+
+/* Step 6: comments panel in Leo's workspace */
+.rpanel.cpanel{gap:8px;overflow:auto;background:transparent;padding:0}
+.citem.hov{border-radius:10px;padding:6px;margin:-6px}
+.citem.hov:hover{background:#202124}
+.citem.is-done p{color:var(--p-mute)}
+.cacts{display:none;gap:6px;margin-top:8px;flex-wrap:wrap}
+.citem.hov:hover .cacts,.cacts.show{display:flex}
+.cact{display:flex;gap:5px;align-items:center;background:#2a2b2e;border:1px solid var(--p-line);color:var(--p-ink);border-radius:7px;padding:5px 10px;font-size:12px;font-family:var(--f-app)}
+.cact svg{width:13px;height:13px}
+.cstat{display:inline-flex;gap:4px;align-items:center;margin-top:6px;font-size:11.5px;color:var(--p-mute)}
+.cstat.ok{color:#7be39a}
+.cstat svg{width:12px;height:12px}
+.hot.tip-right::after{left:calc(100% + 8px);top:50%;bottom:auto;right:auto;transform:translateY(-50%)}
+.cact.edit{background:var(--lime);border-color:var(--lime);color:var(--lime-ink);font-weight:600}
+.rpanel.cpanel .blk{background:var(--p-panel);border-radius:12px;padding:12px 14px}
+.rpanel.cpanel .cbox{display:flex;flex-direction:column;gap:12px;flex:1}
+.toast.low{top:auto;bottom:80px}
+.frame.s6 .toast.low{bottom:auto;top:64px}
+.frame.s6 .stats{display:none}
+.teamchip span{white-space:nowrap}
+@media (max-width:1240px){.frame.s6 .rpanel.cpanel{display:flex;width:250px}.frame.s6 .lpanel{display:flex;width:200px}
+  .frame.s6 .teamchip{left:50%;right:auto;transform:translateX(-50%);font-size:12px;gap:8px}.frame.s6 .teamchip .an{display:none}
+  .frame.s6 .btool{transform:translateX(-50%) scale(.82);transform-origin:bottom center;bottom:8px}}
+@media (max-width:1020px){.frame.s6 .lpanel{display:none}}
+@media (max-width:760px){.frame.s6 .rpanel.cpanel{width:auto}.frame.s6{flex-direction:column}.frame.s6 .center{min-height:340px}}
+.tp-head{display:flex;justify-content:space-between;align-items:baseline}
+.tp-head b{font-size:14px;font-weight:600}
+.tp-head small{color:var(--p-mute);font-size:12px}
+.tlist{display:flex;flex-direction:column;gap:8px}
+.titem{display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:8px;align-items:start;background:var(--p-raise);border:1px solid var(--p-line);border-radius:10px;padding:10px;font-size:12.5px}
+.titem .av{width:24px;height:24px}
+.titem b{font-weight:500;font-size:13px}
+.titem small{color:var(--p-faint);margin-left:6px}
+.titem p{margin:3px 0 4px;color:var(--p-ink)}
+.titem.resolved p{color:var(--p-mute)}
+.tchk{width:16px;height:16px;border-radius:4px;border:1.5px solid #4a4b50;margin-top:4px;display:flex;align-items:center;justify-content:center}
+.tchk svg{width:11px;height:11px;stroke-width:3}
+.tchk.on{background:var(--lime);border-color:var(--lime);color:var(--lime-ink)}
+.tchk.ok{border-radius:50%;background:#1f3a24;border-color:#3f7a4c;color:#7be39a}
+.selall,.genbtn{width:100%;background:var(--lime);color:var(--lime-ink);border:0;border-radius:9px;padding:10px;font-weight:600;font-size:13.5px;font-family:var(--f-app);display:flex;gap:6px;align-items:center;justify-content:center}
+.editbox{border:1px solid #3a4a14;background:#171d0a;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;font-size:12.5px;color:var(--p-mute)}
+.editbox p{margin:0}
+.eb-h{display:flex;gap:6px;align-items:center;color:var(--p-ink);font-weight:600;font-size:13.5px}
+.eb-cost{display:flex;justify-content:space-between}
+.eb-cost b{color:#f5c84b;font-weight:600}
+.v2card{display:flex;gap:10px;align-items:center;background:#1f3a24;border:1px solid #3f7a4c;border-radius:10px;padding:10px 12px}
+.v2card b{display:block;color:#bff0c9;font-weight:600;font-size:13.5px}
+.v2card small{color:#8fd3a0;font-size:12px}
+.v2tag{background:var(--lime);color:var(--lime-ink);border-radius:6px;padding:3px 7px;font-weight:700;font-size:12px}
+.cpin.resolved .num{background:#3a3b3f;color:#9fa0a5}
+.cpin .num svg{width:16px;height:16px;stroke-width:2.2}
+.pinlabel i svg{width:10px;height:10px;stroke-width:2.6}
+.teamchip{position:absolute;top:12px;right:14px;z-index:3;display:flex;gap:10px;align-items:center;background:rgba(24,25,27,.95);border:1px solid var(--p-line);border-radius:9px;padding:6px 10px;font-size:12.5px}
+.teamchip span{display:flex;gap:6px;align-items:center}
+.teamchip svg{width:15px;height:15px}
+.teamchip .an{color:var(--p-ink);border-left:1px solid var(--p-line);border-right:1px solid var(--p-line);padding:0 10px}
+.teamchip .tc{color:#f5c84b}
+.teamchip .tc em{font-style:normal;color:#ff8b7a;margin-left:6px;font-weight:600}
+.teamchip .tc.drop{animation:flash 1s ease-out 1}
+@keyframes flash{0%{background:#4a3a0e}100%{background:transparent}}
+.genov{position:absolute;inset:0;z-index:10;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center}
+.gen-card{background:#1f2022;border:1px solid var(--p-line);border-radius:14px;padding:20px 24px;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:260px;font-family:var(--f-app)}
+.gen-card small{color:var(--p-mute)}
+.spin{width:28px;height:28px;border-radius:50%;border:3px solid #34353a;border-top-color:var(--lime);animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.gbar{width:100%;height:4px;background:#2c2d31;border-radius:2px;overflow:hidden;margin-top:6px}
+.gbar i{display:block;height:100%;width:0;background:var(--lime);animation:gb 1.6s linear forwards}
+@keyframes gb{to{width:100%}}
+.avpair{display:flex}
+.avpair .av{width:46px;height:46px;border:3px solid #fff}
+.avpair .av+.av{margin-left:-12px}
+@media (prefers-reduced-motion:reduce){.spin,.gbar i,.teamchip .tc.drop{animation:none}.gbar i{width:100%}}
+
+/* Step 5: reviewer join card */
+.ob-card.join{max-width:520px;min-height:0}
+.join-team{display:flex;gap:12px;align-items:center;margin-bottom:8px}
+.join-team b{display:block;font-size:15px;font-weight:600}
+.join-team small{color:#8c8d91;font-size:13px}
+.jt-logo{width:40px;height:40px;border-radius:10px;background:#28245a;color:#b3abff;display:flex;align-items:center;justify-content:center;font-weight:600}
+.join-role{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#141414;border:1px solid #2e2e2e;border-radius:12px;padding:12px 14px;margin:6px 0 10px}
+.join-role b{display:block;font-weight:500}
+.join-role small{color:#8c8d91;font-size:12.5px}
+.gbtn2{background:#2a2b2e;border:0;border-radius:12px;padding:12px;font-size:15px;color:var(--p-ink);display:flex;gap:8px;align-items:center;justify-content:center;font-family:var(--f-app);width:100%}
+.gbtn2 .g{font-weight:700;color:#4285f4}
+.ob-card.join .orline{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--p-faint);margin-top:8px}
+.ob-card.join .orline::before,.ob-card.join .orline::after{content:"";flex:1;height:1px;background:#2f3034}
+
+/* Step 3: Meshy team onboarding */
+.frame.onb{background:#0e0e0e}
+.ob{flex:1;display:flex;gap:22px;align-items:flex-start;justify-content:center;padding:32px 22px;overflow:auto;font-family:var(--f-app)}
+.ob-card{flex:1;max-width:600px;background:#1f1f1f;border:1px solid #2c2c2c;border-radius:22px;display:flex;flex-direction:column;min-height:440px}
+.ob-body{padding:26px 28px;display:flex;flex-direction:column;gap:10px;flex:1}
+.ob-body h2{margin:0;font-size:26px;font-weight:600}
+.ob-sub{margin:0 0 6px;color:#8c8d91;font-size:14.5px}
+.ob-lbl{display:block;font-size:14px;margin-top:8px;margin-bottom:6px}
+.ob-inp{background:#141414;border:1px solid #2e2e2e;border-radius:12px;padding:11px 14px;font-size:14px;color:var(--p-ink);display:flex;gap:8px;align-items:center;flex-wrap:wrap;width:100%;text-align:left;font-family:var(--f-app)}
+.ob-inp svg{width:16px;height:16px;color:var(--lime)}
+.ob-email{color:#6c6d72;cursor:text}
+.ob-email .add{margin-left:auto;color:var(--p-ink);display:flex;gap:4px;align-items:center}
+.ob-email.hot{overflow:visible}
+.ob-link{display:flex;gap:8px}
+.ob-link .ob-inp{flex:1;min-width:0;white-space:nowrap;overflow:hidden;flex-wrap:nowrap}
+.ob-ghost{background:#2a2a2a;border-radius:12px;padding:11px 14px;font-size:14px;white-space:nowrap}
+.ob-warn{margin-top:8px;background:#2a1f12;border:1px solid #6b4a1c;color:#f0a54a;border-radius:12px;padding:10px 14px;font-size:13px}
+.ob-warn b{font-weight:600}
+.ob-mems{border:1px solid #2c2c2c;border-radius:12px;padding:2px 12px;margin-top:4px}
+.ob-bill{display:flex;gap:12px;align-items:flex-start;background:#121212;border:1px solid #2c2c2c;border-radius:12px;padding:12px 14px;font-size:13px;color:#8c8d91;margin-top:6px}
+.ob-bill b{color:var(--p-ink);font-weight:600}
+.ob-billic{width:34px;height:34px;border-radius:9px;background:#1f2a0e;color:var(--lime);display:flex;align-items:center;justify-content:center;flex:none}
+.ob-foot{border-top:1px solid #2c2c2c;padding:16px 28px;display:flex;gap:12px}
+.ob-foot.two>*{flex:1}
+.ob-cta{flex:1;background:linear-gradient(90deg,#dff76a,#c9f55a);color:#14170a;border:0;border-radius:12px;padding:13px;font-weight:600;font-size:16px;font-family:var(--f-app);display:flex;gap:8px;align-items:center;justify-content:center}
+.ob-cta.muted{background:#3c4a12;color:#a9b77a}
+.ob-cta svg{width:18px;height:18px}
+.ob-sec{background:#2a2a2a;color:var(--p-ink);border:0;border-radius:12px;padding:13px;font-size:15px;font-family:var(--f-app)}
+.ob-back{font-size:14px}
+.ob-done{display:flex;gap:12px;align-items:center;background:#141414;border-radius:14px;padding:14px 16px;font-size:14.5px;color:#9a9ba0}
+.ob-done svg{width:22px;height:22px;color:var(--lime);border:1.6px solid var(--lime);border-radius:50%;padding:3px;flex:none}
+.ob-done b{display:block;color:var(--p-ink);font-weight:500;font-size:16px}
+.ob-done small{font-size:13px}
+.ob-rail{width:250px;flex:none;background:#1f1f1f;border:1px solid #2c2c2c;border-radius:22px;padding:22px}
+.ob-rail h3{margin:0 0 16px;font-size:20px;font-weight:600}
+.ob-st{display:flex;gap:12px;align-items:center;color:#6c6d72;font-size:15px;position:relative;padding:10px 0}
+.ob-st .dot{width:24px;height:24px;border-radius:50%;border:1.6px solid #4a4a4a;display:flex;align-items:center;justify-content:center;flex:none}
+.ob-st.on{color:var(--p-ink);font-weight:500}
+.ob-st.on .dot{border-color:var(--lime)}
+.ob-st.on .dot::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--lime)}
+.ob-st.done{color:#9a9ba0}
+.ob-st.done .dot{background:var(--lime);border-color:var(--lime);color:var(--lime-ink)}
+.ob-st.done .dot svg{width:14px;height:14px;stroke-width:2.6}
+@media (max-width:1000px){.ob-rail{display:none}}
+
+/* Upgrade Your Plan modal, modeled on Meshy's */
+.upwrap{position:absolute;inset:0;background:rgba(0,0,0,.6);z-index:10;padding:10px;display:flex}
+.up{flex:1;background:#0f0f10;border:1px solid #232427;border-radius:16px;overflow:auto;padding:0 22px 22px;font-family:var(--f-app);color:var(--p-ink)}
+.up-banner{margin:10px -12px 0;background:linear-gradient(90deg,#f5e36a,#d8f56a);color:#14170a;border-radius:10px;padding:10px 14px;text-align:center;display:flex;flex-direction:column}
+.up-banner b{font-size:16px;font-weight:600}
+.up-banner span{font-size:13.5px}
+.up-h{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:18px 0 14px;border-bottom:1px solid #26272a}
+.up-h h2{margin:0;font-size:clamp(20px,2.2vw,28px);font-weight:500;white-space:nowrap}
+.up-tabs{display:flex;gap:44px;font-size:15px;color:var(--p-mute)}
+.up-tabs .on{color:var(--p-ink);font-weight:600}
+.up-x{justify-self:end;width:32px;height:32px;border:0;background:transparent;color:var(--p-ink);display:flex;align-items:center;justify-content:center;border-radius:8px}
+.up-x:hover{background:#1f2023}
+.up-ctl{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:16px 0}
+.bill{grid-column:2;display:flex;background:#141416;border:1px solid #2a2b2f;border-radius:22px;padding:3px}
+.bill span{padding:7px 40px;border-radius:20px;font-size:14.5px;color:var(--p-ink);display:flex;gap:8px;align-items:center}
+.bill .on{background:var(--lime);color:var(--lime-ink);font-weight:600}
+.bill i{font-style:normal;font-size:10.5px;background:#3d2f0e;color:#f0b44a;border-radius:4px;padding:1px 6px}
+.up-right{justify-self:end;display:flex;gap:6px;font-size:12.5px}
+.up-right span{background:#1c1d20;border-radius:8px;padding:6px 10px;white-space:nowrap}
+.plans{display:flex;gap:16px;justify-content:center;align-items:flex-start}
+.pc{flex:1 1 0;min-width:0;max-width:400px;background:#151517;border:1px solid #2a2b2f;border-radius:16px;position:relative;margin-top:26px}
+.pc.studio{border-color:#5b4fd6}
+.bv{position:absolute;top:-27px;left:-1px;right:-1px;height:44px;background:#28245a;border:1px solid #5b4fd6;border-bottom:0;border-radius:16px 16px 0 0;text-align:center;font-size:12px;color:#8f84ff;padding-top:5px;z-index:0}
+.pc-top{position:relative;z-index:1;background:#1e1e21;border-radius:15px;padding:16px 18px;display:flex;flex-direction:column;gap:2px}
+.pc-title{display:flex;justify-content:space-between;align-items:center}
+.nm{font-size:22px;font-weight:500;color:#8f84ff}
+.ent .nm{color:#e9c17d}
+.off{background:#f7d86b;color:#3b2c00;font-size:11.5px;font-weight:600;border-radius:5px;padding:2px 7px}
+.sub{margin:4px 0 14px;font-size:12px;color:var(--p-mute)}
+.pr{display:flex;align-items:baseline;gap:8px}
+.pr b{font-size:38px;font-weight:500;line-height:1.1}
+.pr s{color:var(--p-mute);font-size:15px}
+.pr span{color:var(--p-mute);font-size:15px}
+.fine{margin:4px 0 12px;font-size:10.5px;color:var(--p-mute)}
+.fine b{color:var(--p-ink);font-weight:500}
+.up .subscribe{width:100%;background:var(--lime);color:var(--lime-ink);border:0;border-radius:9px;padding:11px;font-weight:600;font-size:14px;font-family:var(--f-app)}
+.contact{width:100%;background:#2a2b2f;color:var(--p-ink);border:0;border-radius:9px;padding:11px;font-size:14px;font-family:var(--f-app)}
+.pk{margin-top:14px;padding-top:4px}
+.pk-row{display:flex;justify-content:space-between;align-items:center;font-size:13px}
+.mult{display:flex;background:#141416;border-radius:7px;padding:2px;font-size:11.5px}
+.mult i{font-style:normal;padding:3px 10px;color:var(--p-faint);cursor:pointer}
+.mult .on{background:#2c3512;color:var(--lime);border-radius:5px}
+.cred{margin:6px 0 0;color:#f5c84b;font-size:14px;font-weight:500}
+.fine2{margin:2px 0 0;font-size:12px;color:var(--p-mute)}
+.seats{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid #2a2b2f;font-size:13px}
+.step{display:flex;gap:4px;align-items:center}
+.step i,.step button{font-style:normal;width:22px;height:22px;border-radius:5px;background:#26272a;border:0;color:var(--p-ink);display:flex;align-items:center;justify-content:center;font-size:12px;padding:0}
+.step button:hover{background:#34353a}
+.step button:disabled{opacity:.35;cursor:default}
+.step .n{width:34px;background:#141416;border:1px solid #2a2b2f}
+.pc-body{padding:16px 18px 18px;font-size:12.5px}
+.pc-body h4{margin:6px 0 10px;font-size:14px;font-weight:500;display:flex;gap:8px;align-items:center}
+.pc-body h4 svg{width:15px;height:15px}
+.pc-body ul{list-style:none;margin:0 0 14px;padding:0;display:flex;flex-direction:column;gap:7px;color:var(--p-mute)}
+.pc-body li{display:flex;gap:8px;align-items:center}
+.pc-body li svg{width:13px;height:13px;color:var(--p-faint)}
+.pc-body li b{color:var(--p-ink);font-weight:500}
+.nb{font-size:9.5px;font-weight:600;background:#4a3311;color:#f0a54a;border-radius:4px;padding:1px 6px}
+.pc-body li.prop{background:#1a2109;border:1px solid #3a4a14;border-radius:7px;padding:5px 7px;margin:0 -7px;color:var(--p-ink)}
+.pc-body li.prop svg{color:var(--lime)}
+.cust{margin:0 0 12px;color:#e9c17d;font-size:14px;font-weight:500}
+.up-note{text-align:center;color:var(--p-mute);font-size:12px;margin:14px 0 0}
+@media (max-width:640px){.plans{flex-direction:column;align-items:stretch}.pc{max-width:none}}
+@media (max-width:860px){.up-h{grid-template-columns:1fr auto}.up-tabs{display:none}.up-ctl{grid-template-columns:1fr}.bill{grid-column:1;justify-self:center}.up-right{display:none}.bill span{padding:7px 18px}}
+
+/* focus mode */
+.frame.focus .snav,.frame.focus .author,.frame.focus .meta{visibility:hidden}
+.frame.focus .lpanel,.frame.focus .rpanel,.frame.focus .stats,.frame.focus .reuse{display:none}
+.frame.focus .rail{opacity:.15}
+.frame.focus .dlg .sec.extra,.frame.focus .dlg .promo{display:none}
+
+/* step 0 */
+.intro-wrap{padding:30px 34px;display:flex;flex-direction:column;gap:20px;max-width:880px;overflow:auto}
+.intro-wrap h2{margin:0;font-size:22px;font-weight:600;text-wrap:balance}
+.intro-wrap .lede{margin:6px 0 0;color:#4a4b46;font-size:15px;max-width:812px}
+.steps li:first-child .n{min-width:10px;width:10px;height:10px;padding:0;margin:0 5px}
+#beginBtn.hot::after{display:none}
+.cbox h4{display:flex;align-items:center;justify-content:space-between}
+.resall{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;border:1px solid #3a3b38;background:#2a2b28;color:#e8e8e3}
+.resall .i{width:13px;height:13px}
+.trans .endnote{margin:-8px 0 16px;font-weight:600;color:var(--g-ink)}
+.steps li:last-child .n{padding:0 7px}
+.fwrap{flex:1;min-height:0;min-width:0;display:flex;position:relative}
+.fwrap>.frame{min-width:0;width:100%;z-index:0}
+.flabel{position:absolute;top:-9px;left:18px;z-index:50;background:var(--g-ink);color:#fff;font:600 10px/1 var(--f-guide);letter-spacing:.8px;text-transform:uppercase;padding:5px 9px;border-radius:999px;pointer-events:none}
+.fwrap:has(.frame.intro) .flabel{display:none}
+/* orientation tour after Begin demo */
+.tour{position:fixed;inset:0;z-index:1000}
+.tour .spot{position:fixed;border-radius:14px;box-shadow:0 0 0 9999px rgba(20,21,19,.62);outline:2px solid var(--hot);outline-offset:2px;transition:all .35s cubic-bezier(.45,0,.55,1);pointer-events:none}
+.tour .tcard{position:fixed;width:300px;background:#fff;color:var(--g-ink);border-radius:12px;padding:16px 18px;box-shadow:0 12px 32px rgba(0,0,0,.25);font-family:var(--f-guide);transition:all .35s cubic-bezier(.45,0,.55,1)}
+.tour .tcard small{display:block;font-size:11px;color:var(--g-mute);letter-spacing:.3px;margin-bottom:4px}
+.tour .tcard b{display:block;font-size:15px;margin-bottom:6px}
+.tour .tcard p{margin:0 0 14px;font-size:13px;line-height:1.5;color:#4a4b46}
+.tour .tcard .trow{display:flex;justify-content:space-between;align-items:center}
+.tour .tcard .tskip{background:none;border:0;color:var(--g-mute);font-size:12px;padding:4px 0}
+.tour .tcard .tgo{background:var(--g-ink);color:#fff;border:0;border-radius:8px;padding:8px 14px;font-weight:500;font-size:13px}
+body.touring .frame .hot{animation:none!important;outline-color:transparent!important;--hc:transparent}
+body.touring .frame .hot::after{display:none}
+.team-h{margin:4px 0 -8px;font-size:13px;font-weight:600;color:var(--g-mute);text-transform:uppercase;letter-spacing:.6px}
+.intro-wrap .lede b{color:var(--g-ink);font-weight:600}
+.trial-seats{font-size:12px;color:#c9c9c2;white-space:nowrap}
+.crd-big{font-size:28px;font-weight:600;margin:6px 0 4px;color:var(--p-ink)}
+.crd-big.out{color:#ff8b7a}.crd-big span{font-size:13px;color:var(--p-mute);font-weight:400}
+.upg7{background:#fff;color:var(--g-ink);font-family:var(--f-guide);border-radius:14px;padding:22px 24px;width:min(420px,100%);box-shadow:0 16px 40px rgba(0,0,0,.35)}
+.u7-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.u7-top b{font-size:17px}
+.u7-x{color:#9a9b95}.u7-x .i{width:16px;height:16px}
+.u7-rows>div{display:flex;justify-content:space-between;padding:9px 0;border-top:1px solid #eeeeea;font-size:13.5px}
+.u7-rows span{color:var(--g-mute)}.u7-rows b{font-weight:500}
+.u7-rows .u7-tot b{font-weight:700;font-size:15px}.u7-rows .u7-tot span{color:var(--g-ink);font-weight:600}
+.u7-fine{font-size:12px;color:var(--g-mute);margin:10px 0 14px;line-height:1.5}
+.u7-btn{width:100%;background:#1f8f4e;color:#fff;border:0;border-radius:9px;padding:12px;font-weight:600;font-size:15px}
+.u7-demo{font-size:11px;color:#a5a6a0;text-align:center;margin:30px 0 0}
+.tiermenu{position:absolute;left:72px;bottom:16px;z-index:12;width:250px;background:#1c1d1f;border:1px solid var(--p-line);border-radius:12px;color:var(--p-ink);font-size:13px;box-shadow:0 12px 30px rgba(0,0,0,.45);overflow:hidden}
+.tm-h{display:flex;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--p-line);font-weight:600}
+.tm-h b{color:#f5c84b}
+.tm-row{display:flex;justify-content:space-between;align-items:center;padding:10px 16px}
+.tm-row small{display:block;color:var(--p-mute);font-size:11px}
+.tm-row b{color:#f5c84b;font-weight:600}.tm-row b.out{color:#ff8b7a}
+.tm-up{margin:6px 12px 12px;background:#26272a;border-radius:10px;padding:12px}
+.tm-up p{margin:0 0 10px;color:var(--p-mute);font-size:12.5px}
+.tm-up button{width:100%;display:flex;align-items:center;justify-content:center;gap:6px;background:#f2c94c;color:#2b2100;border:0;border-radius:8px;padding:8px;font-weight:600}
+.tm-up button .i{width:14px;height:14px}
+.tm-foot{border-top:1px solid var(--p-line);padding:12px 16px;color:var(--p-mute)}
+.rail .topup.hot{outline-offset:2px}
+.rail .topup.upg{background:#f2c94c;color:#2b2100}
+.pay-big small{font-size:14px;font-weight:400;color:#6b6b6b}
+.begin-row{display:flex;align-items:center;gap:14px}
+.begin-tip{font-size:13px;color:var(--hot);font-weight:500}
+.start.big{font-size:16px;padding:14px 28px;border-radius:10px;align-self:flex-start}
+.people{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.pcard{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--g-line);border-radius:12px;padding:14px}
+.pcard .av{width:48px;height:48px}
+.pcard b{display:block;font-weight:600}
+.pcard p{margin:4px 0 0;font-size:13px;color:#4a4b46}
+.flag{display:inline-block;margin-top:8px;font-size:11px;padding:2px 8px;border-radius:6px;background:var(--g-soft);color:#5f605a}
+.today{background:var(--g-soft);border-radius:12px;padding:14px 16px;font-size:14px;color:#3d3e3a}
+.today b{display:block;font-size:12px;color:var(--g-mute);font-weight:500;margin-bottom:4px}
+#cardCta:empty{display:none}
+#cardCta .start{margin-top:2px}
+@media (max-width:900px){.stepbar{flex-wrap:wrap}.stepbar .sb-mid{order:-1;flex-basis:100%}}
+.start{align-self:flex-start;background:var(--g-ink);color:#fff;border:0;border-radius:8px;padding:10px 18px;font-weight:500}
+.start.hot::after{bottom:auto;top:calc(100% + 10px)}
+#next.hot::after{display:none}
+.soon{flex:1;display:flex;align-items:center;justify-content:center;color:var(--p-mute);font-size:14px;text-align:center;padding:24px}
+
+@media (max-width:1240px){.rpanel{display:none}}
+@media (max-width:1020px){.lpanel{display:none}}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr}
+  .guide{border-right:0;border-bottom:1px solid var(--g-line)}
+  .steps{flex-direction:row;overflow-x:auto}
+  .steps li span.l{display:none}
+  .steps li::before,.steps li::after{display:none}
+  .steps li .trk{width:auto}
+  .main{padding:14px 16px;height:auto;position:static}
+  .guide{height:auto;position:static;overflow:visible}
+  .fwrap{flex:none}
+  .frame{min-height:520px;flex:1 1 auto}
+  .rail{display:none}
+  .stats{display:none}
+  .people{grid-template-columns:1fr}
+  .intro-wrap{padding:22px 18px}
+}
+</style>
+
+<div class="app">
+  <aside class="guide">
+    <div class="brand">Team Review in Meshy Studio</div>
+    <ol class="steps" id="steps"></ol>
+  </aside>
+
+  <main class="main">
+    <div class="stepbar" id="stepbar">
+      <div class="sb-mid" id="guideCard">
+        <div class="sb-top"><div class="av" id="av"></div>
+          <div class="sb-txt"><div class="sb-name"><b id="name"></b><span id="role"></span></div><p class="goal-l" id="goal"></p></div></div>
+        <div class="bwin" id="bwin">
+          <div class="beat1" id="beats"></div>
+          <button id="prev">← Back</button>
+          <button id="next" class="primary">Next →</button>
+        </div>
+        <p class="why" id="why"></p><div id="tag"></div><div id="cardCta"></div>
+      </div>
+    </div>
+    <div class="fwrap"><span class="flabel">Prototype</span><div class="frame" id="frame"></div></div>
+  </main>
+</div>
+
+<script>
+const ICON = {
+  crown:'<path d="M4 17l-1-10 5 4 4-6 4 6 5-4-1 10z"/>',
+  chat:'<path d="M4 5h16v11H9l-5 4z"/>',
+  image:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/>',
+  cube:'<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9zM12 12l8-4.5M12 12v9M12 12L4 7.5"/>',
+  print:'<path d="M7 9V3h10v6M6 17H4v-7h16v7h-2M7 14h10v7H7z"/>',
+  run:'<circle cx="14" cy="4.5" r="1.8"/><path d="M7 21l3-6 3 2v4M10 15l1.5-5 3.5 3 3-1M11.5 10L7 11.5"/>',
+  grid:'<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>',
+  share:'<path d="M12 15V4M7.5 8.5L12 4l4.5 4.5M5 13v7h14v-7"/>',
+  download:'<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 20h14"/>',
+  search:'<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/>',
+  x:'<path d="M6 6l12 12M18 6L6 18"/>',
+  link:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+  send:'<path d="M21 3L3 10.5l7 2.5 2.5 7zM10 13L21 3"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  texture:'<path d="M4 20L20 4M4 14L14 4M10 20L20 10"/>',
+  wand:'<path d="M5 19L15 9M14 4v3M19 9h-3M17.5 5.5l-2 2"/>',
+  monitor:'<rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6"/>',
+  globe:'<circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4c2.5 3 2.5 13 0 16M12 4c-2.5 3-2.5 13 0 16"/>',
+  rig:'<circle cx="12" cy="5" r="2"/><path d="M12 7v7M8 10h8M9 21l3-7 3 7"/>',
+  users:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M16 5.5a3 3 0 0 1 0 5.5M18 14c2 .8 3 3 3 6"/>',
+  lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  move:'<path d="M4 12h14M14 7l5 5-5 5"/>',
+  card:'<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/>',
+  bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 20h4"/>',
+  trash:'<path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13M10 11v6M14 11v6"/>'
+};
+const MODEL_SRC = (()=>{
+  try{
+    if(window.MODEL_B64){
+      const bin=atob(window.MODEL_B64), u=new Uint8Array(bin.length);
+      for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i);
+      return URL.createObjectURL(new Blob([u],{type:"model/gltf-binary"}));
+    }
+  }catch(e){}
+  return "assets/knight_v1.glb";
+})();
+/* One generation per comment: v2 = horns removed, v3 = + swirly mane, v4 = + thicker stirrup.
+   Until a version's file arrives, the previous one stands in (set its flag to true once the file is in assets/). */
+const HAS_VERSION = {2:true, 3:true, 4:true};
+const MODEL_SRCS = {1:MODEL_SRC};
+for(const v of [2,3,4]){
+  let src = null;
+  try{
+    const b64 = window["MODEL_V"+v+"_B64"];
+    if(b64){ const bin=atob(b64), u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i);
+      src = URL.createObjectURL(new Blob([u],{type:"model/gltf-binary"})); }
+  }catch(e){}
+  MODEL_SRCS[v] = src || (HAS_VERSION[v] ? `assets/knight_v${v}.glb` : MODEL_SRCS[v-1]);
+}
+const ic = (n, cls="") => `<svg class="i ${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICON[n]}</svg>`;
+
+const PEOPLE = {
+  mia:  {name:"Mia",  title:"Art lead", role:"Art lead", bg:"#dff4ec", skin:"#f1c7a5", hair:"#3b2a20", shirt:"#1d9e75", style:"long",
+         bio:"Runs the art team. She sets the direction, approves every model, and decides which tools the team pays for. She has a free Meshy account."},
+  leo:  {name:"Leo",  title:"3D artist", role:"3D artist", bg:"#ece7ff", skin:"#e8b48f", hair:"#1f1a17", shirt:"#534ab7", style:"short",
+         bio:"Reports to Mia. He already pays for Meshy on his own and is building the knight model."},
+  sam:  {name:"Sam",  title:"3D artist", role:"3D artist", bg:"#e6eefc", skin:"#c98e63", hair:"#6b3f22", shirt:"#378add", style:"curly",
+         bio:"Reports to Mia and works alongside Leo on other pieces in the same set. He has a free Meshy account."},
+  alex: {name:"Alex", title:"Production engineer", role:"Production engineer", bg:"#fdeee3", skin:"#f3d2b8", hair:"#b5652b", shirt:"#d85a30", style:"side",
+         bio:"Works with the factory. He checks whether each model can actually be manufactured before it ships."},
+  none: {name:"Summary", role:"What this flow drives", bg:"#eceae4"},
+  intro:{name:"Scenario", role:"Ironleaf Games", bg:"#eceae4"}
+};
+
+function avatar(key){
+  const p=PEOPLE[key];
+  if(key==="intro") return `<svg viewBox="0 0 40 40"><rect width="40" height="40" fill="${p.bg}"/><g fill="#6d6c67"><circle cx="15" cy="16" r="3.4"/><circle cx="25" cy="16" r="3.4"/><path d="M8.5 28c.6-4 3.4-6 6.5-6s5.9 2 6.5 6zM18.5 28c.6-4 3.4-6 6.5-6s5.9 2 6.5 6z"/></g></svg>`;
+  if(key==="none") return `<svg viewBox="0 0 40 40"><rect width="40" height="40" fill="${p.bg}"/><path d="M12 26l6-6 4 4 7-8" stroke="#6d6c67" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const hair={
+    long:`<path d="M10 20c0-8 4.5-12.5 10-12.5S30 12 30 20v10h-4V19c-3-1-8-3-10-6-1 3-2 5-2 6v11h-4z" fill="${p.hair}"/>`,
+    short:`<path d="M12.5 17c0-6 3.5-9 7.5-9s7.5 3 7.5 9c-2-3-5-4-7.5-4s-5.5 1-7.5 4z" fill="${p.hair}"/>`,
+    curly:`<g fill="${p.hair}"><circle cx="14" cy="13" r="3.6"/><circle cx="18.5" cy="10.5" r="3.8"/><circle cx="23" cy="10.8" r="3.6"/><circle cx="26.5" cy="14" r="3.4"/><circle cx="13" cy="17" r="2.6"/><circle cx="27" cy="17.5" r="2.6"/></g>`,
+    side:`<path d="M12.5 18c-.5-6.5 3.5-10 8-10 4 0 7.5 3 7 8.5-3-4-9-6-15 1.5z" fill="${p.hair}"/>`
+  }[p.style];
+  return `<svg viewBox="0 0 40 40" aria-hidden="true">
+    <rect width="40" height="40" fill="${p.bg}"/>
+    ${p.style==="long"?hair:""}
+    <path d="M7 40c1-7 6.5-10.5 13-10.5S32 33 33 40z" fill="${p.shirt}"/>
+    <rect x="17.5" y="24" width="5" height="6" rx="2" fill="${p.skin}"/>
+    <ellipse cx="20" cy="18.5" rx="7" ry="7.8" fill="${p.skin}"/>
+    ${p.style!=="long"?hair:`<path d="M13 17c2-4 5-6 7-6s5 2 7 6c-3-2-11-2-14 0z" fill="${p.hair}"/>`}
+    <circle cx="17.3" cy="19.5" r=".9" fill="#2a2522"/><circle cx="22.7" cy="19.5" r=".9" fill="#2a2522"/>
+    <path d="M18 22.6c1.2.9 2.8.9 4 0" stroke="#9a5a45" stroke-width=".9" fill="none" stroke-linecap="round"/>
+  </svg>`;
+}
+
+/* Each step: a short story line and the small actions inside it (one per Next click) */
+const STEPS = [
+  {title:"Scenario", who:"intro",
+   goal:"Ironleaf Games is a small tabletop miniatures studio. Four people are turning concept art for a knight piece into a 3D model that can be manufactured.",
+   beats:[["intro","Leo and Sam build the 3D models, Mia approves them, and Alex checks that each one can be manufactured."]]},
+  {title:"Leo shares the model", who:"leo",
+   goal:"Leo is happy with his first version of the knight. Before it goes to production, Mia (art lead) has to approve it, so he shares the model with her.",
+   beats:[["leo","Clicks the Share button below his 3D model","Workspace"],["leo","Enters Mia's email address","Share dialog"],["leo","Clicks Send to share the model link","Share dialog"],["leo","Sees a confirmation that the link was sent to Mia","Workspace"]]},
+  {title:"Mia starts a Studio trial", who:"mia",
+   goal:"Mia opens the model Leo (3D artist) shared and spots a new feature called Comment. She sees it could make the team's feedback clearer and faster, so she wants to try it. Studio has a 7-day free trial, so she starts one to try it with the team.",
+   beats:[["mia","Opens Leo's share email","Email inbox"],["mia","Notices the new Comment feature and clicks the model to try it","Shared model page"],["mia","Sees Comment comes with Studio and starts the 7-day free trial","Upgrade plan"],["mia","Adds her card and starts the trial, paying $0 today","Checkout"]]},
+  {title:"Mia sets up the team", who:"mia", role:"Art lead, Studio admin",
+   goal:"Mia brings Leo and Sam (3D artists) and Alex (production engineer) into one Studio workspace, so the whole review chain happens in one place.",
+   beats:[["mia","Names the team Ironleaf Games","Name your team"],["mia","Adds Leo, Sam, and Alex by email","Invite your team"],["mia","Checks each role and the trial seats, then sends","Invite your team"],["mia","Sees the shared workspace is ready","You're all set"]]},
+  {title:"Mia leaves feedback", who:"mia", role:"Art lead, Studio admin",
+   goal:"Mia pins her feedback directly on the 3D model instead of circling screenshots, so Leo (3D artist) knows exactly what to change.",
+   beats:[["mia","Clicks the horns on the helmet","Shared model page"],["mia","Posts: remove the horns","Shared model page"],["mia","Clicks the tufts on the back of the neck","Shared model page"],["mia","Posts: give the horse a swirly, elegant mane","Shared model page"],["none","Leo, Sam, and Alex get notified","Shared model page"]]},
+  {title:"Alex reviews", who:"alex",
+   goal:"Alex, the production engineer, isn't on Meshy yet. An invite from Mia (art lead) brings him in as a free reviewer, and within a minute he leaves his first comment on the model.",
+   beats:[["alex","Gets Mia's invite and accepts it","Email inbox"],["alex","Joins as a free reviewer, no seat needed","Join Ironleaf Games"],["alex","Reads Mia's comments and clicks the stirrup","Shared model page"],["alex","Posts: the stirrup is too thin and will break during casting","Shared model page"],["leo","Gets notified of three new comments","Shared model page"]]},
+  {title:"Leo edits from the comments", who:"leo", role:"3D artist, Studio editor",
+   goal:"Leo joins Ironleaf Games as an editor, then works through the comments from Mia (art lead) and Alex (production engineer). Each comment opens Edit Mode with the comment already in the prompt, so every comment becomes one generation, paid from the team's credits. When he's happy with the result, he resolves all of them in one click.",
+   beats:[["leo","Joins the team and opens the three new comments","Team workspace"],["leo","Edits the horns from Mia's comment","Edit Mode"],["leo","Gets v2, then edits from the other two comments the same way","Team workspace"],["leo","Gets v4 with all three changes and clicks Resolve all","Team workspace"],["x","Mia and Alex are notified, and this round of review is finished","Team workspace"]]},
+  {title:"Mia upgrades the team", who:"mia", role:"Art lead, Studio admin",
+   goal:"A few days later, the team has used all 2,000 trial credits turning comments into new versions. To keep working, Mia upgrades the team to paid Studio.",
+   beats:[["mia","Sees the team is out of trial credits and clicks Upgrade","Team workspace"],["mia","Checks the team's plan and clicks Upgrade","Credits menu"],["mia","Picks the package and seats for Studio","Upgrade plan"],["mia","Pays and subscribes","Checkout"],["none","Ironleaf Games is now a paid Studio team","Team workspace"]]},
+  {title:"What this drives", who:"none",
+   goal:"Team review turns Meshy from one artist's tool into the team's pipeline.",
+   beats:[["none","The team joins, every comment becomes an edit, and the assets, process and decisions stay in Meshy."]]}
+];
+
+const state = {step:0, sub:0, focus:false};
+const $ = id => document.getElementById(id);
+let built = null;
+
+function go(i){ if(i<0||i>=STEPS.length) return; state.step=i; state.sub=0; render(); }
+function adv(){ state.sub++; render(); }
+
+function renderGuide(){
+  $("steps").innerHTML = STEPS.map((s,i)=>
+    `<li class="${i===state.step?'on':i<state.step?'done':''}" data-i="${i}"><span class="trk"><span class="n"><span class="num">${i===0?'':i<STEPS.length-1?i:'Summary'}</span><span class="lab">${i===0?'':i<STEPS.length-1?'Step '+i:'Summary'}</span></span></span><span class="l">${s.title}</span></li>`).join("");
+  $("steps").querySelectorAll("li").forEach(li=>li.onclick=()=>go(+li.dataset.i));
+  const s=STEPS[state.step], p=PEOPLE[s.who];
+  $("av").innerHTML=avatar(s.who);
+  const role = s.role || p.role;
+  $("name").textContent=p.name; $("role").textContent=role;
+  $("goal").textContent=s.goal;
+  const cur=Math.min(state.sub, s.beats.length-1);
+  { const [w,txt,scr]=s.beats[cur];
+    const name = s.beats.length>1 && PEOPLE[w] && w!=="intro" && w!=="none" ? `${PEOPLE[w].name} ` : "";
+    const t = name && /^[A-Z][a-z]/.test(txt) ? txt[0].toLowerCase()+txt.slice(1) : txt;
+    $("beats").innerHTML = `${scr?`<span class="scr">${scr}</span>`:""}<span class="txt">${name}${t}</span>`;
+    $("beats").classList.toggle("plain", s.beats.length<2); }
+  $("why").innerHTML = "";
+  $("tag").innerHTML = s.tag?`<span class="tag">${s.tag}</span>`:"";
+  $("cardCta").innerHTML = "";
+  const last = state.step===STEPS.length-1 && cur===s.beats.length-1;
+  $("prev").disabled = state.step===0 && state.sub===0;
+  $("next").textContent = last ? "Restart" : state.step===0 ? "Begin demo →" : "Next →";
+  $("next").classList.toggle("hot", state.step===0);
+
+  const [bw,bt,bs] = s.beats[cur];
+  const bname = PEOPLE[bw] && bw!=="intro" && bw!=="none" ? `<b>${PEOPLE[bw].name}</b> · ` : "";
+
+  $("guideCard").hidden = state.step===STEPS.length-1;   /* the summary speaks for itself */
+  $("stepbar").hidden = state.step===STEPS.length-1 || state.step===0;
+  $("prev").hidden = state.step===0;   /* the intro moves on with Begin demo */   /* intro and summary have their own buttons */          /* the intro has no small steps; Start as Leo moves on */
+}
+
+
+/* Orientation: walk through the three areas before the first action */
+const TOUR = [
+  {el:()=>document.querySelector("aside.guide"), side:"right", k:"1 of 3", t:"Steps", p:"The big steps of the story. The current one is highlighted, and you can jump to any step here."},
+  {el:()=>$("stepbar"), side:"below", k:"2 of 3", t:"Who and what", p:"Who you are playing, what they're doing, and the action happening right now. Back and Next are here if you need them."},
+  {el:()=>document.querySelector(".fwrap"), side:"center", k:"3 of 3", t:"Prototype", p:"Everything in this area is the Meshy prototype. Click the item with the blue outline to move the story forward."}
+];
+function startTour(){
+  document.body.classList.add("touring");
+  const t=document.createElement("div"); t.className="tour"; t.id="tour";
+  t.innerHTML=`<div class="spot" id="tspot"></div><div class="tcard" id="tcard"></div>`;
+  document.body.appendChild(t);
+  let i=0;
+  const end=()=>{ t.remove(); document.body.classList.remove("touring"); window.removeEventListener("resize",show); };
+  function show(){
+    const st=TOUR[i], r=st.el().getBoundingClientRect(), sp=$("tspot"), c=$("tcard");
+    Object.assign(sp.style,{left:r.left+"px",top:r.top+"px",width:r.width+"px",height:r.height+"px"});
+    c.innerHTML=`<small>${st.k}</small><b>${st.t}</b><p>${st.p}</p><div class="trow"><button class="tskip" id="tskip">${i<TOUR.length-1?"Skip":""}</button><button class="tgo" id="tgo">${i<TOUR.length-1?"Next":"Got it, start demo"}</button></div>`;
+    const cw=300, ch=c.offsetHeight||170;
+    let x,y;
+    if(st.side==="right"){ x=r.right+16; y=r.top+60; }
+    else if(st.side==="below"){ x=r.left+r.width/2-cw/2; y=r.bottom+16; }
+    else { x=r.left+r.width/2-cw/2; y=r.top+r.height/2-ch/2; }
+    x=Math.max(12,Math.min(x,innerWidth-cw-12)); y=Math.max(12,Math.min(y,innerHeight-ch-12));
+    Object.assign(c.style,{left:x+"px",top:y+"px"});
+    $("tgo").onclick=()=>{ if(i<TOUR.length-1){ i++; show(); } else end(); };
+    if($("tskip")) $("tskip").onclick=end;
+  }
+  window.addEventListener("resize",show);
+  requestAnimationFrame(show);
+}
+
+function renderCast(){
+  $("cast").innerHTML = ["mia","leo","sam","alex"].map(k=>{
+    const p=PEOPLE[k];
+    return `<div class="person"><div class="av">${avatar(k)}</div><div><b>${p.name} <em>· ${p.title}</em></b><p>${p.bio}</p></div></div>`;
+  }).join("");
+}
+
+/* Meshy workspace shell, built once per step so the 3D model doesn't reload */
+function workspace({who, credits}){
+  return `
+  <nav class="rail dim" aria-hidden="true">
+    <div class="logo">M</div>
+    <div class="it">${ic("chat")}Agent</div><div class="it">${ic("image")}Image</div>
+    <div class="it on">${ic("cube")}Model</div><div class="it">${ic("print")}Print</div>
+    <div class="it">${ic("run")}Animate</div><div class="it">${ic("grid")}Assets</div>
+    <div class="bottom">${ic("bell")}<span class="coins">${credits}</span><span class="topup">Top Up</span><div class="me">${avatar(who)}</div></div>
+  </nav>
+  <aside class="lpanel dim" aria-hidden="true">
+    <div class="seg"><span class="on">High Detail</span><span>Smart Topology</span><span>Relief</span></div>
+    <div class="selbox"><b>Meshy 7.1 - Flagship</b>Most detail, highest precision</div>
+    <div>Image</div>
+    <div class="upload">${ic("image")}<span>Click / Drag &amp; Drop / Paste Image</span></div>
+    <div class="row">Multi-view<span class="pill"></span></div>
+    <div class="row">Resolution<span>Ultra 2K</span></div>
+    <div class="row">Split<span class="pill"></span></div>
+    <div class="row">Texture<span class="pill"></span></div>
+    <div class="row">Image Enhancement<span class="pill on"></span></div>
+    <div class="gen">Generate</div>
+  </aside>
+  <section class="center">
+    <div class="ctop dim">${ic("monitor")}<span>Standard</span>${ic("globe")}</div>
+    <div class="stats dim">
+      <div class="box"><span>Topology</span><span>Triangle</span><span>Faces</span><span>30,350</span><span>Vertices</span><span>20,993</span></div>
+      <div class="box"><span>Printability</span><span class="ok">${ic("check")}</span></div>
+    </div>
+    <model-viewer id="mv" src="${MODEL_SRC}" alt="Knight game piece, version 1" camera-controls
+      interaction-prompt="none" environment-image="legacy" tone-mapping="neutral" exposure="0.7" shadow-intensity="1.3"
+      camera-orbit="35deg 75deg auto" disable-zoom disable-tap></model-viewer>
+    <div class="btool" id="btool"></div>
+  </section>
+  <aside class="rpanel dim" id="rpanel" aria-hidden="true">
+    <div class="search"><div class="q">${ic("search")}Search my generations</div><span class="uploadbtn">Upload</span></div>
+    <div class="grid"><div class="tile sel">${ic("cube")}</div>${'<div class="tile"></div>'.repeat(11)}</div>
+  </aside>
+  <div id="layer"></div>`;
+}
+
+/* Meshy exports the untextured mesh as white metal; show it as grey clay so the sculpted detail reads */
+function clay(mv){
+  mv.addEventListener("load",()=>{
+    try{
+      for(const m of mv.model.materials){
+        const pbr=m.pbrMetallicRoughness;
+        pbr.setBaseColorFactor([0.32,0.32,0.33,1]); pbr.setMetallicFactor(0); pbr.setRoughnessFactor(0.6);
+      }
+    }catch(e){}
+  });
+}
+
+function buildOnce(key, html){
+  if(built===key) return;
+  $("frame").innerHTML = html; built = key;
+  const mv=$("mv"); if(mv) clay(mv);
+}
+
+function step0(){
+  seats=1; plan7={pkg:1, seats:3};   /* fresh run of the demo */
+  const flags={mia:"Free Meshy user",leo:"Paid Meshy user",sam:"Free Meshy user",alex:"Not on Meshy yet"};
+  buildOnce("s0", `<div class="intro-wrap">
+    <div><h2>Scenario</h2>
+    <p class="lede">This demo walks through one scenario at <b>Ironleaf Games</b>, a small tabletop miniatures studio. A team of four is turning concept art for a knight piece into a 3D model that can be manufactured.</p></div>
+    <h3 class="team-h">The team</h3>
+    <div class="people">${["mia","leo","sam","alex"].map(k=>{const p=PEOPLE[k];
+      return `<div class="pcard"><div class="av">${avatar(k)}</div><div><b>${p.name} <em>· ${p.title}</em></b><p>${p.bio}</p><span class="flag">${flags[k]}</span></div></div>`}).join("")}</div>
+    <div class="begin-row"><button class="start big hot" id="beginBtn">Begin demo →</button><span class="begin-tip">← Click here to start</span></div>
+  </div>`);
+  $("beginBtn").onclick=()=>{ go(1); startTour(); };
+}
+
+function step1(){
+  buildOnce("s1", workspace({who:"leo", credits:"1,240"}));
+  const sub=state.sub;
+  $("btool").innerHTML = `
+    <button class="tb dim">${ic("cube")}</button>
+    <button class="tb texture dim">${ic("texture")}Texture</button>
+    <button class="tb dim">${ic("rig")}</button>
+    <span class="sep"></span>
+    <button class="tb ${sub===0?'hot':''}" data-tip="Share" id="shareBtn" aria-label="Share">${ic("share")}<span class="badge">+10</span></button>
+    <button class="tb dl dim">${ic("download")}</button>
+    <span class="sep"></span>
+    <button class="tb dim">${ic("chat")}</button>
+    <button class="tb dim">${ic("print")}</button>`;
+  if(sub===0) $("shareBtn").onclick=adv;
+
+  let layer="";
+  if(sub===1 || sub===2){
+    const field = sub===1
+      ? `<button class="inp hot tip-below" data-tip="Click to add Mia's email" id="emailField" style="text-align:left;cursor:text">Email<span class="add">${ic("plus")}Add</span></button>
+         <span class="lbtn muted" style="padding:9px 14px">${ic("send")}Send</span>`
+      : `<div class="inp"><span class="chip">mia@ironleaf.com</span><span class="add">${ic("plus")}Add</span></div>
+         <button class="lbtn hot tip-below" data-tip="Click here" id="sendBtn" style="padding:9px 14px">${ic("send")}Send</button>`;
+    layer = `<div class="scrim"><div class="dlg" role="dialog" aria-label="Share and Win">
+      <div class="dlg-h"><b>Share and Win</b><button class="xbtn" aria-label="Close">${ic("x")}</button></div>
+      <div class="sec extra dim"><h5>By Link <small>Shortened URL <span class="pill on"></span></small></h5>
+        <div class="line"><div class="inp">https://www.meshy.ai/s/kN7ght2</div><span class="lbtn">${ic("link")}Copy Link</span></div></div>
+      <div class="sec"><h5>By Email</h5>
+        <div class="line">${field}</div></div>
+      <div class="sec extra dim"><h5>Share to</h5><div class="socials"><span>X</span><span>f</span><span>in</span><span>wa</span><span>tg</span></div></div>
+      <div class="promo dim"><b>Get paid to share</b>Post your creation, get paid for the views.</div>
+    </div></div>`;
+  }
+  if(sub===3){
+    layer = `<div class="toast">${ic("check")}Shared with mia@ironleaf.com</div>
+    <div class="scrim"><div class="trans">
+      <div class="av">${avatar("mia")}</div>
+      <b>Mia got Leo's link</b>
+      <p>Next, see what Mia sees when she opens it.</p>
+      <button class="hot tip-below" data-tip="Click here" id="toMia">Continue as Mia</button>
+    </div></div>`;
+  }
+  $("layer").innerHTML = layer;
+  if(sub===1) $("emailField").onclick=adv;
+  if(sub===2) $("sendBtn").onclick=adv;
+  if(sub===3) $("toMia").onclick=()=>go(2);
+}
+
+const PIN_SADDLE = {p:"0.198m 0.024m -0.023m", n:"0.987m -0.159m 0.001m"};
+const PIN_LEG    = {p:"0.117m 0.156m 0.633m",  n:"0.061m 0.874m 0.481m"};
+const PIN_HORN = {p:"0.096m 0.900m 0.444m", n:"0.398m -0.513m 0.760m"};
+const ALEX_NOTE = {pin:{p:"0.186m 0.089m -0.073m", n:"0.784m 0.370m 0.498m"}, where:"stirrup",
+  text:"The stirrup is too thin. It'll break during casting.", view:"35deg 75deg auto"};
+const PIN_MANE = {p:"-0.001m 0.677m -0.024m", n:"0.031m -0.147m -0.989m"};   /* center of the tufts on the back of the neck */
+/* Mia's two guided comments: where each one lands and what it says */
+const MIA_NOTES = [
+  {pin:PIN_HORN,   where:"horns", text:"Remove the horns on the helmet.", view:"35deg 75deg auto"},
+  {pin:PIN_MANE,   where:"mane",  text:"Give the horse a swirly, elegant mane.", view:"180deg 68deg auto"}
+];
+let seats = 1;   /* Studio seats picked in the upgrade modal: $70 includes one, each extra is $10/mo */
+
+function sharePage(viewer="mia"){
+  return `
+  <div class="snav dim" aria-hidden="true"><span class="wm">Meshy</span><span>Products</span><span>Solutions</span><span>Community</span><span>Pricing</span><span class="ml">Contact Sales</span><span>${viewer==="alex"?"Reviewer":"Credits 100"}</span><span class="av" style="width:28px;height:28px">${avatar(viewer)}</span></div>
+  <div class="sbody">
+    <section class="center">
+      <div class="ctop dim">${ic("monitor")}<span>Standard</span>${ic("globe")}</div>
+      <div class="stats dim"><div class="box"><span>Topology</span><span>Triangle</span><span>Faces</span><span>30,350</span><span>Vertices</span><span>20,993</span></div></div>
+      <model-viewer id="mv" src="${MODEL_SRC}" alt="Knight game piece, version 1" camera-controls
+        interaction-prompt="none" environment-image="legacy" tone-mapping="neutral" exposure="0.7" shadow-intensity="1.3"
+        camera-orbit="35deg 75deg auto" disable-zoom disable-tap>
+${MIA_NOTES.map((n,i)=>`
+        <div class="cpin" slot="hotspot-mia${i}" id="pinMia${i}" data-position="${n.pin.p}" data-normal="${n.pin.n}" hidden>
+          <span class="num"></span>
+        </div>
+        <span class="target" slot="hotspot-target${i}" id="target${i}" data-position="${n.pin.p}" data-normal="${n.pin.n}" hidden><i></i><b>Click here</b></span>`).join("")}
+        <div class="cpin" slot="hotspot-alex" id="pinAlex" data-position="${ALEX_NOTE.pin.p}" data-normal="${ALEX_NOTE.pin.n}" hidden><span class="num"></span></div>
+        <span class="target" slot="hotspot-targetA" id="targetA" data-position="${ALEX_NOTE.pin.p}" data-normal="${ALEX_NOTE.pin.n}" hidden><i></i><b>Click here</b></span>
+      </model-viewer>
+      <div class="bulb dim">${ic("wand")}</div>
+      <div class="chint" id="chint"><span class="cmode">${ic("chat")}Comment mode <span class="newtag">NEW</span></span><span>Click anywhere on the model to leave a comment</span></div>
+    </section>
+    <aside class="spanel">
+      <div class="blk author dim"><div class="av" style="width:34px;height:34px">${avatar("leo")}</div><div><b>leo.ironleaf</b><small>10 minutes ago</small></div><span class="follow">Follow</span></div>
+      <div class="blk meta dim"><span>Meshy 7.1</span><span>Private</span></div>
+      <div class="blk cbox" id="cbox"></div>
+    </aside>
+  </div>
+  <div id="layer"></div>`;
+}
+
+function mailPage(){
+  return `
+  <div class="mail">
+    <div class="mtop dim" aria-hidden="true"><span class="mlogo">Mail</span><div class="msearch">${ic("search")}Search mail</div><div class="av" style="width:30px;height:30px;margin-left:auto">${avatar("mia")}</div></div>
+    <div class="mbody">
+      <nav class="mnav dim" aria-hidden="true"><span class="compose">Compose</span><span class="on">Inbox</span><span>Starred</span><span>Sent</span><span>Drafts</span></nav>
+      <section class="mmsg">
+        <div class="mhead"><b>leo.ironleaf shared a 3D model with you!</b>
+          <div class="from"><span class="mav">M</span><div><b>Meshy AI</b> <span>&lt;noreply@meshy.ai&gt;</span><small>to mia@ironleaf.com</small></div><small class="when">10:42 AM</small></div></div>
+        <div class="mcanvas">
+          <div class="mbrand">Meshy AI</div>
+          <div class="mcard">
+            <h3>leo.ironleaf shared a 3D model with you!</h3>
+            <p>Hi there,</p>
+            <p>Your friend <b>leo.ironleaf</b> has shared a 3D model with you!</p>
+            <p>Dive into the creations and get inspired by the stunning models generated by Meshy.</p>
+            <button class="openbtn hot tip-below" data-tip="Click here" id="openModel">Open Model</button>
+            <model-viewer id="mv" src="${MODEL_SRC}" alt="Preview of the shared knight model" interaction-prompt="none"
+              environment-image="legacy" tone-mapping="neutral" exposure="0.75" camera-orbit="35deg 75deg auto" style="height:240px;background:transparent"></model-viewer>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>`;
+}
+
+/* Upgrade modal, matching Meshy's "Upgrade Your Plan" screen (For Teams tab) */
+function upgradeModal(paid=false){   /* paid: the end-of-trial paywall in Step 7 */
+  const li = (txt, extra="") => `<li>${ic("check")}<span>${txt}</span>${extra}</li>`;
+  const newb = `<span class="nb">NEW</span>`;
+  return `<div class="upwrap" role="dialog" aria-label="Upgrade your plan"><div class="up">
+    <div class="up-banner">${paid ? `<b>Your team used all 2,000 trial credits</b><span>Subscribe to Studio to keep turning comments into new versions. Your team, comments and versions stay as they are.</span>` : `<b>Team collaboration has never been easier with Studio</b><span>Comment right on the 3D model, then turn any comment into a new model generation. Bring in as many reviewers as you need, free.</span>`}</div>
+    <div class="up-h">
+      <h2>Upgrade Your Plan</h2>
+      <div class="up-tabs"><span>For Individuals</span><span class="on">For Teams</span></div>
+      <button class="up-x" id="upClose" aria-label="Close">${ic("x")}</button>
+    </div>
+    <div class="up-ctl">
+      <div class="bill"><span class="on">Monthly</span><span>Yearly <i>Most Savings</i></span></div>
+      <div class="up-right"><span class="cmp">$ Compare Plans</span><span class="cur">USD ▾</span></div>
+    </div>
+    <div class="plans">
+      <div class="pc studio">
+        <div class="bv">Best Value</div>
+        <div class="pc-top">
+          <div class="pc-title"><span class="nm">Studio</span>${paid?"":`<span class="off">7-day free trial</span>`}</div>
+          <p class="sub">Best for studios and teams</p>
+          ${paid ? `<div class="pr"><b id="upPrice7"></b><span>/ month</span></div>
+          <p class="fine" id="upFine7"></p>
+          <button class="subscribe hot tip-below" data-tip="Click here" id="subBtn">Subscribe Now ›</button>` : `<div class="pr"><b>$0</b><s>$70</s><span>/ first 7 days</span></div>
+          <p class="fine">Then $ 70 / month. Card required, cancel anytime during the trial.</p>
+          <button class="subscribe hot tip-below" data-tip="Click here" id="subBtn">Start Free Trial ›</button>`}
+          <div class="pk"><div class="pk-row"><span>Package</span>${paid?`<span class="mult" id="mult7">${[1,3,5].map(m=>`<i data-m="${m}">${m}x</i>`).join("")}</span>`:""}</div>
+            ${paid ? `<p class="cred" id="cred7"></p><p class="fine2" id="assets7"></p>` : `<p class="cred">2,000 trial credits ⓘ</p><p class="fine2">5,500 shared monthly credits after the trial</p>`}</div>
+          ${paid ? `<div class="seats"><div><span>Seats</span><p class="fine2">$ 10/mo per seat · 1 included</p></div><span class="step"><button id="seatMinus7" aria-label="Remove a seat">−</button><i class="n" id="seatN7"></i><button id="seatPlus7" aria-label="Add a seat">+</button></span></div>` : `<div class="seats"><div><span>Seats</span><p class="fine2">Up to 3 seats in the trial. After the trial, $70 includes 1 seat and each extra seat is $10/mo.</p></div><span class="trial-seats">3 in trial</span></div>`}
+        </div>
+        <div class="pc-body">
+          <h4>${ic("wand")}Boost Efficiency:</h4>
+          <ul>${li("World's First 3D Agent", newb)}${li("<b>60</b> concurrent tasks")}${li("<b>24</b> free retries per task (web app)")}${li("<b>Higher</b> queue priority")}${li("<b>80%</b> faster generation")}</ul>
+          <h4>${ic("plus")}Everything in Pro, plus:</h4>
+          <ul>
+            <li class="prop">${ic("check")}<span><b>Team review:</b> comment directly on 3D models</span>${newb}</li>
+            <li class="prop">${ic("check")}<span><b>Unlimited</b> reviewer seats</span>${newb}</li>
+            ${li("Team management &amp; shared team credits ⓘ")}${li("Centralized billing across team")}${li("Team model annotations")}${li("<b>14-day</b> API asset retention")}${li("API Playground (limited)")}${li("API Console &amp; Team Usage Console")}
+          </ul>
+        </div>
+      </div>
+      <div class="pc ent">
+        <div class="pc-top">
+          <div class="pc-title"><span class="nm">Enterprise</span></div>
+          <p class="sub">For organizations that need large volume usage, customized solutions, and more</p>
+          <div class="pr"><b>Custom</b></div>
+          <p class="fine">Volume-based pricing, tailored to your organization</p>
+          <button class="contact">Contact Us</button>
+        </div>
+        <div class="pc-body">
+          <p class="cust">Customizable credits ⓘ</p>
+          <h4>${ic("wand")}Boost Efficiency:</h4>
+          <ul>${li("World's First 3D Agent", newb)}${li("<b>100</b> concurrent tasks")}${li("<b>100</b> free retries per task (web app)")}${li("<b>Highest</b> queue priority")}${li("<b>80%</b> faster generation")}</ul>
+          <h4>${ic("plus")}Everything in Studio, plus:</h4>
+          <ul>${li("<b>Multiple</b> team/workspace management")}${li("<b>Full API</b> access")}${li("<b>Forever</b> API asset retention")}${li("<b>Full</b> API Playground Access")}${li("API Console &amp; Organization Usage Console")}${li("<b>SAML</b> SSO")}${li("<b>Configurable</b> data retention")}${li("<b>Dedicated</b> account support")}</ul>
+        </div>
+      </div>
+    </div>
+  </div></div>`;
+}
+
+/* Lets the 3D view show a comment cursor while keeping drag-to-rotate */
+const COMMENT_CURSOR = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M3 3h20a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H11l-6 6v-6H3z' fill='%235b93ff' stroke='white' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M14 8v8M10 12h8' stroke='white' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E") 4 28, crosshair`;
+function enableCommentCursor(mv){
+  const add=()=>{
+    if(!mv.shadowRoot || mv.shadowRoot.getElementById("cc-style")) return;
+    const st=document.createElement("style"); st.id="cc-style";
+    st.textContent=`:host(.commenting) .userInput, :host(.commenting) canvas{cursor:${COMMENT_CURSOR} !important}`;
+    mv.shadowRoot.appendChild(st);
+  };
+  add(); customElements.whenDefined("model-viewer").then(add);
+}
+
+
+function step2(){
+  if(state.sub===0){
+    buildOnce("s2mail", mailPage());
+    $("openModel").onclick=adv;
+    return;
+  }
+  if(state.sub===3){
+    buildOnce("s2-pay", checkoutPage());
+    $("payBtn").onclick=()=>go(3);   /* Meshy goes straight into team setup after paying */
+    return;
+  }
+  const fresh = built!=="s2";
+  buildOnce("s2", sharePage());
+  const sub=state.sub-1;   /* 0 comment mode, 1 upgrade modal; state.sub 3 is checkout */
+  const to = n => { state.sub=n+1; render(); };
+  const mv=$("mv");
+  if(fresh){
+    enableCommentCursor(mv);
+    let down=null;
+    mv.addEventListener("pointerdown",e=>{down=[e.clientX,e.clientY];});
+    mv.addEventListener("click",e=>{
+      if(state.step!==2 || state.sub!==1) return;
+      if(down && Math.hypot(e.clientX-down[0],e.clientY-down[1])>5) return;   /* a drag to rotate, not a click */
+      if(mv.positionAndNormalFromPoint(e.clientX,e.clientY)) to(1);
+    });
+  }
+  mv.classList.toggle("commenting", sub===0);
+  const hint=$("chint");
+  hint.hidden = sub!==0;
+  hint.classList.add("hot");
+  hint.innerHTML = `<span class="cmode">${ic("chat")}Comment mode <span class="newtag">NEW</span></span><span>Drag to rotate · Click the model to comment</span>`;
+  MIA_NOTES.forEach((n,i)=>{ $("target"+i).hidden=true; $("pinMia"+i).hidden=true; });
+  $("cbox").innerHTML = `<h4>Comments</h4><p class="empty">Feedback on this model shows up here, pinned to the spot it's about.</p>`;
+
+  $("layer").innerHTML = sub===1 ? upgradeModal() : "";
+  if(sub===1){
+    $("subBtn").onclick=()=>{ state.sub=3; render(); };
+    $("upClose").onclick=()=>to(0);
+  }
+}
+
+/* Step 3: Meshy's team onboarding (Name your team, Invite your team, You're all set) */
+function onboarding(stage){
+  const steps=["Name your team","Invite teammates","Start creating"];
+  const rail = `<aside class="ob-rail"><h3>Getting started</h3>${steps.map((t,i)=>{
+      const st = i<stage ? "done" : i===stage ? "on" : "";
+      return `<div class="ob-st ${st}"><span class="dot">${i<stage?ic("check"):""}</span>${t}</div>`; }).join("")}</aside>`;
+  return `<div class="ob"><section class="ob-card" id="obCard"></section>${rail}</div>`;
+}
+
+function checkoutPage(paid=false){
+  if(paid) return paidCheckout();
+  return `<div class="pay">
+    <section class="pay-sum">
+      <div class="pay-brand"><span class="pay-back">←</span><span class="pay-logo">M</span>Meshy</div>
+      <p class="pay-what">Start your Meshy Studio free trial</p>
+      <div class="pay-big">$0.00</div>
+      <p class="pay-then">7 days free, then <b>$70.00</b> per month</p>
+      <div class="pay-items">
+        <div class="pay-item"><span class="pay-tag">Studio</span><div><b>Meshy Studio</b><small>Billed monthly after the trial</small><small class="pay-disc">7-day free trial · 2,000 trial credits · up to 3 seats</small></div><span>$70.00</span></div>
+        <div class="pay-row"><span>Subtotal</span><span>$70.00</span></div>
+        <div class="pay-row"><span class="pay-coupon">7-day free trial</span><span>−$70.00</span></div>
+        <div class="pay-row pay-total"><span>Total due today</span><span>$0.00</span></div>
+      </div>
+    </section>
+    <section class="pay-form">
+      <div class="pay-card">
+        <div class="pay-line"><span>Email</span><b>mia@ironleaf.com</b></div>
+        <div class="pay-line"><span>Pay with</span><b><i class="pay-visa">VISA</i> Visa Credit •••• 4242</b></div>
+        <div class="pay-bill"><h4>Billing details</h4>
+          <label>Name</label><div class="pay-in">Mia</div>
+          <label>Country or region</label><div class="pay-in">United States</div><div class="pay-in" style="border-top:0;border-radius:0 0 8px 8px">94107</div>
+        </div>
+      </div>
+      <button class="pay-btn hot tip-below" data-tip="Click here" id="payBtn">Start free trial</button>
+      <p class="pay-fine">You won't be charged today. After 7 days, Meshy will charge you $70.00 per month, plus $10 for each extra seat, until you cancel. Cancel anytime during the trial and you won't be charged.</p>
+      <p class="pay-demo">Demo checkout. No real payment is made.</p>
+    </section>
+  </div>`;
+}
+
+/* Studio packages, from Meshy's help center ("Understanding the Meshy Studio plan") */
+const PKG = {1:{price:70,credits:5500},3:{price:210,credits:16800},5:{price:350,credits:28000}};
+let plan7 = {pkg:1, seats:3};
+const plan7Total = () => PKG[plan7.pkg].price + (plan7.seats-1)*10;
+
+function paidCheckout(){
+  const P=PKG[plan7.pkg], extra=plan7.seats-1, total=plan7Total();
+  return `<div class="pay">
+    <section class="pay-sum">
+      <div class="pay-brand"><span class="pay-back">←</span><span class="pay-logo">M</span>Meshy</div>
+      <p class="pay-what">Subscribe to Meshy Studio${extra?` and ${extra} more`:""}</p>
+      <div class="pay-big">$${total}.00 <small>per month</small></div>
+      <div class="pay-items">
+        <div class="pay-item"><span class="pay-tag">Studio</span><div><b>Meshy Studio · ${plan7.pkg}x</b><small>Billed monthly · 1 seat · ${P.credits.toLocaleString()} shared credits</small></div><span>$${P.price}.00</span></div>
+        ${extra?`<div class="pay-item"><span class="pay-tag">Studio</span><div><b>Meshy Studio Seat${extra>1?` × ${extra}`:""}</b><small>Billed monthly</small></div><span>$${extra*10}.00</span></div>`:""}
+        <div class="pay-row"><span>Subtotal</span><span>$${total}.00</span></div>
+        <div class="pay-row pay-total"><span>Total due today</span><span>$${total}.00</span></div>
+      </div>
+    </section>
+    <section class="pay-form">
+      <div class="pay-card">
+        <div class="pay-line"><span>Email</span><b>mia@ironleaf.com</b></div>
+        <div class="pay-line"><span>Pay with</span><b><i class="pay-visa">VISA</i> Visa Credit •••• 4242</b></div>
+        <div class="pay-bill"><h4>Billing details</h4>
+          <label>Name</label><div class="pay-in">Mia</div>
+          <label>Country or region</label><div class="pay-in">United States</div><div class="pay-in" style="border-top:0;border-radius:0 0 8px 8px">94107</div>
+        </div>
+      </div>
+      <button class="pay-btn hot tip-below" data-tip="Click here" id="payBtn">Subscribe</button>
+      <p class="pay-fine">Your trial ends today. By subscribing, you authorize Meshy to charge you each billing cycle until you cancel.</p>
+      <p class="pay-demo">Demo checkout. No real payment is made.</p>
+    </section>
+  </div>`;
+}
+
+function step3(){
+  const sub=state.sub;   /* 0 name, 1 invite (empty), 2 invite (filled), 3 all set */
+  const stage = sub===0 ? 0 : sub<=2 ? 1 : 3;
+  buildOnce("s3-"+stage, onboarding(stage));
+  const card=$("obCard");
+  if(sub===0){
+    card.innerHTML = `<div class="ob-body"><h2>Name your team</h2><p class="ob-sub">Choose a name your teammates will recognize. You can change it later.</p>
+      <label class="ob-lbl">Team name</label><div class="ob-inp">Ironleaf Games</div></div>
+      <div class="ob-foot"><button class="ob-cta hot" data-tip="Click here" id="obNext">Continue</button></div>`;
+    $("obNext").onclick=adv;
+    return;
+  }
+  if(sub===1 || sub===2){
+    const samCost = `<span class="cost c-inc">Trial seat</span>`;
+    const row = (k,email,role,cost,extra="") => `<div class="mem"><div class="av">${avatar(k)}</div>
+      <div><b>${PEOPLE[k].name}</b><small>${email}</small>${extra}</div>
+      <span class="role ${role.startsWith("Editor")?"ed":""}">${role}</span>${cost}</div>`;
+    const rows = sub===2 ? `<div class="ob-mems">
+        ${row("mia","mia@ironleaf.com · You","Admin",`<span class="cost c-inc">Trial seat</span>`)}
+        ${row("leo","leo@ironleaf.com","Editor ▾",`<span class="cost c-inc">Trial seat</span>`,`<small class="keep">Leo's personal credits and workspace will be kept</small>`)}
+        ${row("sam","sam@ironleaf.com","Editor ▾",samCost)}
+        ${row("alex","alex@ironleaf.com","Reviewer ▾",`<span class="cost c-free">Free</span>`)}</div>` : "";
+    card.innerHTML = `<div class="ob-body">
+      <div class="ob-back dim">‹ Back</div>
+      <h2>Invite your team</h2><p class="ob-sub">Add teammates by email and choose what each of them can do. Anyone who joins shares your team's credits, assets, and plan.</p>
+      <div class="dim" ${sub===2?"hidden":""}>
+        <label class="ob-lbl">Invite link</label>
+        <div class="ob-link"><div class="ob-inp">${ic("link")}https://www.meshy.ai/settings/team?inviteToken…</div><span class="ob-ghost">Copy Invite Link</span></div>
+        <div class="ob-warn">Anyone with this link can join <b>Ironleaf Games</b> and share your team's credits and plan.</div>
+      </div>
+      <label class="ob-lbl">Email</label>
+      ${sub===1
+        ? `<button class="ob-inp ob-email hot tip-below" data-tip="Click to add Leo, Sam and Alex" id="obEmail">Email<span class="add">${ic("plus")}Add</span></button>`
+        : `<div class="ob-inp"><span class="chip">leo@ironleaf.com</span><span class="chip">sam@ironleaf.com</span><span class="chip">alex@ironleaf.com</span></div>`}
+      ${rows}
+      <div class="ob-bill"><span class="ob-billic">${ic("card")}</span><div>
+        ${sub===2 ? `<b>Free trial · 3 of 3 seats used</b><br>Reviewers are free and don't use a seat. After the trial: $90/month for 3 seats. ` : "Free trial includes up to 3 seats, including yours. "}Seats after the trial are billed to your team's original payment method.</div></div>
+      </div>
+      <div class="ob-foot two"><button class="ob-sec">Continue without Inviting</button>
+        <button class="ob-cta ${sub===2?'hot':'muted'}" data-tip="Click here" id="obSend">${ic("send")}Send and Continue</button></div>`;
+    if(sub===1) $("obEmail").onclick=adv;
+    if(sub===2){ $("obSend").onclick=adv; try{ $("obSend").scrollIntoView({block:"nearest"}); }catch(e){} }
+    return;
+  }
+  card.innerHTML = `<div class="ob-body"><div class="ob-back dim">‹ Back</div>
+    <h2>You're all set</h2><p class="ob-sub">Your workspace is ready. Start creating and invite more teammates anytime.</p>
+    <div class="ob-done">${ic("check")}<div><b>Ironleaf Games</b><small>Shared workspace created · Studio trial, 7 days left</small></div></div>
+    <div class="ob-done">${ic("check")}<div><span>3 invitations sent. They'll join once they accept.</span></div></div>
+    <p class="ob-sub" style="margin-top:6px">Next, go back to Knight_v1 and leave your feedback for the team.</p></div>
+    <div class="ob-foot"><button class="ob-cta hot" data-tip="Click here" id="obGo">Back to Knight_v1 →</button></div>`;
+  $("obGo").onclick=()=>go(4);
+}
+
+/* Step 4: Mia, now the Studio admin, pins two comments on the model */
+function step4(){
+  const fresh = built!=="s4";
+  buildOnce("s4", sharePage());
+  const sub=state.sub;   /* 0 click the horns, 1 write comment 1, 2 click the mane, 3 write comment 2, 4 done */
+  const to = n => { state.sub=n; render(); };
+  const mv=$("mv");
+  if(fresh){
+    enableCommentCursor(mv);
+    let down=null;
+    mv.addEventListener("pointerdown",e=>{down=[e.clientX,e.clientY];});
+    mv.addEventListener("click",e=>{
+      if(state.step!==4) return;
+      if(down && Math.hypot(e.clientX-down[0],e.clientY-down[1])>5) return;
+      if(state.sub===0 || state.sub===2) to(state.sub+1);   /* guided: each comment lands on its fixed spot */
+    });
+  }
+  const placing = sub===0 ? 0 : sub===2 ? 1 : -1;
+  const writing = sub===1 ? 0 : sub===3 ? 1 : -1;
+  if(placing>=0) mv.cameraOrbit = MIA_NOTES[placing].view;
+  mv.classList.toggle("commenting", placing>=0);
+  const hint=$("chint");
+  hint.hidden = placing<0;
+  hint.classList.add("hot");
+  if(placing>=0) hint.innerHTML = `<span class="cmode">${ic("chat")}Comment mode</span><span>Drag to rotate · Click the highlighted spot on the ${MIA_NOTES[placing].where}</span>`;
+  MIA_NOTES.forEach((n,i)=>{
+    $("target"+i).hidden = placing!==i;
+    $("pinMia"+i).hidden = sub < (i===0?1:3);
+  });
+  const posted = sub>=4 ? 2 : sub>=2 ? 1 : 0;
+  const item = (n,i) => `<div class="citem"><div class="av">${avatar("mia")}</div><div><b>Mia</b><small>just now</small><p>${n.text}</p></div></div>`;
+  let box = `<div class="team"><div class="team-top"><b>${ic("users")}Ironleaf Games</b><small>3 invites pending</small></div>
+      <div class="avs">${["mia","leo","sam","alex"].map((k,i)=>`<div class="av" style="${i?'opacity:.45':''}">${avatar(k)}</div>`).join("")}</div></div>
+    <div style="border-top:1px solid var(--p-line);margin:2px 0"></div>
+    <h4>Comments</h4>`;
+  box += MIA_NOTES.slice(0,posted).map(item).join("");
+  if(writing>=0){
+    const n=MIA_NOTES[writing];
+    box += `<div class="composer">
+      <div class="top"><div class="av">${avatar("mia")}</div>Mia</div>
+      <div class="text">${n.text}</div>
+      <div class="row2"><span></span>
+      <button class="cbtn hot" data-tip="Click here" id="postBtn" style="padding:6px 14px">Post</button></div></div>`;
+  } else if(posted===0){
+    box += `<p class="empty">Click the highlighted spot on the model to leave your first comment.</p>`;
+  }
+  $("cbox").innerHTML = box;
+  if(writing>=0) $("postBtn").onclick=()=>to(sub+1);
+  $("layer").innerHTML = sub===4 ? `<div class="scrim"><div class="trans">
+      <div class="av">${avatar("alex")}</div>
+      <b>Mia left two comments</b>
+      <p>Next, Alex accepts the invite and joins as a free reviewer.</p>
+      <button class="hot tip-below" data-tip="Click here" id="toAlex">Continue as Alex</button>
+    </div></div>` : "";
+  if(sub===4) $("toAlex").onclick=()=>go(5);
+}
+
+/* Step 5: Alex joins as a free reviewer and comments */
+function inviteMail(){
+  return `
+  <div class="mail">
+    <div class="mtop dim" aria-hidden="true"><span class="mlogo">Mail</span><div class="msearch">${ic("search")}Search mail</div><div class="av" style="width:30px;height:30px;margin-left:auto">${avatar("alex")}</div></div>
+    <div class="mbody">
+      <nav class="mnav dim" aria-hidden="true"><span class="compose">Compose</span><span class="on">Inbox</span><span>Starred</span><span>Sent</span><span>Drafts</span></nav>
+      <section class="mmsg">
+        <div class="mhead"><b>Mia invited you to review Knight_v1 in Ironleaf Games</b>
+          <div class="from"><span class="mav">M</span><div><b>Meshy AI</b> <span>&lt;noreply@meshy.ai&gt;</span><small>to alex@ironleaf.com</small></div><small class="when">11:05 AM</small></div></div>
+        <div class="mcanvas">
+          <div class="mbrand">Meshy AI</div>
+          <div class="mcard">
+            <h3>Join Ironleaf Games on Meshy</h3>
+            <p>Hi Alex,</p>
+            <p><b>Mia</b> invited you to the <b>Ironleaf Games</b> team as a <b>reviewer</b>.</p>
+            <p>Reviewers can view 3D models and comment on them for free. You don't need a paid plan or a seat.</p>
+            <p>Mia left 2 comments on <b>Knight_v1</b> that are waiting for your review.</p>
+            <button class="openbtn hot tip-below" data-tip="Click here" id="acceptInv">Accept invite</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>`;
+}
+
+function joinCard(){
+  return `<div class="ob"><section class="ob-card join">
+    <div class="ob-body">
+      <div class="join-team"><span class="jt-logo">IG</span><div><b>Ironleaf Games</b><small>Mia invited you to this team</small></div></div>
+      <h2>Join as a reviewer</h2>
+      <p class="ob-sub">View 3D models, pin comments, and follow the team's reviews.</p>
+      <div class="join-role"><div><b>Reviewer</b><small>View and comment on every model shared with you</small></div><span class="cost c-free">Free · no seat needed</span></div>
+      <button class="gbtn2 hot tip-below" data-tip="Click here" id="joinGoogle"><span class="g">G</span>Continue with Google</button>
+      <div class="orline dim">OR</div>
+      <div class="dim"><label class="ob-lbl">Email</label><div class="ob-inp">alex@ironleaf.com</div></div>
+      <p class="ob-sub" style="font-size:12px;margin-top:6px">New to Meshy? Your account is created when you join.</p>
+    </div></section></div>`;
+}
+
+function step5(){
+  const sub=state.sub;   /* 0 invite email, 1 join, 2 click horn, 3 write comment, 4 posted */
+  if(sub===0){ buildOnce("s5mail", inviteMail()); $("acceptInv").onclick=adv; return; }
+  if(sub===1){ buildOnce("s5join", joinCard()); $("joinGoogle").onclick=adv; return; }
+  const fresh = built!=="s5";
+  buildOnce("s5", sharePage("alex"));
+  const to = n => { state.sub=n; render(); };
+  const mv=$("mv");
+  if(fresh){
+    enableCommentCursor(mv);
+    let down=null;
+    mv.addEventListener("pointerdown",e=>{down=[e.clientX,e.clientY];});
+    mv.addEventListener("click",e=>{
+      if(state.step!==5 || state.sub!==2) return;
+      if(down && Math.hypot(e.clientX-down[0],e.clientY-down[1])>5) return;
+      to(3);
+    });
+  }
+  const placing = sub===2;
+  if(placing) mv.cameraOrbit = ALEX_NOTE.view;
+  mv.classList.toggle("commenting", placing);
+  const hint=$("chint");
+  hint.hidden = !placing; hint.classList.add("hot");
+  if(placing) hint.innerHTML = `<span class="cmode">${ic("chat")}Comment mode</span><span>Drag to rotate · Click the highlighted spot on the stirrup</span>`;
+  MIA_NOTES.forEach((n,i)=>{ $("target"+i).hidden=true; $("pinMia"+i).hidden=false; });
+  $("targetA").hidden = !placing;
+  $("pinAlex").hidden = sub<3;
+  const miaItem = (n,i) => `<div class="citem"><div class="av">${avatar("mia")}</div><div><b>Mia</b><small>15 min ago</small><p>${n.text}</p></div></div>`;
+  let box = `<div class="team"><div class="team-top"><b>${ic("users")}Ironleaf Games</b><small>You joined as a reviewer · Free</small></div>
+      <div class="avs">${["mia","alex","leo","sam"].map((k,i)=>`<div class="av" style="${i>1?'opacity:.45':''}">${avatar(k)}</div>`).join("")}</div></div>
+    <div style="border-top:1px solid var(--p-line);margin:2px 0"></div>
+    <h4>Comments</h4>${MIA_NOTES.map(miaItem).join("")}`;
+  if(sub===3){
+    box += `<div class="composer">
+      <div class="top"><div class="av">${avatar("alex")}</div>Alex · Reviewer</div>
+      <div class="text">${ALEX_NOTE.text}</div>
+      <div class="row2"><span></span>
+      <button class="cbtn hot" data-tip="Click here" id="postBtn" style="padding:6px 14px">Post</button></div></div>`;
+  } else if(sub>=4){
+    box += `<div class="citem"><div class="av">${avatar("alex")}</div><div><b>Alex</b><small>just now</small><p>${ALEX_NOTE.text}</p></div></div>`;
+  }
+  $("cbox").innerHTML = box;
+  if(sub===3) $("postBtn").onclick=()=>to(4);
+  $("layer").innerHTML = sub===2 ? `<div class="toast">${ic("check")}You joined Ironleaf Games as a reviewer</div>`
+    : sub===4 ? `<div class="scrim"><div class="trans">
+      <div class="av">${avatar("leo")}</div>
+      <b>Leo has 3 new comments</b>
+      <p>Next, Leo turns the feedback into a new version.</p>
+      <button class="hot tip-below" data-tip="Click here" id="toLeo">Continue as Leo</button>
+    </div></div>` : "";
+  if(sub===4) $("toLeo").onclick=()=>go(6);
+}
+
+/* Step 6: Leo turns each comment into one generation through Edit Mode */
+const TEAM_NOTES = () => [
+  {who:"mia",  n:1, pin:MIA_NOTES[0].pin, where:"Horns",   part:"the horns",   view:"35deg 75deg auto",  text:MIA_NOTES[0].text,
+   paint:[{a:[0.099,0.95,0.463], b:[0.092,0.885,0.44], r:0.032}, {a:[0.095,0.95,0.285], b:[0.09,0.885,0.32], r:0.032}]},   /* the two horns only; the ears sit further back and stay grey */
+  {who:"mia",  n:2, pin:MIA_NOTES[1].pin, where:"Mane",    part:"the mane",    view:"180deg 68deg auto", text:MIA_NOTES[1].text,
+   paint:[{a:[0,0.47,0.02], b:[0,0.88,0.03], r:0.085}]},
+  {who:"alex", n:3, pin:ALEX_NOTE.pin,    where:"Stirrup", part:"the stirrup", view:"35deg 75deg auto",  text:ALEX_NOTE.text,
+   paint:[{seed:[0.221,0.135,0.004], geo:0.2}, {seed:[0.232,0.045,0.073], geo:0.14}]}];   /* rod, then the loop at its end */   /* thin part touching the saddle: grow along the surface instead */
+const EDIT_COST = 20;   /* example cost per edit, in team credits */
+
+let resolvedSet = new Set();   /* comments Leo resolved by hand */
+function step6(){
+  /* internal stages: 0 list · 1 edit horns · 2 v2 · 6 v4 · 8 notified.
+     The full Edit Mode flow is shown once; the other two comments run together. */
+  const sub=[0,1,2,6,8][state.sub] ?? 8;
+  if(sub===0) resolvedSet = new Set();
+  if(sub>=8) resolvedSet = new Set([1,2,3]);
+  if(sub===1 || sub===3 || sub===5) return editMode((sub-1)/2);
+  const edited = sub>=6 ? 3 : sub>=4 ? 2 : sub>=2 ? 1 : 0;
+  const ver = edited+1;
+  const credits = 2000 - edited*EDIT_COST;
+  const fresh = built!=="s6";
+  buildOnce("s6", workspace({who:"leo", credits:"1,240"}));
+  const mv=$("mv"), rp=$("rpanel");
+  if(fresh){
+    mv.insertAdjacentHTML("beforeend", TEAM_NOTES().map(c=>
+      `<div class="cpin" slot="hotspot-t${c.n}" id="tpin${c.n}" data-position="${c.pin.p}" data-normal="${c.pin.n}"><span class="num"></span></div>`).join(""));
+    rp.classList.remove("dim"); rp.removeAttribute("aria-hidden"); rp.classList.add("cpanel");
+    mv.cameraOrbit = "95deg 70deg auto";   /* side view where all three pins are visible */
+    $("btool").innerHTML = `
+      <button class="tb dim">${ic("cube")}</button>
+      <button class="tb texture dim">${ic("texture")}Texture</button>
+      <button class="tb dim">${ic("rig")}</button>
+      <span class="sep"></span>
+      <button class="tb dim">${ic("share")}</button>
+      <button class="tb dl dim">${ic("download")}</button>
+      <span class="sep"></span>
+      <button class="tb dim">${ic("chat")}</button>
+      <button class="tb dim">${ic("print")}</button>`;
+    document.querySelector(".ctop").insertAdjacentHTML("afterend",
+      `<div class="teamchip"><span>${ic("users")}Ironleaf Games</span><span class="an" id="assetName">Knight_v1</span><span class="tc" id="teamCredits">Trial credits 2,000</span></div>`);
+  }
+  if(mv.dataset.ver!==String(ver)){ mv.dataset.ver=String(ver); mv.src=MODEL_SRCS[ver]; }
+  TEAM_NOTES().forEach(c=>{ const p=$("tpin"+c.n); if(p) p.hidden = resolvedSet.has(c.n); });   /* resolved comments disappear from the model */
+  $("assetName").textContent = `Knight_v${ver}`;
+  $("teamCredits").innerHTML = `Trial credits ${credits.toLocaleString()}${edited?` <em>−${sub===6?2*EDIT_COST:EDIT_COST}</em>`:""}`;
+  $("teamCredits").classList.remove("drop"); void $("teamCredits").offsetWidth;
+  if(edited && sub<7) $("teamCredits").classList.add("drop");
+
+  const nextEdit = sub<7 ? edited+1 : 0;                                         /* comment to edit next */
+  const nextResolve = 0;   /* step 7 uses Resolve all */       /* comment to resolve next */
+  const item = c => {
+    const isRes = resolvedSet.has(c.n);
+    const hotEdit = c.n===nextEdit, hotRes = c.n===nextResolve;
+    /* Hover shows both actions. Edit can be repeated; Resolve is always a manual click. */
+    const acts = isRes ? "" : `<div class="cacts ${hotEdit||hotRes?'show':''}">
+        <button class="cact ${hotRes?'hot tip-right':''}" data-tip="Click here" data-res="${c.n}">${ic("check")}Resolve</button>
+        <button class="cact edit ${hotEdit?'hot tip-below':''}" data-tip="Click here" data-edit="${c.n}">${ic("wand")}Edit with this comment</button></div>`;
+    const status = isRes ? `<span class="cstat ok">${ic("check")}Resolved</span>` : c.n<=edited ? `<span class="cstat">Edited in v${c.n+1}</span>` : "";
+    return `<div class="citem hov ${isRes?'is-done':''}"><div class="av">${avatar(c.who)}</div><div><b>${PEOPLE[c.who].name}</b><small>${c.who==="alex"?"10 min ago":"25 min ago"}</small><p>${c.text}</p>
+      ${status}${acts}</div></div>`;
+  };
+  const allRes = resolvedSet.size===3;
+  rp.innerHTML = `<div class="blk team"><div class="team-top"><b>${ic("users")}Ironleaf Games</b><small>Trial credits ${credits.toLocaleString()}</small></div>
+      <div class="avs">${["mia","leo","alex","sam"].map((k,i)=>`<div class="av" style="${i===3?'opacity:.45':''}">${avatar(k)}</div>`).join("")}</div></div>
+    <div class="blk cbox"><h4>Comments${(sub===6||sub===7)&&!allRes?`<button class="resall hot tip-below" data-tip="Click here" id="resAll">${ic("check")}Resolve all</button>`:""}</h4>${TEAM_NOTES().filter(c=>!resolvedSet.has(c.n)).map(item).join("")}
+    ${resolvedSet.size&&!allRes?`<p class="empty" style="font-size:12px">${resolvedSet.size} resolved ${resolvedSet.size>1?"comments are":"comment is"} hidden</p>`:""}
+    ${allRes?`<div class="v2card"><span class="v2tag">v4</span><div><b>All comments resolved</b><small>3 generations · ${3*EDIT_COST} team credits used</small></div></div>`:""}</div>`;
+  rp.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>{
+    const n=+b.dataset.edit;
+    if(n===nextEdit && sub===2) showGenerating(()=>{ state.sub=3; render(); }, "Generating Knight_v3 and Knight_v4", "Editing the mane and the stirrup from the team's comments");
+    else if(n===nextEdit) adv();
+    else $("layer").innerHTML = `<div class="toast low">${ic("wand")}Leo can edit again from this comment anytime. The demo follows the comments in order.</div>`;
+  });
+  if($("resAll")) $("resAll").onclick=()=>{ resolvedSet=new Set([1,2,3]); state.sub=4; render(); };
+  rp.querySelectorAll("[data-res]").forEach(b=>b.onclick=()=>{
+    resolvedSet.add(+b.dataset.res);
+    if(resolvedSet.size===3){ state.sub=4; render(); } else render();
+  });
+
+  $("layer").innerHTML = sub===0 ? `<div class="toast low">${ic("bell")}Mia and Alex left 3 comments on Knight_v1</div>`
+    : sub===2 ? `<div class="toast low">${ic("check")}Knight_v2 ready · ${EDIT_COST} team credits used</div>`
+    : sub===6 ? `<div class="toast low">${ic("check")}Knight_v3 and Knight_v4 ready · ${2*EDIT_COST} team credits used</div>`
+    : sub===7 ? `<div class="toast low">${ic("check")}v4 looks right. Leo resolves all comments at once.</div>`
+    : sub>=8 ? `<div class="scrim"><div class="trans">
+        <div class="avpair"><div class="av">${avatar("mia")}</div><div class="av">${avatar("alex")}</div></div>
+        <b>Mia and Alex got a notification</b>
+        <p>"Leo resolved your comments on Knight_v4." This round of review is finished.</p>
+        <button class="hot tip-below" data-tip="Click here" id="toSum">A few days later →</button>
+      </div></div>` : "";
+  if(sub>=8) $("toSum").onclick=()=>go(7);   /* on to the trial running out */
+}
+
+
+/* Step 7: a few days later the trial credits are gone. Mia upgrades from the credits menu, bottom left */
+function step7(){
+  const sub=state.sub;   /* 0 out of credits · 1 tier menu · 2 paywall · 3 payment · 4 paid team */
+  if(sub===3){ built=null; buildOnce("s7-pay", checkoutPage(true)); $("payBtn").onclick=adv; return; }
+  const fresh = built!=="s7";
+  buildOnce("s7", workspace({who:"mia", credits:"0"}));
+  const mv=$("mv"), rp=$("rpanel"), rail=document.querySelector(".frame .rail");
+  if(fresh){
+    mv.src=MODEL_SRCS[4]; mv.cameraOrbit="35deg 75deg auto";
+    rp.classList.remove("dim"); rp.removeAttribute("aria-hidden"); rp.classList.add("cpanel");
+    rail.classList.remove("dim"); rail.removeAttribute("aria-hidden");
+    rail.querySelectorAll(":scope > *:not(.bottom)").forEach(e=>e.classList.add("dim"));
+    rail.querySelector(".bottom").insertAdjacentHTML("afterbegin","");
+    $("btool").innerHTML = `
+      <button class="tb dim">${ic("cube")}</button><button class="tb texture dim">${ic("texture")}Texture</button>
+      <button class="tb dim">${ic("rig")}</button><span class="sep"></span>
+      <button class="tb dim">${ic("share")}</button><button class="tb dl dim">${ic("download")}</button><span class="sep"></span>
+      <button class="tb dim">${ic("chat")}</button><button class="tb dim">${ic("print")}</button>`;
+    document.querySelector(".ctop").insertAdjacentHTML("afterend",
+      `<div class="teamchip"><span>${ic("users")}Ironleaf Games</span><span class="an">Knight_v4</span><span class="tc" id="teamCredits7"></span></div>`);
+  }
+  const paid = sub>=4;
+  const cr = PKG[plan7.pkg].credits.toLocaleString();
+  const coins=rail.querySelector(".coins"), top=rail.querySelector(".topup");
+  coins.textContent = paid ? cr : "0";
+  top.textContent = paid ? "Studio" : "Upgrade";
+  top.id="railUp";
+  top.className = "topup" + (paid ? "" : " upg") + (sub===0 ? " hot tip-right" : "");
+  top.dataset.tip="Click here";
+  rail.querySelectorAll(".bottom > :not(.coins):not(.topup)").forEach(e=>e.classList.add("dim"));
+  top.onclick = sub===0 ? adv : null;
+  $("teamCredits7").innerHTML = paid ? `Team credits ${cr}` : "Trial credits 0 <em>Used up</em>";
+  rp.innerHTML = `<div class="blk team"><div class="team-top"><b>${ic("users")}Ironleaf Games</b><small>${paid?"Studio":"Studio trial"}</small></div>
+      <div class="avs">${["mia","leo","sam","alex"].map(k=>`<div class="av">${avatar(k)}</div>`).join("")}</div></div>
+    <div class="blk cbox"><h4>Team credits</h4>
+      ${paid ? `<p class="crd-big">${cr}</p><p class="empty" style="font-size:12px">Shared monthly credits · renews every month</p>`
+             : `<p class="crd-big out">0 <span>/ 2,000</span></p><p class="empty" style="font-size:12px">All trial credits used. Editors can't generate until the team upgrades.</p>`}</div>`;
+  const layer=$("layer");
+  if(sub===0){
+    layer.innerHTML = `<div class="toast low">${ic("bell")}Ironleaf Games used all 2,000 trial credits</div>`;
+  } else if(sub===1){
+    layer.innerHTML = `<div class="tiermenu">
+        <div class="tm-h"><span>Tier</span><b>Studio trial</b></div>
+        <div class="tm-row"><div>Team trial credits<small>2,000 total</small></div><b class="out">0</b></div>
+        <div class="tm-row"><div>Seats<small>Mia, Leo, Sam</small></div><b>3</b></div>
+        <div class="tm-up"><p>Upgrade to keep generating</p><button class="hot tip-below" data-tip="Click here" id="tmUp">${ic("crown")}Upgrade</button></div>
+        <div class="tm-foot dim">Subscription &amp; Usage</div></div>`;
+    $("tmUp").onclick=adv;
+  } else if(sub===2){
+    layer.innerHTML = upgradeModal(true);
+    const paint=()=>{
+      const P=PKG[plan7.pkg], extra=plan7.seats-1;
+      $("upPrice7").textContent="$"+plan7Total();
+      $("upFine7").textContent=`Billed monthly · $${P.price} package${extra?` + ${extra} extra seat${extra>1?"s":""}`:""}`;
+      $("cred7").innerHTML=`${P.credits.toLocaleString()} shared monthly credits ⓘ`;
+      $("assets7").textContent = plan7.pkg===1 ? "up to 550 assets" : "";
+      $("seatN7").textContent=plan7.seats;
+      $("seatMinus7").disabled = plan7.seats<=1;
+      document.querySelectorAll("#mult7 i").forEach(i=>i.classList.toggle("on", +i.dataset.m===plan7.pkg));
+    };
+    document.querySelectorAll("#mult7 i").forEach(i=>i.onclick=()=>{ plan7.pkg=+i.dataset.m; paint(); });
+    $("seatPlus7").onclick=()=>{ plan7.seats=Math.min(plan7.seats+1,20); paint(); };
+    $("seatMinus7").onclick=()=>{ plan7.seats=Math.max(plan7.seats-1,1); paint(); };
+    paint();
+    $("subBtn").onclick=adv;
+    $("upClose").onclick=()=>{ state.sub=1; render(); };
+  } else {
+    layer.innerHTML = `<div class="scrim"><div class="trans">
+        <div class="avpair"><div class="av">${avatar("mia")}</div><div class="av">${avatar("leo")}</div><div class="av">${avatar("sam")}</div></div>
+        <b>Ironleaf Games is now a paid Studio team</b>
+        <p>${cr} team credits are ready, and the team keeps reviewing and editing in Meshy.</p>
+        <p class="endnote">This is the end of the demo.</p>
+        <button class="hot tip-below" data-tip="Click here" id="toSum2">Go to summary →</button></div></div>`;
+    $("toSum2").onclick=()=>go(8);
+  }
+}
+
+/* Meshy Edit Mode, entered from a comment: area preselected, comment prefilled as the prompt */
+function editMode(i){
+  const c = TEAM_NOTES()[i], ver = i+1;
+  buildOnce("s6e"+i, `<div class="em">
+    <div class="em-top"><span class="em-back dim">${ic("x")}Back</span><span class="em-mode">${ic("wand")}Edit Mode</span></div>
+    <div class="em-hint">${ic("chat")}Area selected from ${PEOPLE[c.who].name}'s comment. Adjust it with Lasso or Brush if needed. <span class="em-got dim">Got it</span></div>
+    <model-viewer id="emv" src="${MODEL_SRCS[ver]}" alt="Knight_v${ver} in Edit Mode" camera-controls disable-zoom disable-tap interaction-prompt="none"
+      environment-image="legacy" tone-mapping="neutral" exposure="0.7" shadow-intensity="1.3" camera-orbit="${c.view}">
+    </model-viewer>
+    <div class="em-tools dim"><span class="on">Lasso</span><span>Brush</span><span>Lasso Eraser</span><span>Eraser</span><span>Size <i class="em-slider"></i> 11</span><span>Clear All</span></div>
+    <div class="em-prompt">
+      <div class="em-thumb on"><span class="em-ico">${ic("cube")}</span>Select Area</div>
+      <div class="em-thumb dim"><span class="em-ico">${ic("image")}</span>Reference 0/5</div>
+      <div class="em-body">
+        <div class="em-chips"><span class="em-sel">${ic("check")}Area selected</span><span class="em-from"><span class="av">${avatar(c.who)}</span>From ${PEOPLE[c.who].name}'s comment</span></div>
+        <div class="em-text">${c.text}</div>
+        <div class="em-foot"><span>${EDIT_COST} team credits</span><button class="em-send hot" data-tip="Click here" id="emSend" aria-label="Generate">${ic("send")}</button></div>
+      </div>
+    </div>
+    <div class="em-cube dim">FRONT</div>
+  </div>`);
+  clay($("emv"));
+  paintSelection($("emv"), c.paint);
+  $("layer") || $("frame").insertAdjacentHTML("beforeend",'<div id="layer"></div>');
+  $("emSend").onclick=()=>runEdit(i);
+}
+
+/* Paints the selected part green directly on the mesh (vertex colors), like Meshy's lasso selection */
+function paintSelection(mv, regions){
+  const apply=()=>{
+    try{
+      const sym=Object.getOwnPropertySymbols(mv).find(x=>x.description==="scene");
+      const sc=mv[sym]; if(!sc) return;
+      const inv=sc.target.matrixWorld.clone().invert();
+      const near=(p)=>{   /* 0..1, how far inside any selected region this point is */
+        let w=0;
+        for(const g of regions){
+          if(g.seed) continue;
+          let d;
+          if(g.c){ d=Math.hypot(p[0]-g.c[0],p[1]-g.c[1],p[2]-g.c[2]); }
+          else{
+            const ab=[g.b[0]-g.a[0],g.b[1]-g.a[1],g.b[2]-g.a[2]], ap=[p[0]-g.a[0],p[1]-g.a[1],p[2]-g.a[2]];
+            const t=Math.max(0,Math.min(1,(ab[0]*ap[0]+ab[1]*ap[1]+ab[2]*ap[2])/(ab[0]**2+ab[1]**2+ab[2]**2)));
+            d=Math.hypot(ap[0]-ab[0]*t,ap[1]-ab[1]*t,ap[2]-ab[2]*t);
+          }
+          w=Math.max(w, Math.min(1, Math.max(0,(g.r-d)/(g.r*0.3))));
+        }
+        return w;
+      };
+      sc.traverse(o=>{
+        if(!o.isMesh) return;
+        const pos=o.geometry.attributes.position, n=pos.count;
+        const m=o.matrixWorld.clone().premultiply(inv).elements;
+        const P=new Float32Array(n*3);
+        for(let i=0;i<n;i++){
+          const x=pos.getX(i), y=pos.getY(i), z=pos.getZ(i);
+          P[i*3]=m[0]*x+m[4]*y+m[8]*z+m[12]; P[i*3+1]=m[1]*x+m[5]*y+m[9]*z+m[13]; P[i*3+2]=m[2]*x+m[6]*y+m[10]*z+m[14];
+        }
+        const geoW=geodesicWeights(o.geometry, P, regions.filter(g=>g.seed));
+        const col=new Float32Array(n*3);
+        for(let i=0;i<n;i++){
+          const p=[P[i*3],P[i*3+1],P[i*3+2]];
+          const w=Math.max(near(p), geoW ? geoW[i] : 0);
+          col[i*3]=1+w*0.75; col[i*3+1]=1+w*1.75; col[i*3+2]=1-w*0.15;   /* times the grey clay = Meshy's selection green */
+        }
+        const Attr = (o.geometry.index && !o.geometry.index.isInterleavedBufferAttribute) ? o.geometry.index.constructor : pos.constructor;
+        o.geometry.setAttribute("color", new Attr(col,3));
+        o.material.vertexColors=true; o.material.needsUpdate=true;
+      });
+      sc.queueRender();
+    }catch(e){}
+  };
+  if(mv.loaded) apply(); else mv.addEventListener("load", apply, {once:true});
+}
+
+/* Distance measured along the mesh surface from a seed point, so a thin part doesn't bleed onto what sits behind it */
+function geodesicWeights(geo, P, seeds){
+  if(!seeds.length || !geo.index) return null;
+  const n=P.length/3, idx=geo.index;
+  const key=i=>Math.round(P[i*3]*1e4)+","+Math.round(P[i*3+1]*1e4)+","+Math.round(P[i*3+2]*1e4);
+  const weld=new Map(), W=new Int32Array(n);
+  for(let i=0;i<n;i++){ const k=key(i); if(!weld.has(k)) weld.set(k,weld.size); W[i]=weld.get(k); }
+  const N=weld.size, rep=new Int32Array(N); for(let i=0;i<n;i++) rep[W[i]]=i;
+  const adj=Array.from({length:N},()=>[]);
+  for(let t=0;t<idx.count;t+=3){ const a=W[idx.getX(t)],b=W[idx.getX(t+1)],c=W[idx.getX(t+2)]; adj[a].push(b,c); adj[b].push(a,c); adj[c].push(a,b); }
+  const dist=(a,b)=>{ const i=rep[a]*3,j=rep[b]*3; return Math.hypot(P[i]-P[j],P[i+1]-P[j+1],P[i+2]-P[j+2]); };
+  const out=new Float32Array(n);
+  for(const g of seeds){
+    let s=0,bd=1e9; for(let i=0;i<N;i++){ const j=rep[i]*3, d=Math.hypot(P[j]-g.seed[0],P[j+1]-g.seed[1],P[j+2]-g.seed[2]); if(d<bd){bd=d;s=i;} }
+    const D=new Float32Array(N).fill(Infinity); D[s]=0;
+    const heap=[[0,s]];   /* small binary heap */
+    const push=x=>{ heap.push(x); let k=heap.length-1; while(k){ const p=(k-1)>>1; if(heap[p][0]<=heap[k][0]) break; [heap[p],heap[k]]=[heap[k],heap[p]]; k=p; } };
+    const pop=()=>{ const top=heap[0], last=heap.pop(); if(heap.length){ heap[0]=last; let k=0; for(;;){ const l=2*k+1,r=l+1; let m=k; if(l<heap.length&&heap[l][0]<heap[m][0]) m=l; if(r<heap.length&&heap[r][0]<heap[m][0]) m=r; if(m===k) break; [heap[m],heap[k]]=[heap[k],heap[m]]; k=m; } } return top; };
+    while(heap.length){
+      const [d,u]=pop(); if(d>D[u] || d>g.geo) continue;
+      for(const v of adj[u]){ const nd=d+dist(u,v); if(nd<D[v] && nd<=g.geo){ D[v]=nd; push([nd,v]); } }
+    }
+    for(let i=0;i<n;i++){ const d=D[W[i]]; if(d<=g.geo) out[i]=Math.max(out[i], Math.min(1,(g.geo-d)/(g.geo*0.25))); }
+  }
+  return out;
+}
+
+function runEdit(i){
+  const c = TEAM_NOTES()[i];
+  showGenerating(()=>{ state.sub = 2; render(); }, `Generating Knight_v${i+2}`, `Editing ${c.part} from ${PEOPLE[c.who].name}'s comment`);
+}
+
+function showGenerating(done, title="Generating", sub=""){
+  const host = $("layer") || (()=>{ $("frame").insertAdjacentHTML("beforeend",'<div id="layer"></div>'); return $("layer"); })();
+  host.innerHTML = `<div class="genov"><div class="gen-card"><div class="spin"></div><b>${title}</b><small>${sub}</small><div class="gbar"><i></i></div></div></div>`;
+  setTimeout(done, 1600);
+}
+
+/* Step 7: core value, as one simple table */
+function stepSum(){
+  const row=(stage,does,means)=>`<tr><td class="cv-st">${stage}</td><td>${does}</td><td>${means}</td></tr>`;
+  buildOnce("sum", `<div class="sum">
+    <h2 class="cv-title">Core value: Meshy becomes the hub for 3D teams</h2>
+    <table class="cv">
+      <thead><tr><th>Stage</th><th>What team review does</th><th>Growth result</th></tr></thead>
+      <tbody>
+        ${row("Acquisition","Brings collaborators outside 3D design, such as art leads and engineers, into Meshy as free reviewers","Acquires not just new users, but entire teams")}
+        ${row("Activation","Displays the Comment entry point on every shared model, right when team members want to give feedback","Team members see the opportunity to improve communication and collaboration efficiency")}
+        ${row("Conversion","Positions commenting as a Studio feature, so the need to comment drives the upgrade","Individual users convert into Studio teams")}
+        ${row("Retention","Turns comments into new model generations, and keeps every version, comment and decision in Meshy","Higher usage as the team grows; the team's workflow for asset generation, management, version control and approval becomes dependent on Meshy, raising switching costs")}
+        ${row("Expansion","Scales with the team as it adds editors, projects and workspaces","More seats, and a clear, smooth path to Enterprise")}
+      </tbody>
+    </table>
+    <button class="start hot tip-below" data-tip="Click here" id="restartBtn">Restart demo</button>
+  </div>`);
+  $("restartBtn").onclick=()=>go(0);
+}
+
+function comingSoon(){
+  buildOnce("soon"+state.step, `<div class="soon">Step ${state.step} screen goes here.</div>`);
+}
+
+function render(){
+  renderGuide();
+  setTimeout(()=>{ const h=document.querySelector("#beats .hint"); if(h) h.hidden=!document.querySelector("#frame .hot"); },60);
+  const f=$("frame");
+  f.classList.toggle("intro", state.step===0 || state.step===8);
+  const paying = (state.step===2 && state.sub===3) || (state.step===7 && state.sub===3);
+  f.classList.toggle("page", (state.step===2 && !paying) || state.step===4 || (state.step===5 && state.sub>=2));
+  f.classList.toggle("onb", state.step===3 || (state.step===5 && state.sub===1));
+  f.classList.toggle("s6", state.step===6 || state.step===7);
+  f.classList.toggle("emf", state.step===6 && state.sub===1);
+  f.classList.toggle("payf", paying);
+  const fn=[step0,step1,step2,step3,step4,step5,step6,step7,stepSum][state.step];
+  if(fn) fn(); else comingSoon();
+}
+
+/* Next and Back move one small action at a time; the step list jumps whole steps */
+$("next").onclick=()=>{
+  if(state.step===6 && state.sub===1){ runEdit(0); return; }
+  const n=STEPS[state.step].beats.length;
+  if(state.sub < n-1){ state.sub++; render(); }
+  else if(state.step < STEPS.length-1) go(state.step+1);
+  else go(0);
+};
+$("prev").onclick=()=>{
+  if(state.sub>0){ state.sub--; render(); }
+  else if(state.step>0){ const p=state.step-1; state.step=p; state.sub=STEPS[p].beats.length-1; render(); }
+};
+render();
+</script>
