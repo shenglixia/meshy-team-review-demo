@@ -863,6 +863,7 @@ body.touring .frame .hot::after{display:none}
 .lib-full{flex:1}
 .cv-why{max-width:none!important;margin:8px 0 0!important;line-height:1.6}
 .cv-why+.cv-why{margin:10px 0 18px!important}
+.trans b+button{margin-top:16px}
 .begin-row{display:flex;align-items:center;gap:14px}
 .begin-tip{font-size:13px;color:var(--hot);font-weight:500}
 .start.big{font-size:16px;padding:14px 28px;border-radius:10px;align-self:flex-start}
@@ -1048,7 +1049,7 @@ const STEPS = [
   {title:"Mia upgrades the team", who:"mia", role:"Art lead, Studio admin",
    goal:"A few days later, the team has used all 2,000 trial credits turning comments into new versions. To keep the 3D work running, Mia upgrades the team to a paid Studio plan.",
    beats:[["mia","Sees that the team has run out of trial credits and clicks Upgrade","Team workspace"],["mia","Reviews the team's plan and clicks Upgrade","Credits menu"],["mia","Selects a Studio package and the number of seats","Upgrade plan"],["mia","Pays with her saved card","Checkout"],["none","Ironleaf Games is now on a paid Studio plan","Team workspace"]]},
-  {title:"What this drives", who:"none",
+  {title:"Core value", who:"none",
    goal:"Team review turns Meshy from one artist's tool into the team's pipeline.",
    beats:[["none","The team joins, every comment becomes an edit, and the assets, process and decisions stay in Meshy."]]}
 ];
@@ -1238,9 +1239,8 @@ function step1(){
     layer = `<div class="toast">${ic("check")}Shared with mia@ironleaf.com</div>
     <div class="scrim"><div class="trans">
       <div class="av">${avatar("mia")}</div>
-      <b>Mia got Leo's link</b>
-      <p>Next, see what Mia sees when she opens it.</p>
-      <button class="hot tip-below" data-tip="Click here" id="toMia">Continue as Mia</button>
+      <b>Leo shared the model with Mia</b>
+      <button class="hot tip-below" data-tip="Click here" id="toMia">Next: Mia starts a Studio trial →</button>
     </div></div>`;
   }
   $("layer").innerHTML = layer;
@@ -1400,7 +1400,15 @@ function step2(){
   }
   if(state.sub===3){
     buildOnce("s2-pay", checkoutPage());
-    $("payBtn").onclick=()=>go(3);   /* Meshy goes straight into team setup after paying */
+    $("payBtn").onclick=()=>{   /* trial started: hand-off to team setup, same as the other step transitions */
+      $("payBtn").classList.remove("hot");
+      $("frame").insertAdjacentHTML("beforeend",`<div class="scrim"><div class="trans">
+        <div class="av">${avatar("mia")}</div>
+        <b>Mia started a 7-day Studio trial</b>
+        <button class="hot tip-below" data-tip="Click here" id="toS3">Next: Mia sets up the team →</button>
+      </div></div>`);
+      $("toS3").onclick=()=>go(3);
+    };
     return;
   }
   const fresh = built!=="s2";
@@ -1557,7 +1565,15 @@ function step3(){
     <div class="ob-done">${ic("check")}<div><span>3 invitations sent. They'll join once they accept.</span></div></div>
     <p class="ob-sub" style="margin-top:6px">Next, go back to Knight_v1 and leave your feedback for the team.</p></div>
     <div class="ob-foot"><button class="ob-cta hot" data-tip="Click here" id="obGo">Back to Knight_v1 →</button></div>`;
-  $("obGo").onclick=()=>go(4);
+  $("obGo").onclick=()=>{
+    $("obGo").classList.remove("hot");
+    $("frame").insertAdjacentHTML("beforeend",`<div class="scrim"><div class="trans">
+      <div class="av">${avatar("mia")}</div>
+      <b>Mia invited the team to Ironleaf Games</b>
+      <button class="hot tip-below" data-tip="Click here" id="toS4">Next: Mia leaves feedback →</button>
+    </div></div>`);
+    $("toS4").onclick=()=>go(4);
+  };
 }
 
 /* Step 4: Mia, now the Studio admin, pins two comments on the model */
@@ -1610,9 +1626,8 @@ function step4(){
   if(writing>=0) $("postBtn").onclick=()=>to(sub+1);
   $("layer").innerHTML = sub===4 ? `<div class="scrim"><div class="trans">
       <div class="av">${avatar("alex")}</div>
-      <b>Mia left two comments</b>
-      <p>Next, Alex accepts the invite and joins as a free reviewer.</p>
-      <button class="hot tip-below" data-tip="Click here" id="toAlex">Continue as Alex</button>
+      <b>Mia left two comments on the model</b>
+      <button class="hot tip-below" data-tip="Click here" id="toAlex">Next: Alex reviews →</button>
     </div></div>` : "";
   if(sub===4) $("toAlex").onclick=()=>go(5);
 }
@@ -1712,9 +1727,8 @@ function step5(){
   $("layer").innerHTML = sub===2 ? `<div class="toast">${ic("check")}You joined Ironleaf Games as a reviewer</div>`
     : sub===4 ? `<div class="scrim"><div class="trans">
       <div class="av">${avatar("leo")}</div>
-      <b>Leo has 3 new comments</b>
-      <p>Next, Leo turns the feedback into a new version.</p>
-      <button class="hot tip-below" data-tip="Click here" id="toLeo">Continue as Leo</button>
+      <b>Leo received three new comments</b>
+      <button class="hot tip-below" data-tip="Click here" id="toLeo">Next: Leo edits from the comments →</button>
     </div></div>` : "";
   if(sub===4) $("toLeo").onclick=()=>go(6);
 }
@@ -1816,9 +1830,9 @@ function step6(){
 
     : sub>=8 ? `<div class="scrim"><div class="trans">
         <div class="avpair"><div class="av">${avatar("mia")}</div><div class="av">${avatar("alex")}</div></div>
-        <b>Mia and Alex got a notification</b>
-        <p>"Leo resolved your comments on Knight_v4." This round of review is finished.</p>
-        <button class="hot tip-below" data-tip="Click here" id="toSum">A few days later →</button>
+        <b>Mia and Alex are notified</b>
+        <p>"Leo resolved your comments on Knight_v4." This review round is complete.</p>
+        <button class="hot tip-below" data-tip="Click here" id="toSum">Next: Mia upgrades the team →</button>
       </div></div>` : "";
     if(sub>=8) $("toSum").onclick=()=>go(7);   /* on to the trial running out */
 }
@@ -1891,8 +1905,7 @@ function step7(){
   } else {
     layer.innerHTML = `<div class="scrim"><div class="trans">
         <div class="avpair"><div class="av">${avatar("mia")}</div><div class="av">${avatar("leo")}</div><div class="av">${avatar("sam")}</div></div>
-        <b>Ironleaf Games is now a paid Studio team</b>
-        <p>${cr} team credits are ready, and the team keeps reviewing and editing in Meshy.</p>
+        <b>Ironleaf Games is now a paying Studio customer</b>
         <p class="endnote">This is the end of the demo.</p>
         <button class="hot tip-below" data-tip="Click here" id="toSum2">Go to summary →</button></div></div>`;
     $("toSum2").onclick=()=>go(8);
@@ -2018,9 +2031,9 @@ function stepSum(){
   buildOnce("sum", `<div class="sum">
     <h2 class="cv-title">Core value: Meshy becomes the hub for 3D teams</h2>
     <p class="lede cv-why">Meshy is built mainly for 3D artists, while their collaborators, such as art leads and engineers, review work outside the product. Feedback often gets miscommunicated, problems surface late in the process, and the team ends up reworking models. Team review brings every collaborator into Meshy, so feedback arrives early, lands directly on the model, and stays tied to its version. This makes collaboration easier and cuts rework.</p>
-    <p class="lede cv-why">Over time, team review increases usage across the team and gives Meshy direct access to team users. That access helps Meshy understand how teams actually work and build deeper into their workflow. As teams keep their assets, processes and decisions in Meshy, it becomes the collaboration hub for 3D teams, laying the foundation for Enterprise.</p>
+    <p class="lede cv-why">Over time, team review increases usage across the team and gives Meshy direct access to team users. That access helps Meshy understand how teams work in production and build deeper into their workflow. As teams keep their assets, processes and decisions in Meshy, it becomes the collaboration hub for 3D teams, also laying the foundation for Enterprise upgrades.</p>
     <table class="cv">
-      <thead><tr><th>Stage</th><th>What team review does</th><th>Growth result</th></tr></thead>
+      <thead><tr><th>Stage</th><th>What team review does</th><th>Value for growth</th></tr></thead>
       <tbody>
         ${row("Acquisition","Invites collaborators outside 3D design, such as art leads and engineers, into Meshy","Meshy acquires not only individual users but whole teams, giving it a view into the 3D workflow in production")}
         ${row("Activation","Surfaces the Comment entry point as the team lead rotates and inspects a shared model","Captures the team lead's attention and sparks curiosity about whether commenting could improve the model feedback process")}
