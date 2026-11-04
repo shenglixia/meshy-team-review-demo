@@ -335,8 +335,8 @@ button.pbtn{color:var(--p-ink)}
 /* Step 3: team card + invite dialog */
 .team{display:flex;flex-direction:column;gap:10px}
 .team-top{display:flex;justify-content:space-between;align-items:center}
-.team-top b{font-size:14px;font-weight:600;display:flex;gap:8px;align-items:center}
-.team-top small{display:block;color:var(--p-mute);font-size:12px;font-weight:400}
+.team-top b{font-size:14px;font-weight:600;display:flex;gap:8px;align-items:center;white-space:nowrap}
+.team-top small{display:block;color:var(--p-mute);font-size:12px;font-weight:400;text-align:right}
 .avs{display:flex}
 .avs .av{width:28px;height:28px;border:2px solid var(--p-panel);margin-left:-6px}
 .avs .av:first-child{margin-left:0}
@@ -529,7 +529,7 @@ button.pbtn{color:var(--p-ink)}
 .citem.is-done p{color:var(--p-mute)}
 .cacts{display:none;gap:6px;margin-top:8px;flex-wrap:wrap}
 .citem.hov:hover .cacts,.cacts.show{display:flex}
-.cact{display:flex;gap:5px;align-items:center;background:#2a2b2e;border:1px solid var(--p-line);color:var(--p-ink);border-radius:7px;padding:5px 10px;font-size:12px;font-family:var(--f-app)}
+.cact{display:flex;gap:5px;align-items:center;white-space:nowrap;background:#2a2b2e;border:1px solid var(--p-line);color:var(--p-ink);border-radius:7px;padding:5px 10px;font-size:12px;font-family:var(--f-app)}
 .cact svg{width:13px;height:13px}
 .cstat{display:inline-flex;gap:4px;align-items:center;margin-top:6px;font-size:11.5px;color:var(--p-mute)}
 .cstat.ok{color:#7be39a}
@@ -546,7 +546,8 @@ button.pbtn{color:var(--p-ink)}
   .frame.s6 .teamchip{left:50%;right:auto;transform:translateX(-50%);font-size:12px;gap:8px}.frame.s6 .teamchip .an{display:none}
   .frame.s6 .btool{transform:translateX(-50%) scale(.82);transform-origin:bottom center;bottom:8px}}
 @media (max-width:1020px){.frame.s6 .lpanel{display:none}}
-@media (max-width:760px){.frame.s6 .rpanel.cpanel{width:auto}.frame.s6{flex-direction:column}.frame.s6 .center{min-height:340px}}
+@media (max-width:760px){.frame.s6 .rpanel.cpanel{width:200px}.frame.s6 .center{min-width:0}.frame.s6 .teamchip{max-width:calc(100% - 20px)}}
+@media (max-width:520px){.frame.s6{flex-direction:column}.frame.s6 .rpanel.cpanel{width:auto}.frame.s6 .center{min-height:340px}}
 .tp-head{display:flex;justify-content:space-between;align-items:baseline}
 .tp-head b{font-size:14px;font-weight:600}
 .tp-head small{color:var(--p-mute);font-size:12px}
@@ -732,7 +733,7 @@ button.pbtn{color:var(--p-ink)}
 .steps li:first-child .n{min-width:10px;width:10px;height:10px;padding:0;margin:0 5px}
 #beginBtn.hot::after{display:none}
 .cbox h4{display:flex;align-items:center;justify-content:space-between}
-.resall{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;border:1px solid #3a3b38;background:#2a2b28;color:#e8e8e3}
+.resall{white-space:nowrap;display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;border:1px solid #3a3b38;background:#2a2b28;color:#e8e8e3}
 .resall .i{width:13px;height:13px}
 .trans .endnote{margin:-8px 0 16px;font-weight:600;color:var(--g-ink)}
 .steps li:last-child .n{padding:0 7px}
@@ -766,20 +767,102 @@ body.touring .frame .hot::after{display:none}
 .u7-fine{font-size:12px;color:var(--g-mute);margin:10px 0 14px;line-height:1.5}
 .u7-btn{width:100%;background:#1f8f4e;color:#fff;border:0;border-radius:9px;padding:12px;font-weight:600;font-size:15px}
 .u7-demo{font-size:11px;color:#a5a6a0;text-align:center;margin:30px 0 0}
-.tiermenu{position:absolute;left:72px;bottom:16px;z-index:12;width:250px;background:#1c1d1f;border:1px solid var(--p-line);border-radius:12px;color:var(--p-ink);font-size:13px;box-shadow:0 12px 30px rgba(0,0,0,.45);overflow:hidden}
-.tm-h{display:flex;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--p-line);font-weight:600}
-.tm-h b{color:#f5c84b}
-.tm-row{display:flex;justify-content:space-between;align-items:center;padding:10px 16px}
-.tm-row small{display:block;color:var(--p-mute);font-size:11px}
-.tm-row b{color:#f5c84b;font-weight:600}.tm-row b.out{color:#ff8b7a}
-.tm-up{margin:6px 12px 12px;background:#26272a;border-radius:10px;padding:12px}
-.tm-up p{margin:0 0 10px;color:var(--p-mute);font-size:12.5px}
-.tm-up button{width:100%;display:flex;align-items:center;justify-content:center;gap:6px;background:#f2c94c;color:#2b2100;border:0;border-radius:8px;padding:8px;font-weight:600}
-.tm-up button .i{width:14px;height:14px}
-.tm-foot{border-top:1px solid var(--p-line);padding:12px 16px;color:var(--p-mute)}
+.tiermenu{position:absolute;left:66px;bottom:14px;z-index:12;width:268px;background:#1f2022;border:1px solid #2d2e31;border-radius:14px;color:#ececea;font-size:13px;box-shadow:0 14px 34px rgba(0,0,0,.5);overflow:hidden}
+.tm-h{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid #2d2e31;font-weight:600;font-size:14.5px}
+.tm-h b{color:#8f86ff;font-size:16px;font-weight:600}
+.tm-body{padding:8px 20px 18px}
+.tm-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0}
+.tm-row div{font-weight:500}
+.tm-row small{display:block;color:#8d8e89;font-size:11px;font-weight:400;margin-top:1px}
+.tm-row b{color:#f2c94c;font-weight:500}.tm-row b.out{color:#ff8b7a}
+.tm-btn{width:100%;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:6px;background:linear-gradient(180deg,#f6d36b,#e9b73f);color:#2b2100;border:0;border-radius:8px;padding:9px;font-weight:600;font-size:13.5px}
+.tm-btn .i{width:14px;height:14px}
+.tm-foot{display:flex;align-items:center;gap:10px;border-top:1px solid #2d2e31;padding:16px 20px;color:#dcdcd8}
+.tm-foot .i{width:16px;height:16px}
 .rail .topup.hot{outline-offset:2px}
 .rail .topup.upg{background:#f2c94c;color:#2b2100}
 .pay-big small{font-size:14px;font-weight:400;color:#6b6b6b}
+.rot-hint{position:absolute;right:14px;bottom:14px;display:flex;align-items:center;gap:6px;padding:5px 9px 5px 7px;border-radius:999px;background:rgba(20,21,23,.72);border:1px solid rgba(255,255,255,.12);color:#d9dad4;font:500 11px/1 var(--f-app);pointer-events:none;backdrop-filter:blur(4px)}
+.rot-hint svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;animation:rotHint 2.4s ease-in-out infinite}
+@keyframes rotHint{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
+#emv .rot-hint{right:auto;left:14px}
+.rot-hint.up{bottom:78px}
+.su-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:24px;background:#0b0b0b;font-family:var(--f-app)}
+.su{display:flex;width:min(980px,100%);height:min(560px,100%);border-radius:20px;overflow:hidden;background:#1d1d1f;border:1px solid #2a2a2c}
+.su-art{flex:1;position:relative;background:radial-gradient(circle at 30% 30%,#2f6b1e,#13260d 70%);background-color:#173010}
+.su-art::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.12) 1px,transparent 1px);background-size:14px 14px;pointer-events:none}
+.su-art model-viewer{position:absolute;inset:0 0 70px;width:100%;height:auto;--poster-color:transparent}
+.su-art-txt{position:absolute;left:26px;bottom:24px;color:#fff;display:flex;flex-direction:column;gap:4px}
+.su-art-txt b{font-size:26px;font-weight:600}.su-art-txt span{font-size:13px;color:rgba(255,255,255,.75)}
+.su-form{flex:1;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 40px;color:#eee}
+.su-x{position:absolute;top:16px;right:16px;width:30px;height:30px;border-radius:8px;background:#2a2a2c;display:flex;align-items:center;justify-content:center;opacity:.6}
+.su-x .i{width:14px;height:14px}
+.su-inv{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#cfcfc9;background:#26272a;border:1px solid #333;border-radius:999px;padding:4px 12px 4px 4px;margin-bottom:16px}
+.su-inv .jt-logo{width:22px;height:22px;font-size:9px;border-radius:6px}
+.su-form h2{margin:0 0 6px;font-size:26px;font-weight:600}
+.su-sub{display:flex;align-items:center;gap:6px;margin:0 0 20px;color:#bdbdb6;font-size:14px}.su-sub .i{width:15px;height:15px}
+.su-google{width:100%;max-width:340px;display:flex;align-items:center;justify-content:center;gap:10px;background:#2a2a2c;color:#f2f2ee;border:0;border-radius:10px;padding:12px;font-weight:500;font-size:14.5px}
+.su-google .g{font-weight:700;color:#4285f4}
+.su-sso{width:100%;max-width:340px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
+.su-sso span{background:#2a2a2c;border-radius:10px;padding:10px 0;text-align:center;font-size:13px;font-weight:600}
+.su-or{width:100%;max-width:340px;display:flex;align-items:center;gap:10px;margin:16px 0 10px;font-size:11px;color:#999}.su-or i{flex:1;height:1px;background:#333}
+.su-form .dim,.su-mail{width:100%;max-width:340px}
+.su-code{width:100%;border:0;font-size:14.5px}
+.su-form .su-pw.dim{max-width:none}
+.su-lbl{display:block;font-size:11px;color:#aaa;margin-bottom:4px}
+.su-inp{border:1px solid #333;border-radius:10px;padding:11px 12px;font-size:13.5px;color:#ddd}
+.su-code{margin-top:12px;background:var(--lime);color:var(--lime-ink);border-radius:10px;padding:11px;text-align:center;font-weight:600}
+.su-pw{text-align:center;color:var(--lime);font-size:13px;margin:30px 0 0}
+.su-terms{font-size:11px;color:#9a9a94;margin:16px 0 0;text-align:center}.su-terms u{color:var(--lime);text-decoration:none}
+@media (max-width:900px){.su-art{display:none}}
+.pay-saved{padding:14px 16px}
+.pay-saved h4{margin:0 0 10px;font-size:14px;font-weight:600}
+.pm{display:flex;align-items:center;gap:12px;border:1px solid #e3e3e3;border-radius:10px;padding:12px 14px;margin-top:8px}
+.pm.on{border:2px solid #3ec46d;padding:11px 13px}
+.pm b{display:block;font-weight:500;font-size:14px}.pm small{color:#777;font-size:12.5px}
+.pm-dot{margin-left:auto;width:16px;height:16px;border-radius:50%;border:5px solid #3ec46d}
+.pm-plus{width:24px;height:24px;border-radius:6px;background:#e9f8ee;color:#2a9d55;display:flex;align-items:center;justify-content:center;font-weight:600}
+.pm-add{color:#2a9d55}
+.mcanvas.fg{background:#fff;padding:24px 8% 36px;text-align:left;display:block}
+.mcanvas.fg .fg-card{width:auto}
+.fg-brand{font-size:24px;font-weight:500;color:#111;margin-bottom:22px}
+.fg-h{font-size:22px;font-weight:400;color:#111;margin:0 0 22px;line-height:1.35}.fg-h b{font-weight:700}
+.fg-card{border:2px solid #e6e6e6;border-radius:10px;padding:28px 32px;max-width:560px}
+.fg-card h3{margin:0 0 16px;font-size:22px;font-weight:700;color:#111}
+.fg-by{display:flex;align-items:center;gap:12px;margin-bottom:20px;color:#777;font-size:14px}
+.fg-by .av{width:34px;height:34px}.fg-by b{color:#333}.fg-by small{display:block;font-size:13.5px;color:#888;margin-top:2px}
+.fg-btn{margin-top:0;background:#111;color:#fff;border:0;border-radius:8px;padding:11px 20px;font-weight:600;font-size:14px}
+.lib{padding:10px!important}
+.lib-q{display:flex;align-items:center;gap:8px;border:1px solid var(--p-line);border-radius:8px;padding:7px 10px;color:var(--p-faint);font-size:12px}.lib-q .i{width:14px;height:14px}
+.lib-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.lt{position:relative;aspect-ratio:1/1.1;border-radius:8px;overflow:hidden;background:#232427;border:1.5px solid transparent}
+.lt img{width:100%;height:100%;object-fit:cover;display:block}
+.lt.sel{border-color:var(--lime)}
+.lt.hot{overflow:visible;cursor:pointer}.lt.hot img{border-radius:7px}
+.lt span{position:absolute;left:5px;bottom:4px;font-size:10px;color:#d8d8d2;background:rgba(0,0,0,.5);border-radius:4px;padding:1px 5px}
+.lt.empty{background:#1f2023}
+.cbox h4{gap:8px}.cbox h4>span{display:flex;align-items:baseline;gap:8px}
+.cfor{font-size:11.5px;font-weight:400;color:var(--p-mute)}
+.cmpv{position:absolute;inset:0;z-index:14;background:#121314;display:flex;flex-direction:column;padding:16px 18px;gap:12px;font-family:var(--f-app);color:var(--p-ink)}
+.cmp-top{display:flex;align-items:center;justify-content:space-between}
+.cmp-top b{display:flex;align-items:center;gap:8px;font-size:15px}.cmp-top .i{width:16px;height:16px}
+.cmp-top span{font-size:12px;color:var(--p-mute)}
+.cmp-cols{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cmp-col{background:var(--p-panel);border-radius:12px;display:flex;flex-direction:column;padding:12px;min-height:0}
+.cmp-h{display:flex;align-items:center;gap:8px;font-size:13.5px}
+.cmp-tag{background:#2c3512;color:var(--lime);border-radius:5px;padding:2px 7px;font-size:11.5px;font-weight:600}
+.cmp-col model-viewer{flex:1;min-height:0;width:100%;background:transparent}
+.cmp-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;min-height:76px}
+.cmp-list li{display:flex;align-items:center;gap:8px;font-size:13px}
+.cmp-list li .i{width:14px;height:14px;color:var(--lime);flex:none}
+.cmp-list li small{margin-left:auto;color:var(--p-mute);font-size:11.5px}
+.cmp-list li.muted{color:var(--p-mute)}
+.cmp-foot{display:flex;justify-content:flex-end;padding-bottom:20px}
+.cmp-foot .resall{font-size:13.5px;padding:9px 16px;background:var(--lime);color:var(--lime-ink);border-color:var(--lime)}
+.tc-up{display:inline-flex;align-items:center;gap:4px;margin-left:8px;background:#f2c94c;color:#2b2100;border:0;border-radius:6px;padding:2px 8px;font-weight:600;font-size:12px;cursor:pointer}.tc-up .i{width:12px;height:12px}
+.lib-full{flex:1}
+.cv-why{max-width:none!important;margin:8px 0 0!important;line-height:1.6}
+.cv-why+.cv-why{margin:10px 0 18px!important}
 .begin-row{display:flex;align-items:center;gap:14px}
 .begin-tip{font-size:13px;color:var(--hot);font-weight:500}
 .start.big{font-size:16px;padding:14px 28px;border-radius:10px;align-self:flex-start}
@@ -817,6 +900,8 @@ body.touring .frame .hot::after{display:none}
   .people{grid-template-columns:1fr}
   .intro-wrap{padding:22px 18px}
 }
+/* steps 6 and 7 keep the left rail on small screens: Step 7's Upgrade entry lives there */
+@media (max-width:860px){.frame.s6 .rail{display:flex;width:56px}}
 </style>
 
 <div class="app">
@@ -844,6 +929,9 @@ body.touring .frame .hot::after{display:none}
 
 <script>
 const ICON = {
+  compare:'<rect x="3" y="5" width="7" height="14" rx="1.5"/><rect x="14" y="5" width="7" height="14" rx="1.5"/>',
+  doc:'<path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/>',
+  gift:'<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v8h14v-8M12 8v12M12 8c-2-4-6-4-6-1.5S9.5 8 12 8zm0 0c2-4 6-4 6-1.5S14.5 8 12 8z"/>',
   crown:'<path d="M4 17l-1-10 5 4 4-6 4 6 5-4-1 10z"/>',
   chat:'<path d="M4 5h16v11H9l-5 4z"/>',
   image:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/>',
@@ -860,7 +948,7 @@ const ICON = {
   plus:'<path d="M12 5v14M5 12h14"/>',
   check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
   texture:'<path d="M4 20L20 4M4 14L14 4M10 20L20 10"/>',
-  wand:'<path d="M5 19L15 9M14 4v3M19 9h-3M17.5 5.5l-2 2"/>',
+  wand:'<path d="M10 3.5l1.6 4.4 4.4 1.6-4.4 1.6L10 15.5l-1.6-4.4L4 9.5l4.4-1.6z"/><path d="M17.5 14l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/>',
   monitor:'<rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6"/>',
   globe:'<circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4c2.5 3 2.5 13 0 16M12 4c-2.5 3-2.5 13 0 16"/>',
   rig:'<circle cx="12" cy="5" r="2"/><path d="M12 7v7M8 10h8M9 21l3-7 3 7"/>',
@@ -894,17 +982,20 @@ for(const v of [2,3,4]){
   }catch(e){}
   MODEL_SRCS[v] = src || (HAS_VERSION[v] ? `assets/knight_v${v}.glb` : MODEL_SRCS[v-1]);
 }
+/* small corner badge that tells people the 3D model can be rotated */
+const ROT_SVG = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7c4.4 0 8 1.8 8 4s-3.6 4-8 4-8-1.8-8-4 3.6-4 8-4z" fill="none"/><path d="M16 16.5l-2.5-1.5 1.8-2.2" fill="none"/><path d="M12 3v9"/><path d="M9.5 5.5L12 3l2.5 2.5" fill="none"/></svg>`;
+const ROT = `<div class="rot-hint" aria-hidden="true">${ROT_SVG}<span>Drag to rotate</span></div>`;
 const ic = (n, cls="") => `<svg class="i ${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICON[n]}</svg>`;
 
 const PEOPLE = {
   mia:  {name:"Mia",  title:"Art lead", role:"Art lead", bg:"#dff4ec", skin:"#f1c7a5", hair:"#3b2a20", shirt:"#1d9e75", style:"long",
-         bio:"Runs the art team. She sets the direction, approves every model, and decides which tools the team pays for. She has a free Meshy account."},
+         bio:"Leads the art team. Sets the creative direction, approves every model, and decides which tools the team pays for."},
   leo:  {name:"Leo",  title:"3D artist", role:"3D artist", bg:"#ece7ff", skin:"#e8b48f", hair:"#1f1a17", shirt:"#534ab7", style:"short",
-         bio:"Reports to Mia. He already pays for Meshy on his own and is building the knight model."},
+         bio:"Owns the knight piece and is responsible for building its 3D model. Reports to Mia."},
   sam:  {name:"Sam",  title:"3D artist", role:"3D artist", bg:"#e6eefc", skin:"#c98e63", hair:"#6b3f22", shirt:"#378add", style:"curly",
-         bio:"Reports to Mia and works alongside Leo on other pieces in the same set. He has a free Meshy account."},
+         bio:"Owns other pieces in the same set, working alongside Leo. Reports to Mia."},
   alex: {name:"Alex", title:"Production engineer", role:"Production engineer", bg:"#fdeee3", skin:"#f3d2b8", hair:"#b5652b", shirt:"#d85a30", style:"side",
-         bio:"Works with the factory. He checks whether each model can actually be manufactured before it ships."},
+         bio:"Works with the factory and validates that each model can be manufactured before it ships."},
   none: {name:"Summary", role:"What this flow drives", bg:"#eceae4"},
   intro:{name:"Scenario", role:"Ironleaf Games", bg:"#eceae4"}
 };
@@ -937,26 +1028,26 @@ const STEPS = [
    goal:"Ironleaf Games is a small tabletop miniatures studio. Four people are turning concept art for a knight piece into a 3D model that can be manufactured.",
    beats:[["intro","Leo and Sam build the 3D models, Mia approves them, and Alex checks that each one can be manufactured."]]},
   {title:"Leo shares the model", who:"leo",
-   goal:"Leo is happy with his first version of the knight. Before it goes to production, Mia (art lead) has to approve it, so he shares the model with her.",
-   beats:[["leo","Clicks the Share button below his 3D model","Workspace"],["leo","Enters Mia's email address","Share dialog"],["leo","Clicks Send to share the model link","Share dialog"],["leo","Sees a confirmation that the link was sent to Mia","Workspace"]]},
+   goal:"Leo has finished the first version of the knight. Before it moves to production, it needs approval from Mia (art lead), so he shares the model with her.",
+   beats:[["leo","Clicks Share below the 3D model","Workspace"],["leo","Enters Mia's email address","Share dialog"],["leo","Clicks Send to share the model link","Share dialog"],["leo","Sees confirmation that the model was shared with Mia","Workspace"]]},
   {title:"Mia starts a Studio trial", who:"mia",
-   goal:"Mia opens the model Leo (3D artist) shared and spots a new feature called Comment. She sees it could make the team's feedback clearer and faster, so she wants to try it. Studio has a 7-day free trial, so she starts one to try it with the team.",
-   beats:[["mia","Opens Leo's share email","Email inbox"],["mia","Notices the new Comment feature and clicks the model to try it","Shared model page"],["mia","Sees Comment comes with Studio and starts the 7-day free trial","Upgrade plan"],["mia","Adds her card and starts the trial, paying $0 today","Checkout"]]},
+   goal:"Mia opens the model Leo (3D artist) shared and notices a new Comment feature. It could make the team's feedback clearer and faster. Comment is part of Studio, and since the 7-day trial is free, she decides to try it with the team.",
+   beats:[["mia","Opens Leo's share email","Email inbox"],["mia","Notices the new Comment feature and clicks the model to try it","Shared model page"],["mia","Sees that Comment is a Studio feature. Since the trial is free, she decides to try it out with the team","Upgrade plan"],["mia","Adds her card and starts the trial","Checkout"]]},
   {title:"Mia sets up the team", who:"mia", role:"Art lead, Studio admin",
-   goal:"Mia brings Leo and Sam (3D artists) and Alex (production engineer) into one Studio workspace, so the whole review chain happens in one place.",
-   beats:[["mia","Names the team Ironleaf Games","Name your team"],["mia","Adds Leo, Sam, and Alex by email","Invite your team"],["mia","Checks each role and the trial seats, then sends","Invite your team"],["mia","Sees the shared workspace is ready","You're all set"]]},
+   goal:"Mia invites Leo and Sam (3D artists) and Alex (production engineer) into one Studio workspace, so the entire review process happens in one place.",
+   beats:[["mia","Names the team Ironleaf Games","Name your team"],["mia","Adds Leo, Sam, and Alex by email","Invite your team"],["mia","Assigns each person a role and sends the invites","Invite your team"],["none","Mia's shared workspace is ready","You're all set"]]},
   {title:"Mia leaves feedback", who:"mia", role:"Art lead, Studio admin",
-   goal:"Mia pins her feedback directly on the 3D model instead of circling screenshots, so Leo (3D artist) knows exactly what to change.",
-   beats:[["mia","Clicks the horns on the helmet","Shared model page"],["mia","Posts: remove the horns","Shared model page"],["mia","Clicks the tufts on the back of the neck","Shared model page"],["mia","Posts: give the horse a swirly, elegant mane","Shared model page"],["none","Leo, Sam, and Alex get notified","Shared model page"]]},
+   goal:"Mia pins her feedback directly on the 3D model instead of marking up screenshots, so Leo (3D artist) knows exactly what to change and where.",
+   beats:[["mia","Clicks the horns on the helmet","Shared model page"],["mia","Comments: remove the horns","Shared model page"],["mia","Clicks the back of the horse's neck","Shared model page"],["mia","Comments: give the horse a swirly, elegant mane","Shared model page"],["none","The team is notified of Mia's comments","Shared model page"]]},
   {title:"Alex reviews", who:"alex",
-   goal:"Alex, the production engineer, isn't on Meshy yet. An invite from Mia (art lead) brings him in as a free reviewer, and within a minute he leaves his first comment on the model.",
-   beats:[["alex","Gets Mia's invite and accepts it","Email inbox"],["alex","Joins as a free reviewer, no seat needed","Join Ironleaf Games"],["alex","Reads Mia's comments and clicks the stirrup","Shared model page"],["alex","Posts: the stirrup is too thin and will break during casting","Shared model page"],["leo","Gets notified of three new comments","Shared model page"]]},
+   goal:"Alex (production engineer) isn't on Meshy yet. Mia's invite brings him in as a free reviewer, and within a minute he leaves his first comment on the model.",
+   beats:[["alex","Opens Mia's invite and accepts it","Email inbox"],["alex","Signs up with his work email and joins as a free reviewer","Join Ironleaf Games"],["alex","Reviews Mia's comments and clicks the stirrup","Shared model page"],["alex","Comments: the stirrup is too thin and will break during casting","Shared model page"],["leo","Is notified of three new comments","Shared model page"]]},
   {title:"Leo edits from the comments", who:"leo", role:"3D artist, Studio editor",
-   goal:"Leo joins Ironleaf Games as an editor, then works through the comments from Mia (art lead) and Alex (production engineer). Each comment opens Edit Mode with the comment already in the prompt, so every comment becomes one generation, paid from the team's credits. When he's happy with the result, he resolves all of them in one click.",
-   beats:[["leo","Joins the team and opens the three new comments","Team workspace"],["leo","Edits the horns from Mia's comment","Edit Mode"],["leo","Gets v2, then edits from the other two comments the same way","Team workspace"],["leo","Gets v4 with all three changes and clicks Resolve all","Team workspace"],["x","Mia and Alex are notified, and this round of review is finished","Team workspace"]]},
+   goal:"Leo joins Ironleaf Games as an editor and addresses the comments from Mia (art lead) and Alex (production engineer) to refine the model. Each comment opens Edit Mode with the comment already in the prompt. Once he's satisfied with the result, he resolves all comments in one click.",
+   beats:[["leo","Joins the team and opens the three new comments","Team workspace"],["leo","Edits the horns based on Mia's comment","Edit Mode"],["leo","Receives v2, then applies the other two comments the same way","Team workspace"],["leo","Receives v4 and selects v1 in the asset library to compare","Team workspace"],["leo","Reviews v1, then switches back to v4","Team workspace"],["leo","Verifies that v4 addresses all three comments and clicks Resolve all","Team workspace"],["x","Mia and Alex are notified that this review round is complete","Team workspace"]]},
   {title:"Mia upgrades the team", who:"mia", role:"Art lead, Studio admin",
-   goal:"A few days later, the team has used all 2,000 trial credits turning comments into new versions. To keep working, Mia upgrades the team to paid Studio.",
-   beats:[["mia","Sees the team is out of trial credits and clicks Upgrade","Team workspace"],["mia","Checks the team's plan and clicks Upgrade","Credits menu"],["mia","Picks the package and seats for Studio","Upgrade plan"],["mia","Pays and subscribes","Checkout"],["none","Ironleaf Games is now a paid Studio team","Team workspace"]]},
+   goal:"A few days later, the team has used all 2,000 trial credits turning comments into new versions. To keep the 3D work running, Mia upgrades the team to a paid Studio plan.",
+   beats:[["mia","Sees that the team has run out of trial credits and clicks Upgrade","Team workspace"],["mia","Reviews the team's plan and clicks Upgrade","Credits menu"],["mia","Selects a Studio package and the number of seats","Upgrade plan"],["mia","Pays with her saved card","Checkout"],["none","Ironleaf Games is now on a paid Studio plan","Team workspace"]]},
   {title:"What this drives", who:"none",
    goal:"Team review turns Meshy from one artist's tool into the team's pipeline.",
    beats:[["none","The team joins, every comment becomes an edit, and the assets, process and decisions stay in Meshy."]]}
@@ -1003,9 +1094,9 @@ function renderGuide(){
 
 /* Orientation: walk through the three areas before the first action */
 const TOUR = [
-  {el:()=>document.querySelector("aside.guide"), side:"right", k:"1 of 3", t:"Steps", p:"The big steps of the story. The current one is highlighted, and you can jump to any step here."},
-  {el:()=>$("stepbar"), side:"below", k:"2 of 3", t:"Who and what", p:"Who you are playing, what they're doing, and the action happening right now. Back and Next are here if you need them."},
-  {el:()=>document.querySelector(".fwrap"), side:"center", k:"3 of 3", t:"Prototype", p:"Everything in this area is the Meshy prototype. Click the item with the blue outline to move the story forward."}
+  {el:()=>document.querySelector("aside.guide"), side:"right", k:"1 of 3", t:"Steps", p:"The main stages of the scenario. The current stage is highlighted. Select any stage to jump to it."},
+  {el:()=>$("stepbar"), side:"below", k:"2 of 3", t:"Current step", p:"The person you're following, their goal, and the current action. Use Back and Next to move between actions."},
+  {el:()=>document.querySelector(".fwrap"), side:"center", k:"3 of 3", t:"Prototype", p:"This area is the Meshy prototype. Click the element with the blue outline to continue."}
 ];
 function startTour(){
   document.body.classList.add("touring");
@@ -1069,7 +1160,7 @@ function workspace({who, credits}){
     </div>
     <model-viewer id="mv" src="${MODEL_SRC}" alt="Knight game piece, version 1" camera-controls
       interaction-prompt="none" environment-image="legacy" tone-mapping="neutral" exposure="0.7" shadow-intensity="1.3"
-      camera-orbit="35deg 75deg auto" disable-zoom disable-tap></model-viewer>
+      camera-orbit="35deg 75deg auto" disable-zoom disable-tap>${ROT.replace("rot-hint","rot-hint up")}</model-viewer>
     <div class="btool" id="btool"></div>
   </section>
   <aside class="rpanel dim" id="rpanel" aria-hidden="true">
@@ -1102,7 +1193,7 @@ function step0(){
   const flags={mia:"Free Meshy user",leo:"Paid Meshy user",sam:"Free Meshy user",alex:"Not on Meshy yet"};
   buildOnce("s0", `<div class="intro-wrap">
     <div><h2>Scenario</h2>
-    <p class="lede">This demo walks through one scenario at <b>Ironleaf Games</b>, a small tabletop miniatures studio. A team of four is turning concept art for a knight piece into a 3D model that can be manufactured.</p></div>
+    <p class="lede">This demo follows one scenario at <b>Ironleaf Games</b>, a tabletop miniatures studio. A four-person team is developing a knight figure from concept art into a production-ready 3D model. Each role owns a distinct stage: the 3D artists build the model, the art lead approves it, and the production engineer validates it for manufacturing.</p></div>
     <h3 class="team-h">The team</h3>
     <div class="people">${["mia","leo","sam","alex"].map(k=>{const p=PEOPLE[k];
       return `<div class="pcard"><div class="av">${avatar(k)}</div><div><b>${p.name} <em>· ${p.title}</em></b><p>${p.bio}</p><span class="flag">${flags[k]}</span></div></div>`}).join("")}</div>
@@ -1188,7 +1279,7 @@ ${MIA_NOTES.map((n,i)=>`
         <span class="target" slot="hotspot-target${i}" id="target${i}" data-position="${n.pin.p}" data-normal="${n.pin.n}" hidden><i></i><b>Click here</b></span>`).join("")}
         <div class="cpin" slot="hotspot-alex" id="pinAlex" data-position="${ALEX_NOTE.pin.p}" data-normal="${ALEX_NOTE.pin.n}" hidden><span class="num"></span></div>
         <span class="target" slot="hotspot-targetA" id="targetA" data-position="${ALEX_NOTE.pin.p}" data-normal="${ALEX_NOTE.pin.n}" hidden><i></i><b>Click here</b></span>
-      </model-viewer>
+      ${ROT}</model-viewer>
       <div class="bulb dim">${ic("wand")}</div>
       <div class="chint" id="chint"><span class="cmode">${ic("chat")}Comment mode <span class="newtag">NEW</span></span><span>Click anywhere on the model to leave a comment</span></div>
     </section>
@@ -1208,15 +1299,15 @@ function mailPage(){
     <div class="mbody">
       <nav class="mnav dim" aria-hidden="true"><span class="compose">Compose</span><span class="on">Inbox</span><span>Starred</span><span>Sent</span><span>Drafts</span></nav>
       <section class="mmsg">
-        <div class="mhead"><b>leo.ironleaf shared a 3D model with you!</b>
+        <div class="mhead"><b>leo.ironleaf shared a 3D model with you</b>
           <div class="from"><span class="mav">M</span><div><b>Meshy AI</b> <span>&lt;noreply@meshy.ai&gt;</span><small>to mia@ironleaf.com</small></div><small class="when">10:42 AM</small></div></div>
         <div class="mcanvas">
           <div class="mbrand">Meshy AI</div>
           <div class="mcard">
-            <h3>leo.ironleaf shared a 3D model with you!</h3>
-            <p>Hi there,</p>
-            <p>Your friend <b>leo.ironleaf</b> has shared a 3D model with you!</p>
-            <p>Dive into the creations and get inspired by the stunning models generated by Meshy.</p>
+            <h3>leo.ironleaf shared a 3D model with you</h3>
+            <p>Hi Mia,</p>
+            <p><b>leo.ironleaf</b> shared <b>Knight_v1</b> with you on Meshy.</p>
+            <p>Open the model to view it in 3D.</p>
             <button class="openbtn hot tip-below" data-tip="Click here" id="openModel">Open Model</button>
             <model-viewer id="mv" src="${MODEL_SRC}" alt="Preview of the shared knight model" interaction-prompt="none"
               environment-image="legacy" tone-mapping="neutral" exposure="0.75" camera-orbit="35deg 75deg auto" style="height:240px;background:transparent"></model-viewer>
@@ -1331,7 +1422,7 @@ function step2(){
   const hint=$("chint");
   hint.hidden = sub!==0;
   hint.classList.add("hot");
-  hint.innerHTML = `<span class="cmode">${ic("chat")}Comment mode <span class="newtag">NEW</span></span><span>Drag to rotate · Click the model to comment</span>`;
+  hint.innerHTML = `<span class="cmode">${ic("chat")}Comment mode <span class="newtag">NEW</span></span><span>Click the model to comment</span>`;
   MIA_NOTES.forEach((n,i)=>{ $("target"+i).hidden=true; $("pinMia"+i).hidden=true; });
   $("cbox").innerHTML = `<h4>Comments</h4><p class="empty">Feedback on this model shows up here, pinned to the spot it's about.</p>`;
 
@@ -1402,17 +1493,16 @@ function paidCheckout(){
       </div>
     </section>
     <section class="pay-form">
-      <div class="pay-card">
+      <div class="pay-card saved">
         <div class="pay-line"><span>Email</span><b>mia@ironleaf.com</b></div>
-        <div class="pay-line"><span>Pay with</span><b><i class="pay-visa">VISA</i> Visa Credit •••• 4242</b></div>
-        <div class="pay-bill"><h4>Billing details</h4>
-          <label>Name</label><div class="pay-in">Mia</div>
-          <label>Country or region</label><div class="pay-in">United States</div><div class="pay-in" style="border-top:0;border-radius:0 0 8px 8px">94107</div>
+        <div class="pay-saved"><h4>Select a saved payment method</h4>
+          <div class="pm on"><i class="pay-visa">VISA</i><div><b>Visa Credit</b><small>•••• 4242 · used for your Studio trial</small></div><span class="pm-dot"></span></div>
+          <div class="pm dim"><span class="pm-plus">+</span><b class="pm-add">Add a new payment method</b></div>
         </div>
       </div>
-      <button class="pay-btn hot tip-below" data-tip="Click here" id="payBtn">Subscribe</button>
-      <p class="pay-fine">Your trial ends today. By subscribing, you authorize Meshy to charge you each billing cycle until you cancel.</p>
-      <p class="pay-demo">Demo checkout. No real payment is made.</p>
+      <p class="pay-fine">Your trial ends today. By confirming, you allow Meshy to charge this card each billing cycle until you cancel.</p>
+      <button class="pay-btn hot tip-below" data-tip="Click here" id="payBtn">Pay $${total}.00</button>
+      <p class="pay-demo" style="margin-top:34px">Demo checkout. No real payment is made.</p>
     </section>
   </div>`;
 }
@@ -1494,7 +1584,7 @@ function step4(){
   const hint=$("chint");
   hint.hidden = placing<0;
   hint.classList.add("hot");
-  if(placing>=0) hint.innerHTML = `<span class="cmode">${ic("chat")}Comment mode</span><span>Drag to rotate · Click the highlighted spot on the ${MIA_NOTES[placing].where}</span>`;
+  if(placing>=0) hint.innerHTML = `<span class="cmode">${ic("chat")}Comment mode</span><span>Click the highlighted spot on the ${MIA_NOTES[placing].where}</span>`;
   MIA_NOTES.forEach((n,i)=>{
     $("target"+i).hidden = placing!==i;
     $("pinMia"+i).hidden = sub < (i===0?1:3);
@@ -1543,7 +1633,7 @@ function inviteMail(){
             <h3>Join Ironleaf Games on Meshy</h3>
             <p>Hi Alex,</p>
             <p><b>Mia</b> invited you to the <b>Ironleaf Games</b> team as a <b>reviewer</b>.</p>
-            <p>Reviewers can view 3D models and comment on them for free. You don't need a paid plan or a seat.</p>
+            <p>Reviewers can view 3D models and comment on them for free.</p>
             <p>Mia left 2 comments on <b>Knight_v1</b> that are waiting for your review.</p>
             <button class="openbtn hot tip-below" data-tip="Click here" id="acceptInv">Accept invite</button>
           </div>
@@ -1553,24 +1643,33 @@ function inviteMail(){
   </div>`;
 }
 
+/* Alex signs up from Mia's invite, modeled on Meshy's real sign-up modal */
 function joinCard(){
-  return `<div class="ob"><section class="ob-card join">
-    <div class="ob-body">
-      <div class="join-team"><span class="jt-logo">IG</span><div><b>Ironleaf Games</b><small>Mia invited you to this team</small></div></div>
-      <h2>Join as a reviewer</h2>
-      <p class="ob-sub">View 3D models, pin comments, and follow the team's reviews.</p>
-      <div class="join-role"><div><b>Reviewer</b><small>View and comment on every model shared with you</small></div><span class="cost c-free">Free · no seat needed</span></div>
-      <button class="gbtn2 hot tip-below" data-tip="Click here" id="joinGoogle"><span class="g">G</span>Continue with Google</button>
-      <div class="orline dim">OR</div>
-      <div class="dim"><label class="ob-lbl">Email</label><div class="ob-inp">alex@ironleaf.com</div></div>
-      <p class="ob-sub" style="font-size:12px;margin-top:6px">New to Meshy? Your account is created when you join.</p>
-    </div></section></div>`;
+  const sso = ["apple","facebook","discord","github"];
+  return `<div class="su-wrap"><div class="su">
+    <section class="su-art">
+      <model-viewer id="suMv" src="${MODEL_SRCS[1]}" alt="Knight_v1, the model Alex was invited to review" auto-rotate rotation-per-second="18deg"
+        interaction-prompt="none" environment-image="legacy" tone-mapping="neutral" exposure="0.75" camera-orbit="30deg 75deg auto" disable-zoom></model-viewer>
+      <div class="su-art-txt"><b>Knight_v1</b><span>Ironleaf Games · 2 comments waiting for your review</span></div>
+    </section>
+    <section class="su-form">
+      <span class="su-x">${ic("x")}</span>
+      <div class="su-inv"><span class="jt-logo">IG</span>Mia invited you to <b>Ironleaf Games</b> as a reviewer</div>
+      <h2>Welcome to Meshy</h2>
+      <p class="su-sub">${ic("gift")}Reviewers join free, no seat needed</p>
+      <button class="su-google dim"><span class="g">G</span>Continue with Google</button>
+      <div class="su-sso dim">${sso.map(k=>`<span>${k[0].toUpperCase()}</span>`).join("")}</div>
+      <div class="su-or dim"><i></i>OR<i></i></div>
+      <div class="su-mail"><label class="su-lbl">Email</label><div class="su-inp">alex@ironleaf.com</div>
+        <button class="su-code hot tip-below" data-tip="Click here" id="joinGoogle">Get Code</button><p class="su-pw dim">Use Password</p></div>
+      <p class="su-terms">By continuing, you agree to our <u>Terms of Use</u> and <u>Privacy Policy</u>.</p>
+    </section></div></div>`;
 }
 
 function step5(){
   const sub=state.sub;   /* 0 invite email, 1 join, 2 click horn, 3 write comment, 4 posted */
   if(sub===0){ buildOnce("s5mail", inviteMail()); $("acceptInv").onclick=adv; return; }
-  if(sub===1){ buildOnce("s5join", joinCard()); $("joinGoogle").onclick=adv; return; }
+  if(sub===1){ const f=built!=="s5join"; buildOnce("s5join", joinCard()); if(f) clay($("suMv")); $("joinGoogle").onclick=adv; return; }
   const fresh = built!=="s5";
   buildOnce("s5", sharePage("alex"));
   const to = n => { state.sub=n; render(); };
@@ -1590,13 +1689,13 @@ function step5(){
   mv.classList.toggle("commenting", placing);
   const hint=$("chint");
   hint.hidden = !placing; hint.classList.add("hot");
-  if(placing) hint.innerHTML = `<span class="cmode">${ic("chat")}Comment mode</span><span>Drag to rotate · Click the highlighted spot on the stirrup</span>`;
+  if(placing) hint.innerHTML = `<span class="cmode">${ic("chat")}Comment mode</span><span>Click the highlighted spot on the stirrup</span>`;
   MIA_NOTES.forEach((n,i)=>{ $("target"+i).hidden=true; $("pinMia"+i).hidden=false; });
   $("targetA").hidden = !placing;
   $("pinAlex").hidden = sub<3;
   const miaItem = (n,i) => `<div class="citem"><div class="av">${avatar("mia")}</div><div><b>Mia</b><small>15 min ago</small><p>${n.text}</p></div></div>`;
   let box = `<div class="team"><div class="team-top"><b>${ic("users")}Ironleaf Games</b><small>You joined as a reviewer · Free</small></div>
-      <div class="avs">${["mia","alex","leo","sam"].map((k,i)=>`<div class="av" style="${i>1?'opacity:.45':''}">${avatar(k)}</div>`).join("")}</div></div>
+      <div class="avs">${["mia","alex","leo","sam"].map((k,i)=>`<div class="av">${avatar(k)}</div>`).join("")}</div></div>
     <div style="border-top:1px solid var(--p-line);margin:2px 0"></div>
     <h4>Comments</h4>${MIA_NOTES.map(miaItem).join("")}`;
   if(sub===3){
@@ -1631,10 +1730,20 @@ const TEAM_NOTES = () => [
 const EDIT_COST = 20;   /* example cost per edit, in team credits */
 
 let resolvedSet = new Set();   /* comments Leo resolved by hand */
+/* Asset library at the top of the right panel: one thumbnail per version, newest first; the open one is outlined */
+const THUMBS = {1:"data:image/jpeg;base64,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",2:"data:image/jpeg;base64,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",3:"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAcFBQYFBAcGBgYIBwcICxILCwoKCxYPEA0SGhYbGhkWGRgcICgiHB4mHhgZIzAkJiorLS4tGyIyNTEsNSgsLSz/2wBDAQcICAsJCxULCxUsHRkdLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCz/wAARCAEOAPADASIAAhEBAxEB/8QAHAABAAIDAQEBAAAAAAAAAAAAAAQGAwUHAggB/8QAQhAAAQMDAgMGBAQCCAQHAAAAAQACAwQFERIhBjFBEyJRYXGBBxSRoSMyQrFS0RUzcoKSouHwFiRi0kNjk6PBwvH/xAAWAQEBAQAAAAAAAAAAAAAAAAAAAQL/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwDiyIi0giIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIi6V8MPhtJxBVRXW6Q4tzDqjieP68+J/6f39MoPHAnwxdeqSG8XaR0NG52qKADvTNB5k9Gn6keGxN5uvAfDtznbJNQta9jdAMRMYI8w3AV6uccdJTNhjaBt0Vfkfh2MqKo8nwtsUcErWOqHyO/I50mNPLwGPHmDzVOi+GN+fJO6f5ajpISR8zPJhjgPDTkrsjjlRaou+Wkbza4d5p5OQcJvNifaWxytqY6mCQlrZGAt3HkVqlYuNLqLhejBG3TFSDs/wC079R+v+91XVUEREBERAREQEREBERAREQEREBERAREQEREBERBbvhrw3DxLxfHBVQunpadvbSxN/8AEAcBp5jx+y+k4aikt0cjiGxxMcWsawbBoOAFyf4BW+sY2617AY45dEbHOGztOdWPHGoLo90gcw/KmpLI3A9oSAM5znf3UVEuNw+ZndID3TyWjmqS6UjosEtxaXPZRUtS9jf1PaQCOpB5qJT1D6iqax0T2b9cb/RBYoqd3yolw4hQp3Aam9R0KwXCKmr6Fk1XUTGPWeyia7Q1reh25+OSosEJp46f8Uugk1Oa55zhoODk+CDkvHdPHTcZVgjAAeGSEebmAk+5JPuq8rJx5DVDiuoqZ4y2Opw+A5B1MA0j0Pd3CraqCIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAstJSzV1bBSU0ZknnkbFGwc3OccAfUrEploqaikvNHUUsZlqI5mujjAzrdnZvvyQfT3BduPBXCtBa7rLE10bf6xv5Nbi5xYCeuSfVRr1fKQ1L3CQHrnKyQXyCo4pHD074nTvpDI5j3AkvDmggdD19mrxd7TbqKo7OS3UkpPIinby9woqrVPFdJSN0Mc0k93AIXmhElREyujjJp35weg3wRn/fJbirrLNaIxNVUVJGG7tjMTHOf0IA6bdVK4pvVNSw0VNDAKVj4zIWNxjH6eXTn9kFbrLaKx0cQujIImYBBGcDyXqaWlp3QRQy9vTUsZYxrt8knJcfMkk+W3gtNX3K2T5J1GbcHQ8D0Wro4q2qD3wk7Ya3xc48mj2yfQFBqviRcfnKyhiDm6YmvcGjpqI/l9lSls+IjP/T1SyoeXvjOnfoMclrFUEREBERAREQEREBERAREQEREBERAREQEREBXD4WW0XL4h2/UAW0pNSc+LBlv+bSqert8KLrQWnjMzXCobTRyUz42SvOGtcS077+APvhBZamhoq3iAXV81XFXtORNDNpx6Ag9P3K2l2jvlTb311Jd5KuOJoMzDKRJH0zjqPP8AkVPqOBhXxmosV/oqku/K2Y6QN/Fuf2Unhbg6+0ctYL3FCC4sbDNSyaxp31+YyMDkOaiqbwxbf6V4jYLg4yQxNdPK0nOsNGcHyJwD6rHxFdpLpd5ZJMjSe76eivruEYeGZ7rWQVLpY30j2NBbjSS4ct/LHuq5T1bNJ/Bje4baiwE4QV+ltUjzGamQUzHjLGkapJB4MYNyfXA8wt/TxXGG40tPT2x9NTVjvlqeY9/s8u0ukcRtq28hsAM9c0FTHDOZYqGnY7G8jIw07+YXqpvMsFI9usNiiaQByDRz28Ag5FxPpHElW1rxIGlrS4dSGgH7grVL1JI+WR0j3Fz3HJJ5kryqgiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiIM1NU1NNKHUs0sUmdjG4g/ZfTVpgf8qzEtXFII2l2iR2rVjfIdkDfPQLmnw64Isd+rLfeKKsqH/JkfN0dRH+WUDYteMAtzvjmORXWI71XwT19PU2/so4Guc2o3LHNB273j5INReJ7jWUElJ86Ax2xMzQdvUEDl5Klx2ueF/aR1jSWk7dkTn77rp7qVlwphNJSxkO72+ppz44IWprKCCLV/y7SXHJ1PJ+6iqd8lpl7WWpeAT+WKPGDjoDqX6bXRVELqJ7HStmGkuccuLeR9DjO+FvKqhZRlzhSx5cABlxOQT/AKH7KLL23yx0sZCS7B0bZHqg4xxJYpeHrxJRvJfH+aKQjGtv8+hWpXZOIOGafiSlpvmJn08kGcSMaHbEDIwSM7gdVqIPg8K+odHR32PDWF57WAg4HPqqjmSKbeLXNZrrNQzvjkfER34zlrgRnIUJAREQEREBERAREQEREBERAREQEREBERAXVeA/hRDdbEy93wyCCoGaeBhLSRn87j4HBwB03yqFwnYn8ScV2+0sDtNRMBIW82xjd59mgr6b4jr4LPaW08DWxxwsDI428mgDACDS8GUFo4Vpp7fTPZCwvMhdK/vPJ298YAVkmo7XdGEfMOnP59DZnFuf7GcfZcp/pJlc97S/Emchw5hbSno5paSN9NVuMzRpeHb5dnpjG2Puoros9SwNPe38Fpa14eMqux8MVcEzaipuRk31djpJB9cnf6LZmSFrsRh8bf4HPL2j67/dBjrcaIzITnGBtuBzXmsrbHJJJC41DXA/hNgaDtjcknr7r1Xa3RNyS5uCGnwzzWnbRRU7nyHRrd+okZwgyUz2vb3Q7QSS0P54ztnzU6iYIRUVDR+SPQ055OdsB7jK19Fp0aXd0gnn4LayRSQWyF7W/wBZLr5ZyBsB9c/VBzDjTgSRjZLrbXSTADMsLjqcABzb1x5f/i54vpKtxDcaiIDAbIcDwGdlxLjuxizcQvfCzTS1eZY8DZp/U32P2IVRWkREBERAREQEREBERAREQEREBERAREQd1+BfChpLRVcT1DPxKgGCmyOTAe873Ix/d81O41dWVdPPJTRmodFv2QO7m5GoDzxnHmoXwt4yH/AbbUI/xKNzoz5hxLgfuR7KeK3E7zITkk7c9+aiqvRWo3CWmbaYjI6UZDRzb458MK92+0tsEDu0f2tS/Gp2MBvp991uOCbbSQUtVdY42h9W7JI642JHhk8/Ra/iSqcJnkDAacEoK/fOJGULSC/Lz0Vcj4hmqZt8tGdt1WariFlRxBVUtawRtbIWxvz06Z9ealD8N2xwgt7L9ogdT6S/Uchx5NVfrrhc3TH/AJruh2NLAAPZRm1mGkD82PovDZABugtNrro6mJjWvL37DT+oLcTV1XceIzQtm1NdK6NkezWaQfpyGc+SodO4NqWSxEtla4Obg8jnYrrlvpnt4Xdd6gimZKwyGJuHHntkuBBz6dRugrtdVyS3GV8rdL3acj0AH/wVpeJaKgulokiryI2MYXsmwSYnfxAAjPp1U9zpJCZJpHSyP3Lj/v8AZV/jZ4Zw3VgnGWNA/wAYQc4udLaqYNFvuc1a/Pe1UvZNA8jqJP0WuRFUEREBERAREQEREBERAREQEREBERBYOC73LZuIYR2/ZU1S4RzgnYjoTnwJXWa6NkB7cTZAHe1Y5eS4MpZute6lFM6tnMIGAwyHAHgg+uqOgbQ8Mx00T+yLY/zN8ep9ySfdUXiFs9TV1HaSYje4EgDbAGFzS0/GPiO22WO2SNgq4oWCON8gIeGgYAJHNaC88b3q9a2z1HZRvGCyMYGEVrb49sl+rXMeHtMzsOByCMqXZ758o10VW6WSLHcxg6T79PdaVX7hT4WXS6up626xmitz8PAccSSt8h0B8T9ERNht8tZb46yicyeCXdpHdPnkHrsoslHVx5LoHgLq8Vos9PQx2+np/lWQtDIzGc/XPPnz5+qxnhqBoMTpTKZH6QANOnbJ5qKoNg4dmudQXVH4cDBk77nY49lvLxcLgwOoKerc2ij0tbDkYw0YA9AtvJb3tlbDb2kyDbTndwWouPD16klLvlnN8dRAP7oMNHVOmbolGmQDbHIqsfECpf8A0JFGHEtfMAd87AHb7BWKnoamhBFTl2DkAEZC55xXxOL72cEcTmRQvcdTju7oDhBW0RFUEREBERAREQEREBERAREQEREBERAREQERACSABknkAgsvw94fbxNx1bbdK3VTmTtZgQSCxveIPrjHuvpziOdsNII2AA+PguZfAnhKut1ZcLxcaR9M50YghbK0tfzBccHkNm/Qq/cVukfKGjGgR4z1JJ/kiuacT8Tvs9N8wJC12cMA5krpbXCdlHUfmZJA+cOP6sxtOf8AMua3fhei4oqWxVFRLD8tqP4WMnOB19Cr9bm/LcL0MTpzMaCjkpy47EgABpPnpAyoNZZaWruXEUr4MiGlZ3neLnch9Mn6LYXN8lO8skO4W34KpXU9jfO8d6pkMnLG2wH2AVY4pqS6efGe60nbyQUvjHiGGho5dLwZcYaAep5LkCl3OvmuNfLPOTkuOGn9IzyURVBERAREQEREBERAREQEREBERAREQEREBEX61rnuDWgucTgADJJQfi6V8NODRP2XEFezMbXE0rD1IJGs+hG3mM9AqrbOBuILo1r4qB8UThkSTnsxj33PsF3TgymbZeEqKy3ARSSQ6gXNzpyXE907HqPug39tvjaGnELqfUBnvNOD9FEuNWyul1DU0eYWea0F7DJSO7VnVpI1D+ahmhqcZ7CTH9kqKh/LQtzpJyeZAWWlp55xJStkaxkrXDlkknA/b9l6dE9h7zSFlp6l9NK2WMDU3rhBboIGW+3wws2ZC3GPRc7u7Z+1kkc5upxc4430+AHj/orRNxEZKUiVjWu5ZBwPuqzXVFJK53bSl2+dLeXog03EfCVnvVNJPVwCGcNJ7eLuuB8/H3XCV9BTyC6vjoYGP7J5y8t5hoG/LkuZ8VfD+ooa7tLHBNWURYC4Ahz2O8McyORzhVFJRepYpIZCyWN0bxsWuGCF5QEREBERAREQEREBERAREQEREBEVk4F4dbxFxE2Oduqkp29rMOWodG+5+2UGfhXgKv4iDamYmjoDymIyX46NGfvy9V1Sx8KWfh5o+SpQZsYM8vekPv09BgLcYbFEGsaGtaAGtAwAF5b3iorICpVupjXV0cOkOYTlwPIjqstttvzpcS4BjOY6lZpre6mqGODnCLVu4c2hBGmfX2M1dQzNTTmQtYzOCAXbEHr6JT3monpX1MFPK5sbS5wBGRjyJ3W7vLWm2aGPjdtnZuSfoolijida5KY/1smYyNPIdSfAY2QaOTjGlppXfNOdE4cwdyPZuVmPE0FypHCk7SV5G2InAn7LzxTZaN1XJKHRNcTnBIGDzThOiiZVYaMhu2cdEFYrnXGmphLNTy75BLueRnnn0UC2R1F3mYCHguzlreY8107iamp221jDEQSS/AGdzuq5YjR0HzbjA5ssrQyMnGzeu3TO30QYLA2K1SVUFRGHvee7IX94NydseC2bYqX5p7YhGO0b2jnAb7HG/wB/ofNQmwsY9z2hoB5ANwvwzuhqoQzm8nPoAT/JB4vXDdDdo3U9yoWy6eRI7zfRw3C5hxJ8MKqgY+ptD31cQ3MLh+I0eX8X7+q7P86+pIMpy4DGcYUaYDVkdUHzGQQSCMEcwUXSfijw5DC2O9UrAxz3iOoA5OJ5O9dsH1HmubKoIiICIiAiIgIiICIiAiIg/Wtc94Yxpc5xwABkkrt3w74PqeH7fPPVk/NVbW6owdowMkN8zuSemypPwrssdy4jkrpgHMoGh7W45vdkNPtgn1wu9U1GXUpYHFrnHOocwg0j2nBGN15YyRjWudG9rXbtJbzW4loGSzMbq7ORx/JzJ58vHkdlKFmhkaBTzBx/hdkFRUC3VjYTh7jEM51Ecit+CyYYy0lw6citJS0cUt0lppz2ZiGw8SsFdDFS1Bc2mmhePyva7GT65wg2ktqDzkOc0+XJe6eKpo8iN0cgJGdbMH2IX7SXNtVRxyvqI2y477TtupAqiW5Y3tsAE6MdfUjzQa6upp6rOpjTnoMH9wta2lqLdN2sbnRu8nLcS3Qxtd29DOwY5tIK19Y2kmoJbhBNUyuYS3siATnA22PmEGCprairbieTX54x+yhtjjjGGtAUX5ioMTfwnNceescvJWeHh2iuNrgk7V/aOYC4tfkasbgjyQV6SphbsXgnwG6jU7+3rJH4cGsAAB8d91NuVjbaJGulJ0ndun9WPuscWhkY7NmM74Bz90GZhw4FfsjtRWMBxOSfYLDV1sNFEXyu356RzQaviu2NvdkktpkMb5iC1wGdJByCR4ZAHuuG3O2VVouEtFVx6JYz03BHQg9QV3kdtKHzSkh7sYZ/APD1/wBFU/iVamVvDMd0DcTUjgHHxa46SP8AFj7qjk6IiIIiICIiAiIgIiICIiDqXwU0umvEWDqIhcD0wNef3XcKEB0YI6bFfM3w94ii4d4oZJVOaykqGmKV5bnR1a72cBnyJX0XDJLRy9rGA6M7ujznA8c+Hn/sxW6moYqphDmjURjP+/b6BRKiCpiaTpbqaMNJJwBg9QM+AA3PkthS1UNTGHROz0I6hSxyQVaekaHmcOfBIDknGpoGOepudj549F6bJUPgAmhFTE/YFhBz7KxvpYJCHGNupv5Tjl6KLNbYpXE6Wk8i4jvH+9zQUh1NPHMS8Oaf4COQ/dTqGvkoSfwRJnfc43/3lbyahmi16JnMPTSSfqXatvbqoooahsYD3HUDzIa7I9mgII9VxDUua0QUETs/mMkpbj2DTla+hkNNaX08zRNO+d0uoN0gA9OpUiohrGOOkA74BEDOX+MKLIy4AEhgBB2HYt3/APcQYp2OlY5oGNTSPIFZGT1LG4a97MjB0Pc0/UEFYeyrnv7z9IHMGNrf2cf2Uaa3VT5MvqniM/p7QkfYD90EurrDIyNtbUBwjzo7V2SPc7nkoEl2pGO0Ra6h+PyxNzj1PReP6EpyPxDk7cm/92rHthZ/l4GAERDLXZGvvafTOceyCH87XVrfwY2xRkZDmuznP/Vyx6ZPkssNExry9/flzzO+/P36eWRkALO4lwA/UkZOsbIMI7r8O67LRfEBzYeAq2LbvdmB/wCo0qyzOip2GaU4A5ea5r8T72HthtjDiRx7SQZ/I39LT5k7n0CDnCIiqCIiAiIgIiICIiAiIgLqHw/+KYtcNPaL+ZH0kbgIatpJfAPB2Ny0fbzXL0QfWtM1tXTsqqepjc14zFU0p1NeN+g5+3nspkV0rYhpmjbVNG2uE5d57eXoF8r2Diy9cMyl9rrpIWOOXRHvRv8AVp29+a6rZvjfa63sm362PpJ2gAz0x1MJG/L8zW+QyiuxU15oqiMBsuh2Nw8Yx78lNa5pYCHAjxyqRbeIrRf9JoLvRXAlu7HgNmP7FgG25ytg6CSNuqOmke47AU82zfUux+6gsFS0PYSPBR5fyhaqKsmBMfa1DXt2OqIkD+9uFHdf4QTG6spy/oMk/sgnzblQpnd70UeS7fhmTtYiwb55bePoo77k0jUXxYxn8yD1IXZyBzWNztTfNeJLjC2PVJPCGHkcqIbrRyMc+KQzadsQgvP0CCUW6gVFexxcQG5WJ9yqXRudBb5CB+qX8PHnh2FBqq+ojje+puNHRRj+Dv49Ttj6oNqWx08eqR7WjqSVENxbI4iji7bfDpCcNby5n35KmXXjTh+ic5zHPu1SDkazqb9u6R7lVC8cf3m6tMTJBSRdBFs7Hr09sILlxJxtS2nVHHI2uuG4AH9XCf5/f0yuVVVVNW1clTUSGSaV2pzj1KxEknJOSUVQREQEREBERAREQEREBERAREQEREAEggg4I6reW7jXiW1Fpo73WMDPytdIXtH912QtGiC/0nxn4sgaW1ElHWg9Z4Bn/KQtlD8c7oMfMWqmfjn2byzP2K5ciDqp+NjnnL7BG71qM/8A1Xl3xmYRtw/GCf8AzR/2rliIOmu+Mkwzos0bTjY9ry/yrWVPxZvkx/Digi38z+xCoqILBW8ccQVwLZLg5rT0Y0D78/utJPUz1T9c80krvF7i4/dYkQEREBERAREQEREBERB//9k=",4:"data:image/jpeg;base64,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"};
+function assetLib(ver, sel=ver, hotV=0){
+  const tiles=[];
+  for(let v=ver; v>=1; v--) tiles.push(`<div class="lt ${v===sel?'sel':''} ${v===hotV?'hot tip-below':''}" data-tip="Click here" data-v="${v}"><img src="${THUMBS[v]}" alt="Knight_v${v}"><span>v${v}</span></div>`);
+  while(tiles.length<6) tiles.push(`<div class="lt empty"></div>`);
+  return `<div class="blk lib"><div class="lib-top"><div class="lib-q">${ic("search")}Search my generations</div></div>
+    <div class="lib-grid">${tiles.join("")}</div></div>`;
+}
+
 function step6(){
   /* internal stages: 0 list · 1 edit horns · 2 v2 · 6 v4 · 8 notified.
      The full Edit Mode flow is shown once; the other two comments run together. */
-  const sub=[0,1,2,6,8][state.sub] ?? 8;
+  const sub=[0,1,2,6,7,7.5,8][state.sub] ?? 8;   /* 7 = viewing v1, 7.5 = back on v4 */
   if(sub===0) resolvedSet = new Set();
   if(sub>=8) resolvedSet = new Set([1,2,3]);
   if(sub===1 || sub===3 || sub===5) return editMode((sub-1)/2);
@@ -1662,10 +1771,11 @@ function step6(){
     document.querySelector(".ctop").insertAdjacentHTML("afterend",
       `<div class="teamchip"><span>${ic("users")}Ironleaf Games</span><span class="an" id="assetName">Knight_v1</span><span class="tc" id="teamCredits">Trial credits 2,000</span></div>`);
   }
-  if(mv.dataset.ver!==String(ver)){ mv.dataset.ver=String(ver); mv.src=MODEL_SRCS[ver]; }
+  const shown = sub===7 ? 1 : ver;   /* Leo glances at v1 before resolving */
+  if(mv.dataset.ver!==String(shown)){ mv.dataset.ver=String(shown); mv.src=MODEL_SRCS[shown]; }
   TEAM_NOTES().forEach(c=>{ const p=$("tpin"+c.n); if(p) p.hidden = resolvedSet.has(c.n); });   /* resolved comments disappear from the model */
-  $("assetName").textContent = `Knight_v${ver}`;
-  $("teamCredits").innerHTML = `Trial credits ${credits.toLocaleString()}${edited?` <em>−${sub===6?2*EDIT_COST:EDIT_COST}</em>`:""}`;
+  $("assetName").textContent = `Knight_v${shown}`;
+  $("teamCredits").innerHTML = `Trial credits ${credits.toLocaleString()}`;
   $("teamCredits").classList.remove("drop"); void $("teamCredits").offsetWidth;
   if(edited && sub<7) $("teamCredits").classList.add("drop");
 
@@ -1683,34 +1793,34 @@ function step6(){
       ${status}${acts}</div></div>`;
   };
   const allRes = resolvedSet.size===3;
-  rp.innerHTML = `<div class="blk team"><div class="team-top"><b>${ic("users")}Ironleaf Games</b><small>Trial credits ${credits.toLocaleString()}</small></div>
-      <div class="avs">${["mia","leo","alex","sam"].map((k,i)=>`<div class="av" style="${i===3?'opacity:.45':''}">${avatar(k)}</div>`).join("")}</div></div>
-    <div class="blk cbox"><h4>Comments${(sub===6||sub===7)&&!allRes?`<button class="resall hot tip-below" data-tip="Click here" id="resAll">${ic("check")}Resolve all</button>`:""}</h4>${TEAM_NOTES().filter(c=>!resolvedSet.has(c.n)).map(item).join("")}
+  rp.innerHTML = `${assetLib(ver, sub===7?1:ver, sub===6?1:sub===7?4:0)}
+    <div class="blk cbox"><h4><span>Comments<small class="cfor">Knight_v${sub===7?1:ver}</small></span>${sub===7.5&&!allRes?`<button class="resall hot tip-below" data-tip="Click here" id="resAll">${ic("check")}Resolve all</button>`:""}</h4>${TEAM_NOTES().filter(c=>!resolvedSet.has(c.n)).map(item).join("")}
     ${resolvedSet.size&&!allRes?`<p class="empty" style="font-size:12px">${resolvedSet.size} resolved ${resolvedSet.size>1?"comments are":"comment is"} hidden</p>`:""}
-    ${allRes?`<div class="v2card"><span class="v2tag">v4</span><div><b>All comments resolved</b><small>3 generations · ${3*EDIT_COST} team credits used</small></div></div>`:""}</div>`;
+    ${allRes?`<div class="v2card"><span class="v2tag">v4</span><div><b>All comments resolved</b><small>3 comments, 3 new versions</small></div></div>`:""}</div>`;
   rp.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>{
     const n=+b.dataset.edit;
     if(n===nextEdit && sub===2) showGenerating(()=>{ state.sub=3; render(); }, "Generating Knight_v3 and Knight_v4", "Editing the mane and the stirrup from the team's comments");
     else if(n===nextEdit) adv();
     else $("layer").innerHTML = `<div class="toast low">${ic("wand")}Leo can edit again from this comment anytime. The demo follows the comments in order.</div>`;
   });
-  if($("resAll")) $("resAll").onclick=()=>{ resolvedSet=new Set([1,2,3]); state.sub=4; render(); };
+  if($("resAll")) $("resAll").onclick=()=>{ resolvedSet=new Set([1,2,3]); state.sub=6; render(); };
+  const hotTile=rp.querySelector('.lt.hot'); if(hotTile) hotTile.onclick=adv;
   rp.querySelectorAll("[data-res]").forEach(b=>b.onclick=()=>{
     resolvedSet.add(+b.dataset.res);
-    if(resolvedSet.size===3){ state.sub=4; render(); } else render();
+    if(resolvedSet.size===3){ state.sub=6; render(); } else render();
   });
 
   $("layer").innerHTML = sub===0 ? `<div class="toast low">${ic("bell")}Mia and Alex left 3 comments on Knight_v1</div>`
-    : sub===2 ? `<div class="toast low">${ic("check")}Knight_v2 ready · ${EDIT_COST} team credits used</div>`
-    : sub===6 ? `<div class="toast low">${ic("check")}Knight_v3 and Knight_v4 ready · ${2*EDIT_COST} team credits used</div>`
-    : sub===7 ? `<div class="toast low">${ic("check")}v4 looks right. Leo resolves all comments at once.</div>`
+    : sub===2 ? `<div class="toast low">${ic("check")}Knight_v2 ready</div>`
+    : sub===6 ? `<div class="toast low">${ic("check")}Knight_v3 and Knight_v4 ready</div>`
+
     : sub>=8 ? `<div class="scrim"><div class="trans">
         <div class="avpair"><div class="av">${avatar("mia")}</div><div class="av">${avatar("alex")}</div></div>
         <b>Mia and Alex got a notification</b>
         <p>"Leo resolved your comments on Knight_v4." This round of review is finished.</p>
         <button class="hot tip-below" data-tip="Click here" id="toSum">A few days later →</button>
       </div></div>` : "";
-  if(sub>=8) $("toSum").onclick=()=>go(7);   /* on to the trial running out */
+    if(sub>=8) $("toSum").onclick=()=>go(7);   /* on to the trial running out */
 }
 
 
@@ -1745,22 +1855,20 @@ function step7(){
   top.dataset.tip="Click here";
   rail.querySelectorAll(".bottom > :not(.coins):not(.topup)").forEach(e=>e.classList.add("dim"));
   top.onclick = sub===0 ? adv : null;
-  $("teamCredits7").innerHTML = paid ? `Team credits ${cr}` : "Trial credits 0 <em>Used up</em>";
-  rp.innerHTML = `<div class="blk team"><div class="team-top"><b>${ic("users")}Ironleaf Games</b><small>${paid?"Studio":"Studio trial"}</small></div>
-      <div class="avs">${["mia","leo","sam","alex"].map(k=>`<div class="av">${avatar(k)}</div>`).join("")}</div></div>
-    <div class="blk cbox"><h4>Team credits</h4>
-      ${paid ? `<p class="crd-big">${cr}</p><p class="empty" style="font-size:12px">Shared monthly credits · renews every month</p>`
-             : `<p class="crd-big out">0 <span>/ 2,000</span></p><p class="empty" style="font-size:12px">All trial credits used. Editors can't generate until the team upgrades.</p>`}</div>`;
+  $("teamCredits7").innerHTML = paid ? `Team credits ${cr}` : `Trial credits 0 <button class="tc-up" id="chipUp">${ic("crown")}Upgrade</button>`;
+  if($("chipUp")) $("chipUp").onclick = sub===0 ? adv : null;
+  rp.innerHTML = assetLib(4).replace('class="blk lib"','class="blk lib lib-full"');
   const layer=$("layer");
   if(sub===0){
     layer.innerHTML = `<div class="toast low">${ic("bell")}Ironleaf Games used all 2,000 trial credits</div>`;
   } else if(sub===1){
     layer.innerHTML = `<div class="tiermenu">
         <div class="tm-h"><span>Tier</span><b>Studio trial</b></div>
-        <div class="tm-row"><div>Team trial credits<small>2,000 total</small></div><b class="out">0</b></div>
-        <div class="tm-row"><div>Seats<small>Mia, Leo, Sam</small></div><b>3</b></div>
-        <div class="tm-up"><p>Upgrade to keep generating</p><button class="hot tip-below" data-tip="Click here" id="tmUp">${ic("crown")}Upgrade</button></div>
-        <div class="tm-foot dim">Subscription &amp; Usage</div></div>`;
+        <div class="tm-body">
+          <div class="tm-row"><div>Trial Credits<small>2,000 for the trial</small></div><b class="out">0</b></div>
+          <button class="tm-btn hot tip-below" data-tip="Click here" id="tmUp">${ic("crown")}Upgrade</button>
+        </div>
+        <div class="tm-foot dim">${ic("doc")}Subscription &amp; Usage</div></div>`;
     $("tmUp").onclick=adv;
   } else if(sub===2){
     layer.innerHTML = upgradeModal(true);
@@ -1798,7 +1906,7 @@ function editMode(i){
     <div class="em-top"><span class="em-back dim">${ic("x")}Back</span><span class="em-mode">${ic("wand")}Edit Mode</span></div>
     <div class="em-hint">${ic("chat")}Area selected from ${PEOPLE[c.who].name}'s comment. Adjust it with Lasso or Brush if needed. <span class="em-got dim">Got it</span></div>
     <model-viewer id="emv" src="${MODEL_SRCS[ver]}" alt="Knight_v${ver} in Edit Mode" camera-controls disable-zoom disable-tap interaction-prompt="none"
-      environment-image="legacy" tone-mapping="neutral" exposure="0.7" shadow-intensity="1.3" camera-orbit="${c.view}">
+      environment-image="legacy" tone-mapping="neutral" exposure="0.7" shadow-intensity="1.3" camera-orbit="${c.view}">${ROT}
     </model-viewer>
     <div class="em-tools dim"><span class="on">Lasso</span><span>Brush</span><span>Lasso Eraser</span><span>Eraser</span><span>Size <i class="em-slider"></i> 11</span><span>Clear All</span></div>
     <div class="em-prompt">
@@ -1909,14 +2017,16 @@ function stepSum(){
   const row=(stage,does,means)=>`<tr><td class="cv-st">${stage}</td><td>${does}</td><td>${means}</td></tr>`;
   buildOnce("sum", `<div class="sum">
     <h2 class="cv-title">Core value: Meshy becomes the hub for 3D teams</h2>
+    <p class="lede cv-why">Meshy is built mainly for 3D artists, while their collaborators, such as art leads and engineers, review work outside the product. Feedback often gets miscommunicated, problems surface late in the process, and the team ends up reworking models. Team review brings every collaborator into Meshy, so feedback arrives early, lands directly on the model, and stays tied to its version. This makes collaboration easier and cuts rework.</p>
+    <p class="lede cv-why">Over time, team review increases usage across the team and gives Meshy direct access to team users. That access helps Meshy understand how teams actually work and build deeper into their workflow. As teams keep their assets, processes and decisions in Meshy, it becomes the collaboration hub for 3D teams, laying the foundation for Enterprise.</p>
     <table class="cv">
       <thead><tr><th>Stage</th><th>What team review does</th><th>Growth result</th></tr></thead>
       <tbody>
-        ${row("Acquisition","Brings collaborators outside 3D design, such as art leads and engineers, into Meshy as free reviewers","Acquires not just new users, but entire teams")}
-        ${row("Activation","Displays the Comment entry point on every shared model, right when team members want to give feedback","Team members see the opportunity to improve communication and collaboration efficiency")}
-        ${row("Conversion","Positions commenting as a Studio feature, so the need to comment drives the upgrade","Individual users convert into Studio teams")}
-        ${row("Retention","Turns comments into new model generations, and keeps every version, comment and decision in Meshy","Higher usage as the team grows; the team's workflow for asset generation, management, version control and approval becomes dependent on Meshy, raising switching costs")}
-        ${row("Expansion","Scales with the team as it adds editors, projects and workspaces","More seats, and a clear, smooth path to Enterprise")}
+        ${row("Acquisition","Invites collaborators outside 3D design, such as art leads and engineers, into Meshy","Meshy acquires not only individual users but whole teams, giving it a view into the 3D workflow in production")}
+        ${row("Activation","Surfaces the Comment entry point as the team lead rotates and inspects a shared model","Captures the team lead's attention and sparks curiosity about whether commenting could improve the model feedback process")}
+        ${row("Conversion","Offers commenting as a Studio feature with a free trial, so the team lead can try it with no upfront cost","With no upgrade friction, the team lead can bring the whole team onto Studio at low cost and low risk")}
+        ${row("Retention","Turns each comment into a new generation, and keeps every version, comment and decision in Meshy","Usage grows as the team grows. Meshy builds switching costs as the team's asset generation, management, version control and approval come to depend on it")}
+        ${row("Expansion","More comments mean more generations, more editors to act on them, and more projects reviewed in Meshy","More seats and larger credit packages. A deeper understanding of team workflows paves a smooth path to Enterprise")}
       </tbody>
     </table>
     <button class="start hot tip-below" data-tip="Click here" id="restartBtn">Restart demo</button>
