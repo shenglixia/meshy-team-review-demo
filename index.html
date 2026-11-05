@@ -315,7 +315,7 @@ button.pbtn{color:var(--p-ink)}
 .plan{margin:0 16px 16px;border:1px solid #5b4fd6;border-radius:14px;background:#1c1c1f;padding:16px;display:flex;flex-direction:column;gap:10px}
 .plan-top{display:flex;justify-content:space-between;align-items:center}
 .pname{color:#8f84ff;font-size:20px;font-weight:600}
-.off{background:#f5d76e;color:#3d2f00;font-size:11.5px;font-weight:600;border-radius:6px;padding:2px 7px}
+.off{background:#ff3d8b;color:#fff;font-size:11.5px;font-weight:600;border-radius:6px;padding:2px 7px}
 .plan small{color:var(--p-mute);font-size:11.5px}
 .price{font-size:14px;color:var(--p-mute)}
 .price b{font-size:30px;color:var(--p-ink);font-weight:600;margin-right:4px}
@@ -655,9 +655,34 @@ button.pbtn{color:var(--p-ink)}
 .ob-st.done .dot svg{width:14px;height:14px;stroke-width:2.6}
 @media (max-width:1000px){.ob-rail{display:none}}
 
+/* Studio gate, expands inline inside Mia's comment card */
+.cgate{border-top:1px solid var(--p-line);margin-top:2px;padding-top:12px;display:flex;flex-direction:column;gap:6px;animation:cgateIn .35s cubic-bezier(.2,.8,.2,1)}
+@keyframes cgateIn{from{opacity:0;max-height:0;padding-top:0}to{opacity:1;max-height:320px;padding-top:12px}}
+.cgate-h{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--p-ink);font-weight:600}
+.cgate-h svg{width:15px;height:15px;color:#8f84ff;flex:none}
+.stag{background:#28245a;color:#a99fff;border-radius:5px;padding:2px 7px;font-size:10.5px;font-weight:600;white-space:nowrap}
+.cgate p{margin:0;font-size:12.5px;color:#a9aaae;line-height:1.5}
+.cgate-perks{display:flex;flex-direction:column;gap:4px;margin:2px 0 0;padding:0;list-style:none;font-size:12px;color:#c9cacd}
+.cgate-perks li{display:flex;align-items:flex-start;gap:5px;line-height:1.45}
+.cgate-perks svg{width:12px;height:12px;margin-top:3px;color:#8fd19e;flex:none}
+.cgate-btns{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px}
+.cgate-fine{font-size:11.5px;color:#8b8c90}
+.cgate-btns .g-sec{background:none;color:#b9babd;padding:7px 4px;text-decoration:underline;text-decoration-color:#55565b;text-underline-offset:3px}
+.cgate-btns .g-sec:not(:disabled):hover{color:#ececea}
+.cgate-btns button{border:0;border-radius:8px;padding:7px 12px;font:600 12.5px var(--f-app);display:flex;align-items:center;gap:6px;white-space:nowrap}
+.cgate-btns button svg{width:14px;height:14px}
+.g-sec{background:#2a2b2f;color:#ececea}
+.g-sec:disabled{background:none;color:#8fd19e}
+.g-pri{background:linear-gradient(180deg,#f6d36b,#e9b73f);color:#2b2100;position:relative}
+.g-pri .ftag{position:absolute;top:-9px;right:-6px;background:#ff3d8b;color:#fff;border-radius:999px;padding:2px 7px;font:700 9.5px var(--f-app);letter-spacing:.02em;line-height:1.3;box-shadow:0 2px 6px rgba(0,0,0,.35);pointer-events:none}
+.chint .stag{margin-left:2px}
+.mention{color:#7fb0ff;background:rgba(91,147,255,.14);border-radius:4px;padding:0 4px;font-weight:500}
+.hot,.hot *,.topup.upg,.tc-up,.tm-btn,.up .subscribe,.mult i,.seats .step button,.g-pri,.g-sec:not(:disabled),.pay-btn{cursor:pointer}
 /* Upgrade Your Plan modal, modeled on Meshy's */
-.upwrap{position:absolute;inset:0;background:rgba(0,0,0,.6);z-index:10;padding:10px;display:flex}
-.up{flex:1;background:#0f0f10;border:1px solid #232427;border-radius:16px;overflow:auto;padding:0 22px 22px;font-family:var(--f-app);color:var(--p-ink)}
+@keyframes upFade{from{opacity:0}to{opacity:1}}
+@keyframes upIn{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
+.upwrap{position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:10;padding:clamp(14px,3.5vw,44px) clamp(14px,5vw,72px);display:flex;align-items:center;justify-content:center;animation:upFade .2s ease-out}
+.upwrap>.up{flex:0 1 auto;width:min(1000px,100%);max-height:100%;box-shadow:0 24px 70px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.04);animation:upIn .3s cubic-bezier(.2,.8,.2,1);background:#0f0f10;border:1px solid #232427;border-radius:16px;overflow:auto;padding:0 22px 22px;font-family:var(--f-app);color:var(--p-ink)}
 .up-banner{margin:10px -12px 0;background:linear-gradient(90deg,#f5e36a,#d8f56a);color:#14170a;border-radius:10px;padding:10px 14px;text-align:center;display:flex;flex-direction:column}
 .up-banner b{font-size:16px;font-weight:600}
 .up-banner span{font-size:13.5px}
@@ -682,7 +707,7 @@ button.pbtn{color:var(--p-ink)}
 .pc-title{display:flex;justify-content:space-between;align-items:center}
 .nm{font-size:22px;font-weight:500;color:#8f84ff}
 .ent .nm{color:#e9c17d}
-.off{background:#f7d86b;color:#3b2c00;font-size:11.5px;font-weight:600;border-radius:5px;padding:2px 7px}
+.off{background:#ff3d8b;color:#fff;font-size:11.5px;font-weight:700;border-radius:5px;padding:2px 7px}
 .sub{margin:4px 0 14px;font-size:12px;color:var(--p-mute)}
 .pr{display:flex;align-items:baseline;gap:8px}
 .pr b{font-size:38px;font-weight:500;line-height:1.1}
@@ -1041,7 +1066,7 @@ const STEPS = [
    beats:[["leo","Clicks Share below the 3D model","Workspace"],["leo","Enters Mia's email address","Share dialog"],["leo","Clicks Send to share the model link","Share dialog"],["leo","Sees confirmation that the model was shared with Mia","Workspace"]]},
   {title:"Mia starts a Studio trial", who:"mia",
    goal:"Mia opens the model Leo (3D artist) shared and notices a new Comment feature. It could make the team's feedback clearer and faster. Comment is part of Studio, and since the 7-day trial is free, she decides to try it with the team.",
-   beats:[["mia","Opens Leo's share email","Email inbox"],["mia","Notices the new Comment feature and clicks the model to try it","Shared model page"],["mia","Sees that Comment is a Studio feature. Since the trial is free, she decides to try it out with the team","Upgrade plan"],["mia","Adds her card and starts the trial","Checkout"]]},
+   beats:[["mia","Opens Leo's share email","Email inbox"],["mia","Notices the new Comment feature and clicks the model to try it","Shared model page"],["mia","Writes her first comment and clicks Post","Shared model page"],["mia","Sees that Comment needs an upgrade and clicks Upgrade to unlock","Shared model page"],["mia","Reviews the Studio plan and starts the free trial for the team","Upgrade plan"],["mia","Adds her card and starts the trial","Checkout"]]},
   {title:"Mia sets up the team", who:"mia", role:"Art lead, Studio admin",
    goal:"Mia invites Leo and Sam (3D artists) and Alex (production engineer) into one Studio workspace, so the entire review process happens in one place.",
    beats:[["mia","Names the team Ironleaf Games","Name your team"],["mia","Adds Leo, Sam, and Alex by email","Invite your team"],["mia","Assigns each person a role and sends the invites","Invite your team"],["none","Mia's shared workspace is ready","You're all set"]]},
@@ -1050,7 +1075,7 @@ const STEPS = [
    beats:[["mia","Clicks the horns on the helmet","Shared model page"],["mia","Comments: remove the horns","Shared model page"],["mia","Clicks the back of the horse's neck","Shared model page"],["mia","Comments: give the horse a swirly, elegant mane","Shared model page"],["none","The team is notified of Mia's comments","Shared model page"]]},
   {title:"Alex reviews", who:"alex",
    goal:"Alex (production engineer) isn't on Meshy yet. Mia's invite brings him in as a free reviewer, and within a minute he leaves his first comment on the model.",
-   beats:[["alex","Opens Mia's invite and accepts it","Email inbox"],["alex","Signs up with his work email and joins as a free reviewer","Join Ironleaf Games"],["alex","Reviews Mia's comments and clicks the stirrup","Shared model page"],["alex","Comments: the stirrup is too thin and will break during casting","Shared model page"],["leo","Is notified of three new comments","Shared model page"]]},
+   beats:[["alex","Opens Mia's invite and accepts it","Email inbox"],["alex","Signs up with his work email and joins as a free reviewer","Join Ironleaf Games"],["alex","Reviews Mia's comments and clicks the stirrup","Shared model page"],["alex","Comments to @leo.ironleaf: the stirrup is too thin and will break during casting","Shared model page"],["leo","Is notified of three new comments","Shared model page"]]},
   {title:"Leo edits from the comments", who:"leo", role:"3D artist, Studio editor",
    goal:"Leo joins Ironleaf Games as an editor and addresses the comments from Mia (art lead) and Alex (production engineer) to refine the model. Each comment opens Edit Mode with the comment already in the prompt. Once he's satisfied with the result, he resolves all comments in one click.",
    beats:[["leo","Joins the team and opens the three new comments","Team workspace"],["leo","Edits the horns based on Mia's comment","Edit Mode"],["leo","Receives v2, then applies the other two comments the same way","Team workspace"],["leo","Receives v4 and selects v1 in the asset library to compare","Team workspace"],["leo","Reviews v1, then switches back to v4","Team workspace"],["leo","Verifies that v4 addresses all three comments and clicks Resolve all","Team workspace"],["x","Mia and Alex are notified that this review round is complete","Team workspace"]]},
@@ -1262,6 +1287,7 @@ const PIN_LEG    = {p:"0.117m 0.156m 0.633m",  n:"0.061m 0.874m 0.481m"};
 const PIN_HORN = {p:"0.096m 0.900m 0.444m", n:"0.398m -0.513m 0.760m"};
 const ALEX_NOTE = {pin:{p:"0.186m 0.089m -0.073m", n:"0.784m 0.370m 0.498m"}, where:"stirrup",
   text:"The stirrup is too thin. It'll break during casting.", view:"35deg 75deg auto"};
+const AT_LEO = `<span class="mention">@leo.ironleaf</span> `;   /* Alex tags Leo; the Edit Mode prompt keeps the plain text */
 const PIN_MANE = {p:"-0.001m 0.677m -0.024m", n:"0.031m -0.147m -0.989m"};   /* center of the tufts on the back of the neck */
 /* Mia's two guided comments: where each one lands and what it says */
 const MIA_NOTES = [
@@ -1400,13 +1426,15 @@ function enableCommentCursor(mv){
 }
 
 
+let s2hit=null;   /* where Mia clicked the model, as a 3D hotspot */
+const S2_DRAFT = "Great start! A few changes before we approve it.";
 function step2(){
   if(state.sub===0){
     buildOnce("s2mail", mailPage());
     $("openModel").onclick=adv;
     return;
   }
-  if(state.sub===3){
+  if(state.sub===5){
     buildOnce("s2-pay", checkoutPage());
     $("payBtn").onclick=()=>{   /* trial started: hand-off to team setup, same as the other step transitions */
       $("payBtn").classList.remove("hot");
@@ -1421,7 +1449,7 @@ function step2(){
   }
   const fresh = built!=="s2";
   buildOnce("s2", sharePage());
-  const sub=state.sub-1;   /* 0 comment mode, 1 upgrade modal; state.sub 3 is checkout */
+  const sub=state.sub-1;   /* 0 comment mode, 1 write draft, 2 Studio gate popover, 3 upgrade modal; state.sub 5 is checkout */
   const to = n => { state.sub=n+1; render(); };
   const mv=$("mv");
   if(fresh){
@@ -1431,21 +1459,37 @@ function step2(){
     mv.addEventListener("click",e=>{
       if(state.step!==2 || state.sub!==1) return;
       if(down && Math.hypot(e.clientX-down[0],e.clientY-down[1])>5) return;   /* a drag to rotate, not a click */
-      if(mv.positionAndNormalFromPoint(e.clientX,e.clientY)) to(1);
+      const hit=mv.positionAndNormalFromPoint(e.clientX,e.clientY);
+      if(hit){ s2hit=[hit.position.toString(), hit.normal.toString()]; to(1); }
     });
   }
   mv.classList.toggle("commenting", sub===0);
   const hint=$("chint");
   hint.hidden = sub!==0;
   hint.classList.add("hot");
-  hint.innerHTML = `<span class="cmode">${ic("chat")}Comment mode <span class="newtag">NEW</span></span><span>Click the model to comment</span>`;
+  hint.innerHTML = `<span class="cmode">${ic("chat")}Comment mode <span class="newtag">NEW</span><span class="stag">Studio</span></span><span>Click the model to comment</span>`;
   MIA_NOTES.forEach((n,i)=>{ $("target"+i).hidden=true; $("pinMia"+i).hidden=true; });
-  $("cbox").innerHTML = `<h4>Comments</h4><p class="empty">Feedback on this model shows up here, pinned to the spot it's about.</p>`;
-
-  $("layer").innerHTML = sub===1 ? upgradeModal() : "";
-  if(sub===1){
-    $("subBtn").onclick=()=>{ state.sub=3; render(); };
-    $("upClose").onclick=()=>to(0);
+  $("pinDraft")?.remove();
+  if(sub>=1 && s2hit) mv.insertAdjacentHTML("beforeend",`<div class="cpin" slot="hotspot-draft" id="pinDraft" data-position="${s2hit[0]}" data-normal="${s2hit[1]}"><span class="num"></span></div>`);
+  const gate = `<div class="cgate" role="region" aria-label="Unlock the Comment feature">
+      <div class="cgate-h">${ic("chat")}Unlock the Comment feature<span class="stag">Studio</span></div>
+      <ul class="cgate-perks"><li>${ic("check")}Give feedback directly on the asset</li><li>${ic("check")}Keep the team in the loop</li><li>${ic("check")}Speed up iteration from feedback to the next version</li></ul>
+      <div class="cgate-btns"><button class="g-sec" id="gateNotify">Ask Leo to upgrade</button><button class="g-pri ${sub===2?"hot tip-below":""}" data-tip="Click here" id="gateUp">${ic("crown")}Upgrade to unlock<span class="ftag">Free trial</span></button></div></div>`;
+  $("cbox").innerHTML = `<h4>Comments</h4>` + (sub===0
+    ? `<p class="empty">Feedback on this model shows up here, pinned to the spot it's about.</p>`
+    : `<div class="composer">
+      <div class="top"><div class="av">${avatar("mia")}</div>Mia</div>
+      <div class="text">${S2_DRAFT}</div>
+      ${sub>=2 ? gate : `<div class="row2"><span></span><button class="cbtn hot tip-below" data-tip="Click here" id="postBtn" style="padding:6px 14px">Post</button></div>`}</div>`);
+  if(sub===1) $("postBtn").onclick=()=>to(2);
+  $("layer").innerHTML = sub===3 ? upgradeModal() : "";
+  if(sub===2){
+    $("gateUp").onclick=()=>to(3);
+    $("gateNotify").onclick=e=>{ const b=e.currentTarget; b.disabled=true; b.innerHTML=`${ic("check")}Request sent to Leo`; };
+  }
+  if(sub===3){
+    $("subBtn").onclick=()=>{ state.sub=5; render(); };
+    $("upClose").onclick=()=>to(2);
   }
 }
 
@@ -1721,11 +1765,11 @@ function step5(){
   if(sub===3){
     box += `<div class="composer">
       <div class="top"><div class="av">${avatar("alex")}</div>Alex · Reviewer</div>
-      <div class="text">${ALEX_NOTE.text}</div>
+      <div class="text">${AT_LEO}${ALEX_NOTE.text}</div>
       <div class="row2"><span></span>
       <button class="cbtn hot" data-tip="Click here" id="postBtn" style="padding:6px 14px">Post</button></div></div>`;
   } else if(sub>=4){
-    box += `<div class="citem"><div class="av">${avatar("alex")}</div><div><b>Alex</b><small>just now</small><p>${ALEX_NOTE.text}</p></div></div>`;
+    box += `<div class="citem"><div class="av">${avatar("alex")}</div><div><b>Alex</b><small>just now</small><p>${AT_LEO}${ALEX_NOTE.text}</p></div></div>`;
   }
   $("cbox").innerHTML = box;
   if(sub===3) $("postBtn").onclick=()=>to(4);
@@ -1808,7 +1852,7 @@ function step6(){
         <button class="cact ${hotRes?'hot tip-right':''}" data-tip="Click here" data-res="${c.n}">${ic("check")}Resolve</button>
         <button class="cact edit ${hotEdit?'hot tip-below':''}" data-tip="Click here" data-edit="${c.n}">${ic("wand")}Edit with this comment</button></div>`;
     const status = isRes ? `<span class="cstat ok">${ic("check")}Resolved</span>` : c.n<=edited ? `<span class="cstat">Edited in v${c.n+1}</span>` : "";
-    return `<div class="citem hov ${isRes?'is-done':''}"><div class="av">${avatar(c.who)}</div><div><b>${PEOPLE[c.who].name}</b><small>${c.who==="alex"?"10 min ago":"25 min ago"}</small><p>${c.text}</p>
+    return `<div class="citem hov ${isRes?'is-done':''}"><div class="av">${avatar(c.who)}</div><div><b>${PEOPLE[c.who].name}</b><small>${c.who==="alex"?"10 min ago":"25 min ago"}</small><p>${c.who==="alex"?AT_LEO:""}${c.text}</p>
       ${status}${acts}</div></div>`;
   };
   const allRes = resolvedSet.size===3;
@@ -2061,7 +2105,7 @@ function render(){
   setTimeout(()=>{ const h=document.querySelector("#beats .hint"); if(h) h.hidden=!document.querySelector("#frame .hot"); },60);
   const f=$("frame");
   f.classList.toggle("intro", state.step===0 || state.step===8);
-  const paying = (state.step===2 && state.sub===3) || (state.step===7 && state.sub===3);
+  const paying = (state.step===2 && state.sub===5) || (state.step===7 && state.sub===3);
   f.classList.toggle("page", (state.step===2 && !paying) || state.step===4 || (state.step===5 && state.sub>=2));
   f.classList.toggle("onb", state.step===3 || (state.step===5 && state.sub===1));
   f.classList.toggle("s6", state.step===6 || state.step===7);
