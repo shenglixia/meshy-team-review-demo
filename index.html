@@ -162,6 +162,16 @@ model-viewer{flex:1;width:100%;min-height:0;background:transparent;--poster-colo
 .tb.texture{width:auto;padding:0 10px;gap:6px;background:var(--lime);color:var(--lime-ink);font-weight:600;font-size:13px}
 .tb.dl{background:var(--lime);color:var(--lime-ink)}
 .tb .badge{position:absolute;top:-6px;right:-2px;font-size:9px;color:var(--lime)}
+.tb .ndot{position:absolute;top:5px;right:6px;width:8px;height:8px;border-radius:50%;background:#ff3d8b;box-shadow:0 0 0 2px rgba(24,25,27,.95)}
+.btool .coach{display:none}
+#shareBtn:hover ~ .coach,#shareBtn:focus-visible ~ .coach{display:block}
+.coach{position:absolute;bottom:calc(100% + 44px);width:250px;background:#232428;border:1px solid #3a3b40;border-radius:12px;padding:12px 14px;color:var(--p-ink);font-family:var(--f-app);box-shadow:0 14px 40px rgba(0,0,0,.5);transform:translateX(-50%);animation:coachIn .25s cubic-bezier(.2,.8,.2,1);pointer-events:none;text-align:left}
+@keyframes coachIn{from{opacity:0;transform:translateX(-50%) translateY(6px)}to{opacity:1;transform:translateX(-50%)}}
+.coach::after{content:"";position:absolute;left:50%;bottom:-6px;width:10px;height:10px;background:#232428;border-right:1px solid #3a3b40;border-bottom:1px solid #3a3b40;transform:translateX(-50%) rotate(45deg)}
+.coach-h{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600}
+.coach p{margin:5px 0 0;font-size:12px;line-height:1.45;color:#a9aaae}
+.sec-sub{margin:-4px 0 10px;font-size:12px;color:var(--p-mute)}
+.sec h5 .h5l{display:flex;align-items:center;gap:7px}
 .sep{width:1px;height:20px;background:var(--p-line);margin:0 2px}
 .reuse{position:absolute;left:16px;bottom:22px;font-size:12px;color:var(--p-mute)}
 
@@ -1063,7 +1073,7 @@ const STEPS = [
    beats:[["intro","Leo and Sam build the 3D models, Mia approves them, and Alex checks that each one can be manufactured."]]},
   {title:"Leo shares the model", who:"leo",
    goal:"Leo has finished the first version of the knight. Before it moves to production, it needs approval from Mia (art lead), so he shares the model with her.",
-   beats:[["leo","Clicks Share below the 3D model","Workspace"],["leo","Enters Mia's email address","Share dialog"],["leo","Clicks Send to share the model link","Share dialog"],["leo","Sees confirmation that the model was shared with Mia","Workspace"]]},
+   beats:[["leo","Hovers over Share, sees the new Share with your team tip, and clicks Share","Workspace"],["leo","Enters Mia's email address","Share dialog"],["leo","Clicks Send to share the model link","Share dialog"],["leo","Sees confirmation that the model was shared with Mia","Workspace"]]},
   {title:"Mia starts a Studio trial", who:"mia",
    goal:"Mia opens the model Leo (3D artist) shared and notices a new Comment feature. It could make the team's feedback clearer and faster. Comment is part of Studio, and since the 7-day trial is free, she decides to try it with the team.",
    beats:[["mia","Opens Leo's share email","Email inbox"],["mia","Notices the new Comment feature and clicks the model to try it","Shared model page"],["mia","Writes her first comment and clicks Post","Shared model page"],["mia","Sees that Comment needs an upgrade and clicks Upgrade to unlock","Shared model page"],["mia","Reviews the Studio plan and starts the free trial for the team","Upgrade plan"],["mia","Adds her card and starts the trial","Checkout"]]},
@@ -1244,12 +1254,18 @@ function step1(){
     <button class="tb texture dim">${ic("texture")}Texture</button>
     <button class="tb dim">${ic("rig")}</button>
     <span class="sep"></span>
-    <button class="tb ${sub===0?'hot':''}" data-tip="Share" id="shareBtn" aria-label="Share">${ic("share")}<span class="badge">+10</span></button>
+    <button class="tb ${sub===0?'hot':''}" data-tip="Click here" id="shareBtn" aria-label="Share">${ic("share")}<span class="badge">+10</span>${sub===0?'<span class="ndot"></span>':''}</button>
     <button class="tb dl dim">${ic("download")}</button>
     <span class="sep"></span>
     <button class="tb dim">${ic("chat")}</button>
     <button class="tb dim">${ic("print")}</button>`;
-  if(sub===0) $("shareBtn").onclick=adv;
+  if(sub===0){
+    $("shareBtn").onclick=adv;
+    const sb=$("shareBtn");   /* coachmark shown while hovering Share */
+    $("btool").insertAdjacentHTML("beforeend",`<div class="coach" role="note" style="left:${sb.offsetLeft+sb.offsetWidth/2}px">
+      <div class="coach-h"><span class="newtag">NEW</span>Share with your team</div>
+      <p>Invite teammates by email to review this model.</p></div>`);
+  }
 
   let layer="";
   if(sub===1 || sub===2){
@@ -1260,10 +1276,11 @@ function step1(){
          <button class="lbtn hot tip-below" data-tip="Click here" id="sendBtn" style="padding:9px 14px">${ic("send")}Send</button>`;
     layer = `<div class="scrim"><div class="dlg" role="dialog" aria-label="Share and Win">
       <div class="dlg-h"><b>Share and Win</b><button class="xbtn" aria-label="Close">${ic("x")}</button></div>
+      <div class="sec"><h5><span class="h5l">Share with your team<span class="newtag">NEW</span></span></h5>
+        <p class="sec-sub">Invite teammates by email to review this model.</p>
+        <div class="line">${field}</div></div>
       <div class="sec extra dim"><h5>By Link <small>Shortened URL <span class="pill on"></span></small></h5>
         <div class="line"><div class="inp">https://www.meshy.ai/s/kN7ght2</div><span class="lbtn">${ic("link")}Copy Link</span></div></div>
-      <div class="sec"><h5>By Email</h5>
-        <div class="line">${field}</div></div>
       <div class="sec extra dim"><h5>Share to</h5><div class="socials"><span>X</span><span>f</span><span>in</span><span>wa</span><span>tg</span></div></div>
       <div class="promo dim"><b>Get paid to share</b>Post your creation, get paid for the views.</div>
     </div></div>`;
